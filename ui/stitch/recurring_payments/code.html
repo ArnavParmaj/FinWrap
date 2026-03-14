@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6467f2",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#080A0F",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .aurora-glow {
+            background: radial-gradient(circle at 50% -20%, rgba(100, 103, 242, 0.15), transparent 50%),
+                        radial-gradient(circle at 0% 100%, rgba(100, 103, 242, 0.1), transparent 40%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .indigo-glow-hover:hover {
+            box-shadow: 0 0 20px rgba(100, 103, 242, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen aurora-glow">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-64 border-r border-slate-200 dark:border-white/10 flex flex-col bg-white/5 backdrop-blur-md">
+<div class="p-6 flex items-center gap-3">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">rocket_launch</span>
+</div>
+<h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white uppercase italic">FinWrap</h2>
+</div>
+<nav class="flex-1 px-4 space-y-2 mt-4">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-medium">Payments</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">event_repeat</span>
+<span class="font-medium">Subscriptions</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-medium">Analytics</span>
+</a>
+</nav>
+<div class="p-4 mt-auto border-t border-white/10">
+<div class="glass-card p-4 rounded-xl flex items-center gap-3 indigo-glow-hover transition-all">
+<div class="size-10 rounded-full bg-slate-800" data-alt="User avatar profile picture">
+<img alt="Profile" class="rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACllWHUHB5-WD4VuscX0C66bIxkItl9IX6-ZRdBOLRrM1hugVWgpUXb-ET54qmP1FrbJUdFIk7KlXUno-gtIkX1sZsTZSn-t2jhiWHgezwIHLsIUQfzOpzxx8io-tzomyuZfBlW9w0e6znZVj7FmMUVs9qCu-c5jQRpvb9FoXtsWdsu_6OxgtDYoJNb9a2wPx7FH-zePef0Muer47Kgld0kqcorTfhF9h_NiApJiKxjDrZ3LX8U64WaZgDSPH8KbS7tFKJPCDpniY"/>
+</div>
+<div class="flex-1 overflow-hidden">
+<p class="text-sm font-semibold truncate">Alex Rivera</p>
+<p class="text-xs text-slate-500 truncate">Pro Member</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-sm">settings</span>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col overflow-y-auto">
+<!-- Top Nav -->
+<header class="h-20 px-8 border-b border-slate-200 dark:border-white/10 flex items-center justify-between sticky top-0 bg-background-dark/80 backdrop-blur-xl z-10">
+<div class="flex items-center gap-4 flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">search</span>
+<input class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-primary focus:border-primary" placeholder="Search recurring bills..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2.5 glass-card rounded-xl text-slate-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="bg-primary text-white px-5 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 hover:bg-primary/90 transition-all">
+<span class="material-symbols-outlined text-lg">add</span>
+                        New Sub
+                    </button>
+</div>
+</header>
+<div class="p-8 max-w-6xl mx-auto w-full">
+<!-- Hero Stat Card -->
+<div class="glass-card p-10 rounded-[2rem] border-primary/20 bg-primary/5 relative overflow-hidden mb-12 shadow-2xl shadow-primary/10">
+<div class="absolute top-0 right-0 p-8 opacity-20">
+<span class="material-symbols-outlined text-[120px] text-primary">currency_rupee</span>
+</div>
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-2">
+<span class="size-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-slate-400 font-medium uppercase tracking-widest text-xs">Monthly Recurring</span>
+</div>
+<h1 class="text-7xl font-extrabold text-white tracking-tight flex items-baseline gap-2">
+                            ₹4,850<span class="text-2xl font-normal text-slate-500">/mo</span>
+</h1>
+<p class="mt-4 text-slate-400 max-w-md">Your projected expenses for the next 30 days based on active subscriptions and detected bills.</p>
+</div>
+</div>
+<!-- Subscriptions List Header -->
+<div class="flex items-center justify-between mb-6 px-2">
+<h3 class="text-xl font-bold">Active Subscriptions</h3>
+<div class="flex gap-2">
+<button class="px-4 py-2 rounded-lg glass-card text-sm font-medium hover:bg-white/10">Filter</button>
+<button class="px-4 py-2 rounded-lg glass-card text-sm font-medium hover:bg-white/10">Export</button>
+</div>
+</div>
+<!-- List of Cards -->
+<div class="space-y-4">
+<!-- Netflix Card -->
+<div class="glass-card p-5 rounded-2xl flex items-center gap-6 group hover:border-primary/40 transition-all">
+<div class="size-14 rounded-xl bg-red-600/20 border border-red-600/30 flex items-center justify-center p-2" data-alt="Netflix logo icon">
+<img alt="Netflix" class="w-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP35mQR2tRM22TJXCqTjuAMKn12qH7ZtZ1xLvGau1VxLUEi0mR2DtcdEYF_Omqh9g9Qe-_FW5qmoZ3rSybGgE8zGUZh9J68vWq1qMGGPADoxKco57QCvddKJcruKEzijoPPcwxfs_4FmbzJEuTMvRAnJH118w4207s5Kujoeb_t65P4mOMILYdMJNqK5RvHS4zySEFR6_JOSa602GeN9FAize35jEYFU8aKUHgiJJzLUjQZZ6fxbyenwvo8HaL6zkUR1WCZBv06Ps"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-1">
+<h4 class="font-bold text-lg truncate">Netflix Premium</h4>
+<span class="bg-primary/20 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">Auto</span>
+</div>
+<div class="flex items-center gap-3 text-sm text-slate-500">
+<span class="bg-white/5 px-2 py-0.5 rounded border border-white/5">Entertainment</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">calendar_today</span> Next: May 12</span>
+</div>
+</div>
+<div class="text-right px-6">
+<p class="text-xl font-bold text-white">₹649</p>
+<span class="text-xs text-slate-500 bg-white/5 px-2 py-0.5 rounded-full">Monthly</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="bg-emerald-500/10 text-emerald-500 text-xs font-semibold px-3 py-1.5 rounded-lg border border-emerald-500/20">Detected</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+<!-- Notion Card -->
+<div class="glass-card p-5 rounded-2xl flex items-center gap-6 group hover:border-primary/40 transition-all">
+<div class="size-14 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center p-2" data-alt="Notion logo icon">
+<img alt="Notion" class="w-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEN3osm6YXmx2-qxPHc0bAJ1qcpuLMhTpVBuXS_aK_JBVlF1V4lijG3gWCzKcRMW4YZFYdW5qg6nbayr-fKC28P8Y7mWJmH7fSYXyq3J04EZBcg_p55za8i2sB0vFfCqeYChZQ_BUHvkd-CRDbj9hM8nOMS8Wy73LP4cBwbobtdKLdQVFI7mKe29lCYWWfLTednI9DFs95PU7KAuhhd44RvodLwlCsaRQnP4nQeq8rnv81aGUobuy41QhbyUSD0ngD5ufdzvqaX94"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-1">
+<h4 class="font-bold text-lg truncate">Notion Pro</h4>
+</div>
+<div class="flex items-center gap-3 text-sm text-slate-500">
+<span class="bg-white/5 px-2 py-0.5 rounded border border-white/5">Productivity</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">calendar_today</span> Next: May 18</span>
+</div>
+</div>
+<div class="text-right px-6">
+<p class="text-xl font-bold text-white">₹820</p>
+<span class="text-xs text-slate-500 bg-white/5 px-2 py-0.5 rounded-full">Monthly</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="bg-amber-500/10 text-amber-500 text-xs font-semibold px-3 py-1.5 rounded-lg border border-amber-500/20">Due in 4 days</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+<!-- Spotify Card -->
+<div class="glass-card p-5 rounded-2xl flex items-center gap-6 group hover:border-primary/40 transition-all">
+<div class="size-14 rounded-xl bg-green-500/20 border border-green-500/30 flex items-center justify-center p-2" data-alt="Spotify logo icon">
+<img alt="Spotify" class="w-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhYE4oeMWQ1fHN1HI4WOhhVxiIYMiV4rsGZMAMs2QaAuHaJYVN0KQOsZlUoFA7fe8wWTzfiylUXaL7HBh55CrB2oMBIGq229V2YGQWJXFIAs1oA_W0h7F-UB9eLiV3HoQbOEF5pXn51UhERwzEHSk0yn3doJ02VGCzgOPSIYnOVLPzCl9YtoiFw7HFk9dI5YU537Gw3yijX8xjxOVL3X3KXLVNyilAjx3xzSM99EGwhQiy8UlB9vlMG0xcNTx4yea-hEH6XQV2YG8"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-1">
+<h4 class="font-bold text-lg truncate">Spotify Family</h4>
+<span class="bg-primary/20 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">Auto</span>
+</div>
+<div class="flex items-center gap-3 text-sm text-slate-500">
+<span class="bg-white/5 px-2 py-0.5 rounded border border-white/5">Music</span>
+<span class="flex items-center gap-1 text-rose-400 font-medium"><span class="material-symbols-outlined text-sm">error</span> Missing Payment</span>
+</div>
+</div>
+<div class="text-right px-6">
+<p class="text-xl font-bold text-white">₹179</p>
+<span class="text-xs text-slate-500 bg-white/5 px-2 py-0.5 rounded-full">Monthly</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="bg-rose-500/10 text-rose-500 text-xs font-semibold px-3 py-1.5 rounded-lg border border-rose-500/20">Missing</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+<!-- Additional View Actions -->
+<div class="mt-8 flex justify-center">
+<button class="flex items-center gap-2 text-slate-500 hover:text-white transition-colors py-4">
+<span class="text-sm font-medium">View Archived Subscriptions</span>
+<span class="material-symbols-outlined">expand_more</span>
+</button>
+</div>
+</div>
+</main>
+</div>
+</body></html>

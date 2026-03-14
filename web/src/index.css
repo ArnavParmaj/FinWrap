@@ -1,0 +1,42 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/container-queries";
+
+@theme {
+  --color-primary: #6467f2;
+  --color-background-light: #f6f6f8;
+  --color-background-dark: #080A0F;
+  --font-display: "Inter", system-ui, sans-serif;
+  --color-border: #2a2d3a;
+  --color-positive: #10b981;
+  --color-negative: #f43f5e;
+  --color-warning: #f59e0b;
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-background-dark);
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+@layer utilities {
+  .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .aurora-bleed {
+      background: radial-gradient(circle at 0% 0%, rgba(100, 103, 242, 0.15) 0%, transparent 50%),
+                  radial-gradient(circle at 100% 100%, rgba(100, 103, 242, 0.1) 0%, transparent 50%);
+  }
+}

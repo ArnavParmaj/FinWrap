@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FinWrap - Transactions</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6467f2",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#080a0f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(100, 103, 242, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(100, 103, 242, 0.1);
+        }
+        .aurora-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(100, 103, 242, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(100, 103, 242, 0.1) 0%, transparent 40%);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="aurora-glow"></div>
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-64 border-r border-primary/10 flex flex-col bg-background-light dark:bg-background-dark/80 backdrop-blur-xl">
+<div class="p-6 flex items-center gap-3">
+<div class="size-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</div>
+<div>
+<h1 class="text-lg font-bold leading-tight">FinWrap</h1>
+<p class="text-xs text-slate-500 dark:text-primary/60 font-medium">Wealth Management</p>
+</div>
+</div>
+<nav class="flex-1 px-4 py-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-primary/10 transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary text-white shadow-md shadow-primary/20" href="#">
+<span class="material-symbols-outlined text-[22px]">swap_horiz</span>
+<span class="text-sm font-medium">Transactions</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-primary/10 transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">account_balance</span>
+<span class="text-sm font-medium">Accounts</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-primary/10 transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">pie_chart</span>
+<span class="text-sm font-medium">Budgets</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-primary/10 transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">trending_up</span>
+<span class="text-sm font-medium">Investing</span>
+</a>
+</nav>
+<div class="p-4 border-t border-primary/10">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-primary/10 transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col overflow-hidden">
+<!-- Top Bar -->
+<header class="h-16 border-b border-primary/10 flex items-center justify-between px-8 bg-background-light/50 dark:bg-background-dark/50 backdrop-blur-md z-10">
+<div class="flex items-center gap-2">
+<span class="text-slate-400 text-sm">Finances</span>
+<span class="material-symbols-outlined text-slate-400 text-sm">chevron_right</span>
+<span class="text-sm font-semibold">Transactions</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
+<input class="bg-primary/5 border-none rounded-lg pl-10 pr-4 py-1.5 text-sm w-64 focus:ring-1 focus:ring-primary" placeholder="Quick search..." type="text"/>
+</div>
+<div class="flex items-center gap-3">
+<button class="size-10 rounded-full flex items-center justify-center text-slate-500 hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="size-8 rounded-full bg-primary/20 overflow-hidden border border-primary/20">
+<img alt="Avatar" data-alt="User profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7Ho9AGf88bi_Nf7e4iKtXfdEbLXbZpSZKp63BUgSU91HxfCUR-OiauvhRprh4AyumXqm3WBo4XXfcX7bLCLis1y9LpIzltffhNTkZFXjE0GlRf6EKazePREmojFSsIMZS08y9BEGfYPm85s2GEO2JJbrRyE4HtMKEXdI1zvXAXtpHgaLVdnm9kpgueJ7yzksT6atkcuGe5YGjCOf1yjZ6d-fbnZAJOnZdAPO3OPJ8JGHzAts_JXwxYXYyZRctu9XMU71oXj1reRs"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Content Area -->
+<div class="flex-1 overflow-y-auto p-8 relative">
+<!-- Page Header -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
+<div>
+<h2 class="text-3xl font-extrabold tracking-tight">Transactions</h2>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Manage and track your global financial movements</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary text-sm font-bold transition-all backdrop-blur-sm">
+<span class="material-symbols-outlined text-[18px]">upload_file</span>
+                            Import CSV
+                        </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm font-bold shadow-lg shadow-primary/30 transition-all">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                            Add Transaction
+                        </button>
+</div>
+</div>
+<!-- Filter Bar -->
+<div class="glass-panel rounded-2xl p-2 mb-8 flex flex-wrap items-center gap-2">
+<button class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-primary/10 transition-colors text-sm font-medium">
+<span class="material-symbols-outlined text-[18px] text-primary">calendar_month</span>
+                        October 2023
+                        <span class="material-symbols-outlined text-[18px]">expand_more</span>
+</button>
+<div class="h-6 w-px bg-primary/10 mx-1"></div>
+<button class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-primary/10 transition-colors text-sm font-medium">
+<span class="material-symbols-outlined text-[18px] text-primary">category</span>
+                        All Categories
+                        <span class="material-symbols-outlined text-[18px]">expand_more</span>
+</button>
+<div class="h-6 w-px bg-primary/10 mx-1"></div>
+<div class="bg-primary/5 rounded-xl p-1 flex gap-1">
+<button class="px-4 py-1.5 rounded-lg bg-primary text-white text-xs font-bold shadow-sm">All</button>
+<button class="px-4 py-1.5 rounded-lg hover:bg-primary/10 text-slate-500 text-xs font-bold transition-colors">Debit</button>
+<button class="px-4 py-1.5 rounded-lg hover:bg-primary/10 text-slate-500 text-xs font-bold transition-colors">Credit</button>
+</div>
+<div class="flex-1 flex justify-end px-2">
+<div class="relative w-full max-w-[240px]">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-[18px]">search</span>
+<input class="w-full bg-transparent border-none text-sm pl-10 focus:ring-0" placeholder="Filter merchant..." type="text"/>
+</div>
+</div>
+</div>
+<!-- Transactions Table -->
+<div class="glass-panel rounded-3xl overflow-hidden border border-primary/10 shadow-2xl">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-primary/5 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+<th class="px-6 py-4 w-12">
+<input class="rounded border-primary/30 text-primary focus:ring-primary bg-transparent" type="checkbox"/>
+</th>
+<th class="px-6 py-4">Date</th>
+<th class="px-6 py-4">Merchant</th>
+<th class="px-6 py-4">Category</th>
+<th class="px-6 py-4">Account</th>
+<th class="px-6 py-4 text-right">Amount</th>
+<th class="px-6 py-4 text-center">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-primary/5">
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4">
+<input class="rounded border-primary/30 text-primary focus:ring-primary bg-transparent" type="checkbox"/>
+</td>
+<td class="px-6 py-4 text-sm font-medium">Oct 24, 2023</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+</div>
+<span class="text-sm font-bold">Apple Store</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20 backdrop-blur-md">
+                                        Electronics
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-blue-500"></div>
+<span class="text-sm text-slate-500">Chase Savings</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right text-sm font-bold text-rose-500">
+                                    -$1,299.00
+                                </td>
+<td class="px-6 py-4 text-center">
+<button class="p-1 hover:text-primary transition-colors text-slate-400">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4">
+<input checked="" class="rounded border-primary/30 text-primary focus:ring-primary bg-transparent" type="checkbox"/>
+</td>
+<td class="px-6 py-4 text-sm font-medium">Oct 23, 2023</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px] text-emerald-500">payments</span>
+</div>
+<span class="text-sm font-bold">Monthly Salary</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 backdrop-blur-md">
+                                        Income
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-blue-500"></div>
+<span class="text-sm text-slate-500">Chase Savings</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right text-sm font-bold text-emerald-500">
+                                    +$5,400.00
+                                </td>
+<td class="px-6 py-4 text-center">
+<button class="p-1 hover:text-primary transition-colors text-slate-400">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4">
+<input class="rounded border-primary/30 text-primary focus:ring-primary bg-transparent" type="checkbox"/>
+</td>
+<td class="px-6 py-4 text-sm font-medium">Oct 22, 2023</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">local_cafe</span>
+</div>
+<span class="text-sm font-bold">Starbucks Coffee</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-500 border border-amber-500/20 backdrop-blur-md">
+                                        Food &amp; Drink
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-orange-500"></div>
+<span class="text-sm text-slate-500">Amex Gold Card</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right text-sm font-bold text-rose-500">
+                                    -$12.45
+                                </td>
+<td class="px-6 py-4 text-center">
+<button class="p-1 hover:text-primary transition-colors text-slate-400">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4">
+<input class="rounded border-primary/30 text-primary focus:ring-primary bg-transparent" type="checkbox"/>
+</td>
+<td class="px-6 py-4 text-sm font-medium">Oct 20, 2023</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">train</span>
+</div>
+<span class="text-sm font-bold">Metropolitan Transit</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 backdrop-blur-md">
+                                        Transport
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-blue-500"></div>
+<span class="text-sm text-slate-500">Chase Savings</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right text-sm font-bold text-rose-500">
+                                    -$4.50
+                                </td>
+<td class="px-6 py-4 text-center">
+<button class="p-1 hover:text-primary transition-colors text-slate-400">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="p-6 flex items-center justify-between text-sm text-slate-500">
+<p>Showing <span class="font-bold text-slate-900 dark:text-slate-100">1-4</span> of 128 transactions</p>
+<div class="flex gap-2">
+<button class="px-3 py-1.5 rounded-lg border border-primary/10 hover:bg-primary/5 disabled:opacity-50">Previous</button>
+<button class="px-3 py-1.5 rounded-lg border border-primary/10 hover:bg-primary/5">Next</button>
+</div>
+</div>
+</div>
+<!-- Bulk Action Bar -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-50">
+<div class="glass-panel border-primary/30 shadow-2xl rounded-2xl px-6 py-4 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="bg-primary text-white size-8 rounded-lg flex items-center justify-center font-bold">1</div>
+<span class="text-sm font-semibold">Transaction selected</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-primary/10 text-sm font-medium transition-colors">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                                Edit
+                            </button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-primary/10 text-sm font-medium transition-colors">
+<span class="material-symbols-outlined text-[18px]">label</span>
+                                Categorize
+                            </button>
+<div class="w-px h-6 bg-primary/10"></div>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-rose-500/10 text-rose-500 text-sm font-bold transition-colors">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+                                Delete
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

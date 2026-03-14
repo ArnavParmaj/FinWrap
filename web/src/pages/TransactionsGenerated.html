@@ -1,0 +1,243 @@
+<html class="dark"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#4144f1",
+            "background-light": "#f6f6f8",
+            "background-dark": "#0F1117",
+            "card-dark": "#1A1D27",
+            "accent-slate": "#282839",
+            "muted-text": "#9d9db9"
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Top Header -->
+<header class="flex flex-col gap-4 p-4 pt-6 sticky top-0 bg-background-dark/80 backdrop-blur-md z-10 border-b border-accent-slate/50">
+<div class="flex items-center justify-between">
+<h1 class="text-2xl font-bold tracking-tight">Transactions</h1>
+<button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[18px]">upload_file</span>
+          Import CSV
+        </button>
+</div>
+<div class="flex gap-2">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-text text-[20px]">search</span>
+<input class="w-full bg-accent-slate/40 border border-accent-slate/60 rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-1 focus:ring-primary focus:border-primary placeholder:text-muted-text outline-none transition-all" placeholder="Search merchants..." type="text"/>
+</div>
+<button class="flex items-center gap-1 px-3 py-2 border border-accent-slate/60 rounded-lg text-sm font-medium hover:bg-accent-slate/20 transition-colors">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+          Filter
+        </button>
+</div>
+</header>
+<!-- Quick Stats / Tabs -->
+<div class="flex gap-3 px-4 py-4 overflow-x-auto no-scrollbar">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary px-5">
+<p class="text-white text-sm font-semibold">All</p>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-accent-slate/40 px-5 border border-accent-slate/60 hover:border-primary/50">
+<p class="text-slate-300 text-sm font-medium">Income</p>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-accent-slate/40 px-5 border border-accent-slate/60 hover:border-primary/50">
+<p class="text-slate-300 text-sm font-medium">Expenses</p>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-accent-slate/40 px-5 border border-accent-slate/60 hover:border-primary/50">
+<p class="text-slate-300 text-sm font-medium">Subscription</p>
+</button>
+</div>
+<!-- Main Table Container -->
+<main class="flex-1 px-4 pb-24">
+<div class="bg-card-dark rounded-xl border border-accent-slate/50 shadow-2xl overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-accent-slate/30 bg-accent-slate/20">
+<th class="px-4 py-3 text-[11px] font-bold text-muted-text uppercase tracking-wider">Date</th>
+<th class="px-4 py-3 text-[11px] font-bold text-muted-text uppercase tracking-wider">Merchant</th>
+<th class="px-4 py-3 text-[11px] font-bold text-muted-text uppercase tracking-wider">Category</th>
+<th class="px-4 py-3 text-[11px] font-bold text-muted-text uppercase tracking-wider text-right">Amount</th>
+<th class="px-4 py-3 w-10"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-accent-slate/20">
+<!-- Row 1 -->
+<tr class="hover:bg-accent-slate/10 transition-colors">
+<td class="px-4 py-4 text-xs text-muted-text whitespace-nowrap">Oct 24</td>
+<td class="px-4 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-slate-100">Apple Store</span>
+<span class="text-[10px] text-muted-text uppercase font-medium">Hardware</span>
+</div>
+</td>
+<td class="px-4 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-primary/20 text-primary border border-primary/30 uppercase tracking-tight">Shopping</span>
+</td>
+<td class="px-4 py-4 text-right">
+<span class="text-sm font-bold text-slate-100">-$1,299.00</span>
+</td>
+<td class="px-4 py-4 text-right">
+<button class="text-muted-text hover:text-slate-100 transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-accent-slate/10 transition-colors">
+<td class="px-4 py-4 text-xs text-muted-text whitespace-nowrap">Oct 23</td>
+<td class="px-4 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-slate-100">Monthly Salary</span>
+<span class="text-[10px] text-muted-text uppercase font-medium">Remote Tech Inc</span>
+</div>
+</td>
+<td class="px-4 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase tracking-tight">Income</span>
+</td>
+<td class="px-4 py-4 text-right">
+<span class="text-sm font-bold text-emerald-400">+$8,450.00</span>
+</td>
+<td class="px-4 py-4 text-right">
+<button class="text-muted-text hover:text-slate-100 transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-accent-slate/10 transition-colors">
+<td class="px-4 py-4 text-xs text-muted-text whitespace-nowrap">Oct 22</td>
+<td class="px-4 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-slate-100">Starbucks</span>
+<span class="text-[10px] text-muted-text uppercase font-medium">Beverages</span>
+</div>
+</td>
+<td class="px-4 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-orange-500/20 text-orange-400 border border-orange-500/30 uppercase tracking-tight">Food</span>
+</td>
+<td class="px-4 py-4 text-right">
+<span class="text-sm font-bold text-slate-100">-$6.50</span>
+</td>
+<td class="px-4 py-4 text-right">
+<button class="text-muted-text hover:text-slate-100 transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-accent-slate/10 transition-colors">
+<td class="px-4 py-4 text-xs text-muted-text whitespace-nowrap">Oct 21</td>
+<td class="px-4 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-slate-100">Amazon.com</span>
+<span class="text-[10px] text-muted-text uppercase font-medium">Home Goods</span>
+</div>
+</td>
+<td class="px-4 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-primary/20 text-primary border border-primary/30 uppercase tracking-tight">Shopping</span>
+</td>
+<td class="px-4 py-4 text-right">
+<span class="text-sm font-bold text-slate-100">-$42.99</span>
+</td>
+<td class="px-4 py-4 text-right">
+<button class="text-muted-text hover:text-slate-100 transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-accent-slate/10 transition-colors">
+<td class="px-4 py-4 text-xs text-muted-text whitespace-nowrap">Oct 20</td>
+<td class="px-4 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-slate-100">Netflix</span>
+<span class="text-[10px] text-muted-text uppercase font-medium">Entertainment</span>
+</div>
+</td>
+<td class="px-4 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30 uppercase tracking-tight">Subscription</span>
+</td>
+<td class="px-4 py-4 text-right">
+<span class="text-sm font-bold text-slate-100">-$15.99</span>
+</td>
+<td class="px-4 py-4 text-right">
+<button class="text-muted-text hover:text-slate-100 transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 bg-accent-slate/10 border-t border-accent-slate/20 flex items-center justify-between">
+<p class="text-[12px] text-muted-text font-medium">Showing 5 of 124 transactions</p>
+<div class="flex gap-2">
+<button class="p-1 rounded bg-accent-slate/40 text-muted-text hover:text-white disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="p-1 rounded bg-accent-slate/40 text-muted-text hover:text-white">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 border-t border-accent-slate/50 bg-background-dark/95 backdrop-blur-lg flex justify-around items-end px-2 pb-6 pt-2 z-20">
+<a class="flex flex-1 flex-col items-center gap-1 text-muted-text hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">home</span>
+<p class="text-[10px] font-bold uppercase tracking-widest">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined text-[24px] fill-current">receipt_long</span>
+<p class="text-[10px] font-bold uppercase tracking-widest">Transactions</p>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 text-muted-text hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">pie_chart</span>
+<p class="text-[10px] font-bold uppercase tracking-widest">Insights</p>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 text-muted-text hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">person</span>
+<p class="text-[10px] font-bold uppercase tracking-widest">Profile</p>
+</a>
+</nav>
+</div>
+<style>
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+
+```</body></html>

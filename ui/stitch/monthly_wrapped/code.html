@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6467f2",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#080A0F",
+                        "indigo-glow": "#4338ca",
+                        "emerald-accent": "#10b981"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .aurora-bg {
+            background: radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 50% 50%, rgba(16, 17, 34, 1) 0%, rgba(8, 10, 15, 1) 100%);
+        }
+        .glass-card {
+            background: linear-gradient(135deg, rgba(30, 30, 50, 0.9) 0%, rgba(10, 11, 22, 1) 100%);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2), inset 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-background-dark font-display text-slate-100 antialiased overflow-x-hidden aurora-bg min-h-screen">
+<div class="relative flex min-h-screen w-full flex-col items-center justify-center p-6 sm:p-10">
+<!-- Main Container: 480px width -->
+<div class="w-full max-w-[480px] flex flex-col gap-8">
+<!-- Header Branding -->
+<div class="flex flex-col items-center gap-2">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-3xl">rocket_launch</span>
+<span class="text-xl font-extrabold tracking-tight">FinWrap</span>
+</div>
+<h3 class="text-slate-400 text-xs font-bold tracking-[0.2em] uppercase">FINWRAP · MARCH 2025</h3>
+</div>
+<!-- The Wrapped Card -->
+<div class="glass-card border border-primary/30 rounded-3xl p-8 flex flex-col gap-10 relative overflow-hidden">
+<!-- Inner Glow Pattern -->
+<div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 blur-3xl rounded-full"></div>
+<div class="absolute -bottom-24 -left-24 w-48 h-48 bg-violet-500/10 blur-3xl rounded-full"></div>
+<!-- Main Stat -->
+<div class="flex flex-col items-center text-center gap-2">
+<p class="text-slate-400 text-sm font-medium uppercase tracking-wider">Total Spent</p>
+<h1 class="text-6xl font-extrabold text-white tracking-tighter">₹28,400</h1>
+<div class="mt-2 inline-flex items-center gap-1 px-3 py-1 bg-emerald-accent/10 border border-emerald-accent/20 rounded-full">
+<span class="material-symbols-outlined text-emerald-accent text-sm">trending_down</span>
+<p class="text-emerald-accent text-sm font-bold">You saved ₹6,200</p>
+</div>
+</div>
+<!-- Insights Grid -->
+<div class="grid grid-cols-1 gap-4">
+<!-- Category -->
+<div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">restaurant</span>
+</div>
+<div>
+<p class="text-xs text-slate-400 font-medium uppercase">Biggest Category</p>
+<p class="text-base font-bold text-white">Food &amp; Dining</p>
+</div>
+</div>
+<p class="text-lg font-bold text-white">₹12,400</p>
+</div>
+<!-- Splurge -->
+<div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-violet-500/20 flex items-center justify-center text-violet-400">
+<span class="material-symbols-outlined">shopping_bag</span>
+</div>
+<div>
+<p class="text-xs text-slate-400 font-medium uppercase">Biggest Splurge</p>
+<p class="text-base font-bold text-white">Wireless Headphones</p>
+</div>
+</div>
+<p class="text-lg font-bold text-white">₹8,999</p>
+</div>
+<!-- Streak -->
+<div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-emerald-accent/20 flex items-center justify-center text-emerald-accent">
+<span class="material-symbols-outlined">auto_graph</span>
+</div>
+<div>
+<p class="text-xs text-slate-400 font-medium uppercase">Savings Streak</p>
+<p class="text-base font-bold text-white">3 Months Strong</p>
+</div>
+</div>
+<p class="text-lg font-bold text-emerald-accent">+12%</p>
+</div>
+</div>
+<!-- AI Roast -->
+<div class="pt-4 border-t border-white/10">
+<div class="flex gap-2 items-start opacity-70 italic text-slate-400 text-sm">
+<span class="material-symbols-outlined text-primary text-base shrink-0 mt-0.5">smart_toy</span>
+<p>"You spent enough on coffee this month to buy a small plantation. Maybe your 'savings' are just your baristas feeling sorry for you?"</p>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex gap-4 w-full">
+<button class="flex-1 flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">download</span>
+<span>Download</span>
+</button>
+<button class="flex-1 flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 text-white font-bold py-4 rounded-2xl transition-all border border-white/10">
+<span class="material-symbols-outlined">share</span>
+<span>Share Moment</span>
+</button>
+</div>
+<!-- Footer Meta -->
+<div class="flex justify-center items-center gap-6 mt-4">
+<div class="flex items-center gap-1.5 opacity-50">
+<span class="material-symbols-outlined text-sm">verified_user</span>
+<span class="text-xs font-medium uppercase tracking-tighter">Bank-Grade Security</span>
+</div>
+<div class="flex items-center gap-1.5 opacity-50">
+<span class="material-symbols-outlined text-sm">history</span>
+<span class="text-xs font-medium uppercase tracking-tighter">Updated 2m ago</span>
+</div>
+</div>
+</div>
+</div>
+</body></html>

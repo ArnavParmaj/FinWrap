@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FinWrap - Smart Savings Goals</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6467f2",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#080A0F",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .aurora-glow {
+            background: radial-gradient(circle at 50% -20%, rgba(100, 103, 242, 0.15), transparent 70%),
+                        radial-gradient(circle at 0% 100%, rgba(100, 103, 242, 0.08), transparent 50%);
+        }
+        .progress-glow {
+            box-shadow: 0 0 15px rgba(100, 103, 242, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-background-dark font-display text-slate-100 min-h-screen aurora-glow">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-64 border-r border-slate-800 bg-background-dark/50 flex flex-col shrink-0">
+<div class="p-6 flex items-center gap-3">
+<div class="size-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-white text-2xl">account_balance_wallet</span>
+</div>
+<div>
+<h1 class="font-bold text-lg leading-none">FinWrap</h1>
+<p class="text-xs text-slate-400">Smart Savings</p>
+</div>
+</div>
+<nav class="flex-1 px-4 py-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">track_changes</span>
+<span class="text-sm font-semibold">Savings Goals</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">trending_up</span>
+<span class="text-sm font-medium">Investments</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="text-sm font-medium">Transactions</span>
+</a>
+<div class="pt-4 mt-4 border-t border-slate-800/50">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</div>
+</nav>
+<div class="p-4">
+<div class="glass-card rounded-xl p-4 border-primary/20 bg-primary/5">
+<p class="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Pro Plan</p>
+<p class="text-xs text-slate-400 mb-3">Get advanced analytics and smart goal forecasting.</p>
+<button class="w-full py-2 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary/90 transition-all">Upgrade Now</button>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col overflow-hidden">
+<!-- Top Bar -->
+<header class="h-16 border-b border-slate-800 flex items-center justify-between px-8 bg-background-dark/30 backdrop-blur-md z-10">
+<div class="flex items-center gap-4">
+<h2 class="text-xl font-bold">Goals Overview</h2>
+<div class="h-4 w-px bg-slate-700"></div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">search</span>
+<input class="bg-slate-900/50 border-slate-800 rounded-lg pl-9 pr-4 py-1.5 text-sm focus:ring-primary focus:border-primary w-64" placeholder="Search goals..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="size-10 rounded-lg flex items-center justify-center text-slate-400 hover:bg-white/5">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-slate-800">
+<div class="text-right">
+<p class="text-sm font-semibold leading-none">Alex Rivera</p>
+<p class="text-[10px] text-slate-500 mt-1 uppercase">Premium Member</p>
+</div>
+<div class="size-9 rounded-full bg-slate-800 border border-slate-700 overflow-hidden">
+<img alt="Avatar" class="w-full h-full object-cover" data-alt="Portrait of a young male professional" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAK7KP1KjUsd36jahekQUwfP2m8cZKpy6cCGKbt4Y_aiZBbfaBJxp6mJr-PvahuSCecmMShF6nIdoAktYR4-aP3vq9nyfcwmdTa9USFdlxanuD_JHwvaKGIzDJWh0Ue38UkArIpdRQbsSyMS941SIwIIBTGEoY5BBbGcbtn3up7m0i184GfSRH5d8s3AzIrqUsVrvwiPonmelnYIUxAiNk1jVnB-eLKpI80NS2QyVA27Uc_uJ8qe5zkch6GnsAXB87hkHSaOzT-mI"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="flex-1 overflow-y-auto p-8">
+<!-- Hero Stats -->
+<div class="flex items-end justify-between mb-8">
+<div>
+<h3 class="text-3xl font-black tracking-tight mb-2">Your Milestones</h3>
+<p class="text-slate-400">You're saving 12% more this month compared to July.</p>
+</div>
+<button class="bg-primary text-white px-6 py-2.5 rounded-lg font-bold flex items-center gap-2 hover:bg-primary/90 transition-all shadow-lg shadow-primary/25">
+<span class="material-symbols-outlined text-lg">add_circle</span>
+                        Create New Goal
+                    </button>
+</div>
+<!-- Filters -->
+<div class="flex gap-6 border-b border-slate-800 mb-8">
+<button class="pb-4 px-2 border-b-2 border-primary text-primary font-bold text-sm">Active Goals (4)</button>
+<button class="pb-4 px-2 border-b-2 border-transparent text-slate-500 font-medium text-sm hover:text-slate-300">Completed</button>
+<button class="pb-4 px-2 border-b-2 border-transparent text-slate-500 font-medium text-sm hover:text-slate-300">Archived</button>
+</div>
+<!-- Goals Grid -->
+<div class="grid grid-cols-2 gap-6">
+<!-- Goal Card 1 -->
+<div class="glass-card rounded-2xl p-6 flex flex-col gap-6 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-indigo-400 opacity-50"></div>
+<div class="flex justify-between items-start">
+<div>
+<h4 class="text-xl font-bold mb-1">Tokyo Summer Trip</h4>
+<p class="text-sm text-slate-400">Target: <span class="text-slate-200">₹450,000</span></p>
+</div>
+<span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[10px] font-bold uppercase tracking-wider border border-emerald-500/20">On Track</span>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between text-sm">
+<span class="font-medium text-slate-300">₹315,000 saved</span>
+<span class="text-slate-500">70% reached</span>
+</div>
+<div class="h-3 w-full bg-slate-800 rounded-full overflow-hidden border border-slate-700/50">
+<div class="h-full w-[70%] bg-primary progress-glow rounded-full transition-all duration-1000"></div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<div class="flex gap-4">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-slate-500 font-bold">Monthly Pace</span>
+<span class="text-sm font-semibold">₹15,000/mo</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-slate-500 font-bold">Deadline</span>
+<span class="text-sm font-semibold">May 2024</span>
+</div>
+</div>
+<button class="flex items-center gap-1.5 text-primary text-sm font-bold hover:underline">
+<span class="material-symbols-outlined text-lg">add</span>
+                                Add Contribution
+                            </button>
+</div>
+</div>
+<!-- Goal Card 2 -->
+<div class="glass-card rounded-2xl p-6 flex flex-col gap-6 relative overflow-hidden">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="text-xl font-bold mb-1">New Tesla Model 3</h4>
+<p class="text-sm text-slate-400">Target: <span class="text-slate-200">₹4,500,000</span></p>
+</div>
+<span class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-500 text-[10px] font-bold uppercase tracking-wider border border-amber-500/20">Behind</span>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between text-sm">
+<span class="font-medium text-slate-300">₹850,000 saved</span>
+<span class="text-slate-500">18% reached</span>
+</div>
+<div class="h-3 w-full bg-slate-800 rounded-full overflow-hidden border border-slate-700/50">
+<div class="h-full w-[18%] bg-primary progress-glow rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<div class="flex gap-4">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-slate-500 font-bold">Monthly Pace</span>
+<span class="text-sm font-semibold text-amber-400">₹45,000/mo</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-slate-500 font-bold">Est. Completion</span>
+<span class="text-sm font-semibold">Dec 2026</span>
+</div>
+</div>
+<button class="flex items-center gap-1.5 text-primary text-sm font-bold hover:underline">
+<span class="material-symbols-outlined text-lg">add</span>
+                                Add Contribution
+                            </button>
+</div>
+</div>
+<!-- Goal Card 3 -->
+<div class="glass-card rounded-2xl p-6 flex flex-col gap-6 relative overflow-hidden">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="text-xl font-bold mb-1">Emergency Fund</h4>
+<p class="text-sm text-slate-400">Target: <span class="text-slate-200">₹250,000</span></p>
+</div>
+<span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider border border-primary/20">Ahead</span>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between text-sm">
+<span class="font-medium text-slate-300">₹225,000 saved</span>
+<span class="text-slate-500">90% reached</span>
+</div>
+<div class="h-3 w-full bg-slate-800 rounded-full overflow-hidden border border-slate-700/50">
+<div class="h-full w-[90%] bg-primary progress-glow rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<div class="flex gap-4">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-slate-500 font-bold">Monthly Pace</span>
+<span class="text-sm font-semibold">₹5,000/mo</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-slate-500 font-bold">Remaining</span>
+<span class="text-sm font-semibold">2 months</span>
+</div>
+</div>
+<button class="flex items-center gap-1.5 text-primary text-sm font-bold hover:underline">
+<span class="material-symbols-outlined text-lg">add</span>
+                                Add Contribution
+                            </button>
+</div>
+</div>
+<!-- Goal Card 4 -->
+<div class="glass-card rounded-2xl p-6 flex flex-col gap-6 relative overflow-hidden">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="text-xl font-bold mb-1">MacBook Pro M3 Max</h4>
+<p class="text-sm text-slate-400">Target: <span class="text-slate-200">₹350,000</span></p>
+</div>
+<span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[10px] font-bold uppercase tracking-wider border border-emerald-500/20">On Track</span>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between text-sm">
+<span class="font-medium text-slate-300">₹140,000 saved</span>
+<span class="text-slate-500">40% reached</span>
+</div>
+<div class="h-3 w-full bg-slate-800 rounded-full overflow-hidden border border-slate-700/50">
+<div class="h-full w-[40%] bg-primary progress-glow rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<div class="flex gap-4">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-slate-500 font-bold">Monthly Pace</span>
+<span class="text-sm font-semibold">₹20,000/mo</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-slate-500 font-bold">Deadline</span>
+<span class="text-sm font-semibold">Oct 2024</span>
+</div>
+</div>
+<button class="flex items-center gap-1.5 text-primary text-sm font-bold hover:underline">
+<span class="material-symbols-outlined text-lg">add</span>
+                                Add Contribution
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Create Goal Modal Overlay -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background-dark/80 backdrop-blur-xl">
+<div class="glass-card w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden border-slate-700/50">
+<!-- Modal Header -->
+<div class="p-6 border-b border-slate-800 flex items-center justify-between">
+<h3 class="text-xl font-bold">Create New Savings Goal</h3>
+<button class="text-slate-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Modal Content -->
+<div class="p-6 space-y-6">
+<!-- Tabs -->
+<div class="flex gap-1 p-1 bg-slate-900/50 rounded-lg border border-slate-800">
+<button class="flex-1 py-1.5 text-xs font-bold rounded-md bg-primary text-white">Manual Plan</button>
+<button class="flex-1 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:text-slate-200">AI Optimized</button>
+<button class="flex-1 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:text-slate-200">Round-ups</button>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1.5">
+<label class="text-[10px] uppercase font-bold text-slate-500">Goal Name</label>
+<input class="w-full bg-slate-900 border-slate-700 rounded-lg text-sm focus:ring-primary" type="text" value="Dream Vacation"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] uppercase font-bold text-slate-500">Target Amount (₹)</label>
+<input class="w-full bg-slate-900 border-slate-700 rounded-lg text-sm focus:ring-primary" type="number" value="150000"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1.5">
+<label class="text-[10px] uppercase font-bold text-slate-500">Initial Deposit (₹)</label>
+<input class="w-full bg-slate-900 border-slate-700 rounded-lg text-sm focus:ring-primary" type="number" value="8000"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] uppercase font-bold text-slate-500">Target Date</label>
+<input class="w-full bg-slate-900 border-slate-700 rounded-lg text-sm focus:ring-primary" type="date"/>
+</div>
+</div>
+<!-- Live Calculation Preview -->
+<div class="bg-primary/5 border border-primary/20 rounded-xl p-5">
+<div class="flex items-center justify-between mb-4">
+<p class="text-sm font-semibold text-primary">Live Calculation Preview</p>
+<span class="material-symbols-outlined text-primary text-sm">calculate</span>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<div class="text-center">
+<p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Monthly</p>
+<p class="text-lg font-black text-slate-100">₹11,833</p>
+</div>
+<div class="text-center border-x border-slate-800">
+<p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Daily Pace</p>
+<p class="text-lg font-black text-slate-100">₹394</p>
+</div>
+<div class="text-center">
+<p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Duration</p>
+<p class="text-lg font-black text-slate-100">12 Mo</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="p-6 border-t border-slate-800 flex gap-3">
+<button class="flex-1 py-2.5 rounded-lg border border-slate-700 text-sm font-bold hover:bg-white/5 transition-colors">Cancel</button>
+<button class="flex-[2] py-2.5 rounded-lg bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">Confirm Goal</button>
+</div>
+</div>
+</div>
+</body></html>
