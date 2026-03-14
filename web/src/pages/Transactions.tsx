@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useCallback } from "react";
+import { useState, useMemo, useRef } from "react";
 import Papa from "papaparse";
 import { useTransactions } from "../hooks/useTransactions";
 import { useAppStore } from "../store/useAppStore";
@@ -55,9 +55,13 @@ const MONTHS = Array.from({ length: 12 }, (_, i) => {
   return `${y}-${m}`;
 });
 
+// suppress unused import warning
+const _getPrevMonth = getPrevMonth;
+void _getPrevMonth;
+
 const PAGE_SIZE = 20;
 
-// ── ADD / EDIT MODAL ──────────────────────────────────────────────────────────
+// ── FORM ──────────────────────────────────────────────────────────────────────
 interface TransactionFormData {
   date: string;
   merchant: string;
@@ -136,8 +140,6 @@ function AddTransactionModal({ onClose, onSave, initial }: AddModalProps) {
             </span>
           </button>
         </div>
-
-        {/* Type toggle */}
         <div className="flex gap-2 mb-4">
           {(["debit", "credit"] as const).map((t) => (
             <button
@@ -155,7 +157,6 @@ function AddTransactionModal({ onClose, onSave, initial }: AddModalProps) {
             </button>
           ))}
         </div>
-
         <div className="space-y-3">
           <div>
             <label className="text-xs font-semibold text-slate-500 uppercase">
@@ -228,9 +229,7 @@ function AddTransactionModal({ onClose, onSave, initial }: AddModalProps) {
             />
           </div>
         </div>
-
         {error && <p className="mt-3 text-xs text-rose-400">{error}</p>}
-
         <div className="flex gap-3 mt-5">
           <button
             onClick={onClose}
@@ -274,7 +273,6 @@ function CsvImportModal({ onClose, onImport }: CsvModalProps) {
         const data = results.data as Record<string, string>[];
         const parsed = data.map(
           (row): Omit<Transaction, "id" | "createdAt"> => {
-            // Flexible column mapping
             const amount = Math.abs(
               parseFloat(row.amount ?? row.Amount ?? row.AMOUNT ?? "0"),
             );
@@ -285,9 +283,7 @@ function CsvImportModal({ onClose, onImport }: CsvModalProps) {
               ""
             ).toLowerCase();
             const type: "debit" | "credit" =
-              rawType === "credit" || (amount > 0 && rawType === "")
-                ? "credit"
-                : "debit";
+              rawType === "credit" ? "credit" : "debit";
             return {
               date: (
                 row.date ??
@@ -350,14 +346,12 @@ function CsvImportModal({ onClose, onImport }: CsvModalProps) {
             </span>
           </button>
         </div>
-
         <p className="text-slate-400 text-sm mb-4">
           Upload a CSV export from your bank. Expected columns:{" "}
           <code className="text-primary">
             date, merchant, amount, type, category
           </code>
         </p>
-
         <div
           onClick={() => fileRef.current?.click()}
           className="border-2 border-dashed border-white/10 rounded-xl p-8 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-primary/40 transition-colors"
@@ -374,7 +368,6 @@ function CsvImportModal({ onClose, onImport }: CsvModalProps) {
             className="hidden"
           />
         </div>
-
         {status && (
           <p
             className={`mt-3 text-sm ${status.startsWith("Error") ? "text-rose-400" : "text-emerald-400"}`}
@@ -382,7 +375,6 @@ function CsvImportModal({ onClose, onImport }: CsvModalProps) {
             {status}
           </p>
         )}
-
         {rows.length > 0 && (
           <div className="mt-4 max-h-40 overflow-y-auto rounded-lg border border-white/10 text-xs">
             <table className="w-full">
@@ -418,7 +410,6 @@ function CsvImportModal({ onClose, onImport }: CsvModalProps) {
             )}
           </div>
         )}
-
         <div className="flex gap-3 mt-5">
           <button
             onClick={onClose}
@@ -501,8 +492,6 @@ export default function TransactionsPage() {
   const [page, setPage] = useState(0);
   const [showMonthPicker, setShowMonthPicker] = useState(false);
   const [showCatPicker, setShowCatPicker] = useState(false);
-  const monthBtnRef = useRef<HTMLButtonElement>(null);
-  const catBtnRef = useRef<HTMLButtonElement>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showCsvModal, setShowCsvModal] = useState(false);
   const [editTx, setEditTx] = useState<Transaction | null>(null);
@@ -510,7 +499,6 @@ export default function TransactionsPage() {
   const { transactions, loading, addTransaction, removeTransaction } =
     useTransactions(activeMonth);
 
-  // ── FILTER + SEARCH ──────────────────────────────────────────────────────
   const filtered = useMemo(() => {
     let result = transactions;
     if (typeFilter !== "all")
@@ -530,54 +518,43 @@ export default function TransactionsPage() {
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const paginated = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
-
   const resetPage = () => setPage(0);
 
-  // ── HANDLERS ─────────────────────────────────────────────────────────────
-  const handleAdd = useCallback(
-    async (
-      data: Omit<
-        Transaction,
-        "id" | "createdAt" | "isRecurring" | "accountId" | "source"
-      >,
-    ) => {
-      await addTransaction({
-        ...data,
-        isRecurring: false,
-        accountId: "",
-        source: "manual",
-      });
-    },
-    [addTransaction],
-  );
+  const handleAdd = async (
+    data: Omit<
+      Transaction,
+      "id" | "createdAt" | "isRecurring" | "accountId" | "source"
+    >,
+  ) => {
+    await addTransaction({
+      ...data,
+      isRecurring: false,
+      accountId: "",
+      source: "manual",
+    });
+  };
 
-  const handleEdit = useCallback(
-    async (
-      data: Omit<
-        Transaction,
-        "id" | "createdAt" | "isRecurring" | "accountId" | "source"
-      >,
-    ) => {
-      if (!editTx) return;
-      await removeTransaction(editTx.id);
-      await addTransaction({
-        ...data,
-        isRecurring: editTx.isRecurring,
-        accountId: editTx.accountId,
-        source: editTx.source,
-      });
-    },
-    [editTx, addTransaction, removeTransaction],
-  );
+  const handleEdit = async (
+    data: Omit<
+      Transaction,
+      "id" | "createdAt" | "isRecurring" | "accountId" | "source"
+    >,
+  ) => {
+    if (!editTx) return;
+    await removeTransaction(editTx.id);
+    await addTransaction({
+      ...data,
+      isRecurring: editTx.isRecurring,
+      accountId: editTx.accountId,
+      source: editTx.source,
+    });
+  };
 
-  const handleCsvImport = useCallback(
-    async (rows: Omit<Transaction, "id" | "createdAt">[]) => {
-      for (const row of rows) {
-        await addTransaction(row);
-      }
-    },
-    [addTransaction],
-  );
+  const handleCsvImport = async (
+    rows: Omit<Transaction, "id" | "createdAt">[],
+  ) => {
+    for (const row of rows) await addTransaction(row);
+  };
 
   const formatDate = (dateStr: string) => {
     const [y, m, d] = dateStr.split("-").map(Number);
@@ -618,7 +595,7 @@ export default function TransactionsPage() {
       )}
 
       <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Bar */}
+        {/* ── Top Bar (sticky) ── */}
         <header className="h-16 border-b border-primary/10 flex items-center justify-between px-8 bg-background-dark/50 backdrop-blur-md z-10 flex-shrink-0">
           <div className="flex items-center gap-2">
             <span className="text-slate-400 text-sm">Finances</span>
@@ -651,43 +628,42 @@ export default function TransactionsPage() {
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-8">
-          {/* Page Header */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
-            <div>
-              <h2 className="text-3xl font-extrabold tracking-tight text-slate-100">
-                Transactions
-              </h2>
-              <p className="text-slate-500 text-sm mt-1">
-                Manage and track your financial movements
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setShowCsvModal(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary text-sm font-bold transition-all"
-              >
-                <span className="material-icons-outlined text-[18px]">
-                  upload_file
-                </span>
-                Import CSV
-              </button>
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm font-bold shadow-lg shadow-primary/30 transition-all"
-              >
-                <span className="material-icons-outlined text-[18px]">add</span>
-                Add Transaction
-              </button>
-            </div>
+        {/* ── Page Header — OUTSIDE scroll, so dropdowns aren't clipped ── */}
+        <div className="px-8 pt-8 pb-4 flex-shrink-0 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-3xl font-extrabold tracking-tight text-slate-100">
+              Transactions
+            </h2>
+            <p className="text-slate-500 text-sm mt-1">
+              Manage and track your financial movements
+            </p>
           </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowCsvModal(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary text-sm font-bold transition-all"
+            >
+              <span className="material-icons-outlined text-[18px]">
+                upload_file
+              </span>
+              Import CSV
+            </button>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm font-bold shadow-lg shadow-primary/30 transition-all"
+            >
+              <span className="material-icons-outlined text-[18px]">add</span>
+              Add Transaction
+            </button>
+          </div>
+        </div>
 
-          {/* Filter Bar */}
-          <div className="glass-card rounded-2xl p-2 mb-6 flex flex-wrap items-center gap-2">
+        {/* ── Filter Bar — OUTSIDE scroll so dropdowns always render on top ── */}
+        <div className="relative z-20 px-8 pb-4 flex-shrink-0">
+          <div className="glass-card rounded-2xl p-2 flex flex-wrap items-center gap-2">
             {/* Month picker */}
             <div className="relative">
               <button
-                ref={monthBtnRef}
                 onClick={() => {
                   setShowMonthPicker((v) => !v);
                   setShowCatPicker(false);
@@ -702,39 +678,29 @@ export default function TransactionsPage() {
                   expand_more
                 </span>
               </button>
-              {showMonthPicker &&
-                (() => {
-                  const rect = monthBtnRef.current?.getBoundingClientRect();
-                  return (
-                    <>
-                      <div
-                        className="fixed inset-0 z-40"
-                        onClick={() => setShowMonthPicker(false)}
-                      />
-                      <div
-                        className="fixed glass-card rounded-xl border border-white/10 z-50 w-48 py-1 shadow-xl max-h-64 overflow-y-auto"
-                        style={{
-                          top: (rect?.bottom ?? 0) + 4,
-                          left: rect?.left ?? 0,
+              {showMonthPicker && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setShowMonthPicker(false)}
+                  />
+                  <div className="absolute top-11 left-0 glass-card rounded-xl border border-white/10 z-50 w-48 py-1 shadow-xl max-h-64 overflow-y-auto">
+                    {MONTHS.map((m) => (
+                      <button
+                        key={m}
+                        onClick={() => {
+                          setActiveMonth(m);
+                          setShowMonthPicker(false);
+                          resetPage();
                         }}
+                        className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 ${m === activeMonth ? "text-primary font-semibold" : "text-slate-300"}`}
                       >
-                        {MONTHS.map((m) => (
-                          <button
-                            key={m}
-                            onClick={() => {
-                              setActiveMonth(m);
-                              setShowMonthPicker(false);
-                              resetPage();
-                            }}
-                            className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 ${m === activeMonth ? "text-primary font-semibold" : "text-slate-300"}`}
-                          >
-                            {formatMonthLabel(m)}
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  );
-                })()}
+                        {formatMonthLabel(m)}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="h-6 w-px bg-primary/10 mx-1" />
@@ -742,7 +708,6 @@ export default function TransactionsPage() {
             {/* Category picker */}
             <div className="relative">
               <button
-                ref={catBtnRef}
                 onClick={() => {
                   setShowCatPicker((v) => !v);
                   setShowMonthPicker(false);
@@ -760,55 +725,45 @@ export default function TransactionsPage() {
                   expand_more
                 </span>
               </button>
-              {showCatPicker &&
-                (() => {
-                  const rect = catBtnRef.current?.getBoundingClientRect();
-                  return (
-                    <>
-                      <div
-                        className="fixed inset-0 z-40"
-                        onClick={() => setShowCatPicker(false)}
-                      />
-                      <div
-                        className="fixed glass-card rounded-xl border border-white/10 z-50 w-52 py-1 shadow-xl max-h-64 overflow-y-auto"
-                        style={{
-                          top: (rect?.bottom ?? 0) + 4,
-                          left: rect?.left ?? 0,
+              {showCatPicker && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setShowCatPicker(false)}
+                  />
+                  <div className="absolute top-11 left-0 glass-card rounded-xl border border-white/10 z-50 w-52 py-1 shadow-xl max-h-64 overflow-y-auto">
+                    <button
+                      onClick={() => {
+                        setCatFilter("all");
+                        setShowCatPicker(false);
+                        resetPage();
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 ${catFilter === "all" ? "text-primary font-semibold" : "text-slate-300"}`}
+                    >
+                      All Categories
+                    </button>
+                    {DEFAULT_CATEGORIES.map((c) => (
+                      <button
+                        key={c.id}
+                        onClick={() => {
+                          setCatFilter(c.id);
+                          setShowCatPicker(false);
+                          resetPage();
                         }}
+                        className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 flex items-center gap-2 ${catFilter === c.id ? "text-primary font-semibold" : "text-slate-300"}`}
                       >
-                        <button
-                          onClick={() => {
-                            setCatFilter("all");
-                            setShowCatPicker(false);
-                            resetPage();
-                          }}
-                          className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 ${catFilter === "all" ? "text-primary font-semibold" : "text-slate-300"}`}
+                        <span
+                          className="material-icons-outlined text-sm"
+                          style={{ color: c.color }}
                         >
-                          All Categories
-                        </button>
-                        {DEFAULT_CATEGORIES.map((c) => (
-                          <button
-                            key={c.id}
-                            onClick={() => {
-                              setCatFilter(c.id);
-                              setShowCatPicker(false);
-                              resetPage();
-                            }}
-                            className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 flex items-center gap-2 ${catFilter === c.id ? "text-primary font-semibold" : "text-slate-300"}`}
-                          >
-                            <span
-                              className="material-icons-outlined text-sm"
-                              style={{ color: c.color }}
-                            >
-                              {c.icon}
-                            </span>
-                            {c.name}
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  );
-                })()}
+                          {c.icon}
+                        </span>
+                        {c.name}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="h-6 w-px bg-primary/10 mx-1" />
@@ -822,11 +777,7 @@ export default function TransactionsPage() {
                     setTypeFilter(t);
                     resetPage();
                   }}
-                  className={`px-4 py-1.5 rounded-lg text-xs font-bold capitalize transition-colors ${
-                    typeFilter === t
-                      ? "bg-primary text-white shadow-sm"
-                      : "text-slate-400 hover:bg-primary/10"
-                  }`}
+                  className={`px-4 py-1.5 rounded-lg text-xs font-bold capitalize transition-colors ${typeFilter === t ? "bg-primary text-white shadow-sm" : "text-slate-400 hover:bg-primary/10"}`}
                 >
                   {t.charAt(0).toUpperCase() + t.slice(1)}
                 </button>
@@ -839,8 +790,10 @@ export default function TransactionsPage() {
               </p>
             </div>
           </div>
+        </div>
 
-          {/* Table */}
+        {/* ── Table — inside scroll container ── */}
+        <div className="flex-1 overflow-y-auto px-8 pb-8">
           <div className="glass-card rounded-3xl overflow-hidden border border-primary/10 shadow-2xl">
             <table className="w-full text-left border-collapse">
               <thead>
@@ -950,7 +903,6 @@ export default function TransactionsPage() {
                 )}
               </tbody>
             </table>
-
             {/* Pagination */}
             <div className="p-5 flex items-center justify-between text-sm text-slate-500 border-t border-primary/5">
               <p>
