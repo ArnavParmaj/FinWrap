@@ -36,7 +36,62 @@ export type Transaction = {
 export type Category = {
   id: string;
   name: string;
-  icon: string; // Lucide icon name
-  color: string; // hex code
+  icon: string;
+  color: string;
   isDefault: boolean;
+};
+
+export type Budget = {
+  id: string;
+  categoryId: string;
+  categoryName: string;
+  categoryIcon: string;
+  categoryColor: string;
+  amount: number; // monthly limit
+  spent: number; // calculated
+  month: string; // YYYY-MM
+  rollover: boolean;
+  userId: string;
+  createdAt: string;
+};
+
+export type Goal = {
+  id: string;
+  name: string;
+  targetAmount: number;
+  savedAmount: number;
+  icon: string;
+  color: string;
+  targetDate: string;
+  userId: string;
+  createdAt: string;
+};
+
+export type DailySpend = {
+  date: string; // YYYY-MM-DD
+  amount: number;
+};
+
+export type CategorySpend = {
+  name: string;
+  value: number;
+  color: string;
+};
+
+export type DashboardStats = {
+  openingBalance: number;
+  totalCredited: number;
+  totalDebited: number;
+  netSavings: number;
+  investments: number;
+  closingBalance: number;
+  prevOpeningBalance: number;
+  prevTotalCredited: number;
+  prevTotalDebited: number;
+  prevNetSavings: number;
+  prevInvestments: number;
+  prevClosingBalance: number;
+  dailySpend: DailySpend[];
+  categoryBreakdown: CategorySpend[];
+  topBudgetAlert: { categoryName: string; percent: number } | null;
 };

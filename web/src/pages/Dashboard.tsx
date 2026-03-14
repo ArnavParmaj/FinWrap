@@ -1,24 +1,198 @@
+import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
+import { useTransactions } from "../hooks/useTransactions";
+import { useBudgets } from "../hooks/useBudgets";
+import { useAppStore } from "../store/useAppStore";
+import { useUserStore } from "../store/useUserStore";
+import {
+  computeDashboardStats,
+  pctChange,
+  formatINR,
+  getPrevMonth,
+  formatMonthLabel,
+} from "../lib/dashboardStats";
+
+// Month navigation helpers
+const MONTHS = Array.from({ length: 12 }, (_, i) => {
+  const date = new Date();
+  date.setMonth(date.getMonth() - i);
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  return `${y}-${m}`;
+});
+
+function PctBadge({
+  current,
+  previous,
+  inverted = false,
+}: {
+  current: number;
+  previous: number;
+  inverted?: boolean;
+}) {
+  const pct = pctChange(current, previous);
+  const isPositive = inverted ? pct < 0 : pct >= 0;
+  return (
+    <p
+      className={`text-xs font-semibold mt-1 flex items-center gap-1 ${isPositive ? "text-emerald-500" : "text-rose-500"}`}
+    >
+      <span className="material-icons-outlined text-xs">
+        {isPositive ? "trending_up" : "trending_down"}
+      </span>
+      {pct >= 0 ? "+" : ""}
+      {pct.toFixed(1)}%
+    </p>
+  );
+}
+
+function StatCard({
+  label,
+  value,
+  borderColor,
+  current,
+  previous,
+  inverted = false,
+}: {
+  label: string;
+  value: string;
+  borderColor: string;
+  current: number;
+  previous: number;
+  inverted?: boolean;
+}) {
+  return (
+    <div
+      className={`glass-card p-5 rounded-xl border-l-4 ${borderColor} shadow-sm hover:translate-y-[-2px] transition-transform`}
+    >
+      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+        {label}
+      </p>
+      <h3 className="text-2xl font-bold mt-1 text-slate-100">{value}</h3>
+      <PctBadge current={current} previous={previous} inverted={inverted} />
+    </div>
+  );
+}
+
+const EMPTY_CAT_MAP: Record<string, { name: string; color: string }> = {};
+
+const DONUT_COLORS = [
+  "#6366f1",
+  "#22d3ee",
+  "#f59e0b",
+  "#10b981",
+  "#f43f5e",
+  "#a78bfa",
+  "#34d399",
+];
+
 export default function DashboardPage() {
+  const navigate = useNavigate();
+  const { user } = useUserStore();
+  const { activeMonth, setActiveMonth } = useAppStore();
+  const prevMonth = getPrevMonth(activeMonth);
+
+  const [showMonthPicker, setShowMonthPicker] = useState(false);
+
+  const { transactions: currentTx, loading: loadingCurrent } =
+    useTransactions(activeMonth);
+  const { transactions: prevTx } = useTransactions(prevMonth);
+  const { budgets } = useBudgets(activeMonth);
+
+  // Opening balance = closingBalance of previous month (simplified: 0 for now until accounts feature)
+  const openingBalance = 0;
+  const prevOpeningBalance = 0;
+
+  const stats = useMemo(
+    () =>
+      computeDashboardStats(
+        currentTx,
+        prevTx,
+        openingBalance,
+        prevOpeningBalance,
+        budgets,
+        EMPTY_CAT_MAP,
+      ),
+    [currentTx, prevTx, budgets, openingBalance, prevOpeningBalance],
+  );
+
+  // Build category breakdown with fallback colors
+  const donutData = useMemo(
+    () =>
+      stats.categoryBreakdown.map((c, i) => ({
+        ...c,
+        color:
+          c.color && c.color !== "#6366f1"
+            ? c.color
+            : DONUT_COLORS[i % DONUT_COLORS.length],
+      })),
+    [stats.categoryBreakdown],
+  );
+
+  // Recharts daily bar data formatted with short-date labels
+  const barData = useMemo(
+    () =>
+      stats.dailySpend.map((d) => ({
+        name: d.date.slice(5), // "MM-DD"
+        amount: d.amount,
+      })),
+    [stats.dailySpend],
+  );
+
+  const isEmpty = !loadingCurrent && currentTx.length === 0;
+
   return (
     <main className="flex-1 flex flex-col overflow-y-auto">
       {/* Top Bar */}
       <header className="h-16 glass-card border-b border-white/5 flex items-center justify-between px-8 flex-shrink-0 sticky top-0 z-10">
         <div className="flex items-center gap-6">
-          <h2 className="text-xl font-bold tracking-tight">Overview</h2>
-          <div className="flex items-center gap-4 text-sm font-medium">
-            <button className="flex items-center gap-2 hover:text-primary px-3 py-1.5 rounded-full bg-white/5 transition-colors">
-              <span>January 2024</span>
-              <span className="material-icons-outlined text-sm">expand_more</span>
+          <h2 className="text-xl font-bold tracking-tight text-slate-100">
+            Overview
+          </h2>
+          <div className="relative">
+            <button
+              onClick={() => setShowMonthPicker((v) => !v)}
+              className="flex items-center gap-2 hover:text-primary px-3 py-1.5 rounded-full bg-white/5 text-sm font-medium transition-colors"
+            >
+              <span>{formatMonthLabel(activeMonth)}</span>
+              <span className="material-icons-outlined text-sm">
+                expand_more
+              </span>
             </button>
-            <button className="flex items-center gap-2 hover:text-primary px-3 py-1.5 rounded-full bg-white/5 transition-colors">
-              <span>All Accounts</span>
-              <span className="material-icons-outlined text-sm">expand_more</span>
-            </button>
+            {showMonthPicker && (
+              <div className="absolute top-10 left-0 glass-card rounded-xl border border-white/10 z-50 w-48 py-1 shadow-xl">
+                {MONTHS.map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => {
+                      setActiveMonth(m);
+                      setShowMonthPicker(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 ${m === activeMonth ? "text-primary font-semibold" : "text-slate-300"}`}
+                  >
+                    {formatMonthLabel(m)}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-4">
           <div className="relative w-64">
-            <span className="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg">search</span>
+            <span className="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg">
+              search
+            </span>
             <input
               className="w-full bg-white/5 border-none rounded-full pl-10 pr-4 py-2 text-sm focus:ring-1 focus:ring-primary placeholder:text-slate-500"
               placeholder="Search data..."
@@ -26,113 +200,232 @@ export default function DashboardPage() {
             />
           </div>
           <button className="size-10 glass-card rounded-full flex items-center justify-center hover:bg-white/10">
-            <span className="material-icons-outlined text-slate-400">notifications</span>
+            <span className="material-icons-outlined text-slate-400">
+              notifications
+            </span>
           </button>
-          <button className="size-10 glass-card rounded-full flex items-center justify-center hover:bg-white/10">
-            <span className="material-icons-outlined text-slate-400">settings</span>
+          <button
+            onClick={() => navigate("/settings")}
+            className="size-10 glass-card rounded-full flex items-center justify-center hover:bg-white/10"
+          >
+            <span className="material-icons-outlined text-slate-400">
+              settings
+            </span>
           </button>
-          <div className="size-10 rounded-full bg-slate-800 border-2 border-primary/20 overflow-hidden">
-            <img
-              className="w-full h-full object-cover"
-              alt="User profile avatar"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAj0yfVzE5QtiiL9-PhWOD098lWdIP44thJNbd4lGa4ro4uQ73H5v7JFtHECQVRfpI9_co0OQWOJKJzkfGMr_PHDTxF2N2hz4we_6Lpy2N7s3kztxxynGaw-DYIaKOhXU9iP3t7cKqVbfcRSNHXZszGz5Eiq0mfiayQodd1Q1NSrGrSvFctCEwjuaA1EuYPVmczcVxnjOcjaZtaXc9MwDWVtF5uzlszkjFjFGxIJoxeWPlUVlwLgecmCWXA0otW_cwWN3zmIl-vkQY"
-            />
+          <div className="size-10 rounded-full bg-slate-800 border-2 border-primary/20 overflow-hidden flex items-center justify-center text-sm font-bold text-slate-200">
+            {user?.name?.charAt(0).toUpperCase() ?? "U"}
           </div>
         </div>
       </header>
+
       <div className="p-8 space-y-6">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <div className="glass-card p-5 rounded-xl border-l-4 border-l-primary shadow-sm hover:translate-y-[-2px] transition-transform">
-            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-              Opening Balance
-            </p>
-            <h3 className="text-2xl font-bold mt-1">₹1,42,000</h3>
-            <p className="text-emerald-500 text-xs font-semibold mt-1 flex items-center gap-1">
-              <span className="material-icons-outlined text-xs">trending_up</span>{" "}
-              +5.2%
-            </p>
+        {loadingCurrent ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="glass-card p-5 rounded-xl h-28 animate-pulse bg-white/5"
+              />
+            ))}
           </div>
-          <div className="glass-card p-5 rounded-xl border-l-4 border-l-emerald-500 shadow-sm hover:translate-y-[-2px] transition-transform">
-            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-              Total Credited
-            </p>
-            <h3 className="text-2xl font-bold mt-1">₹85,000</h3>
-            <p className="text-emerald-500 text-xs font-semibold mt-1 flex items-center gap-1">
-              <span className="material-icons-outlined text-xs">trending_up</span>{" "}
-              +12.1%
-            </p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <StatCard
+              label="Opening Balance"
+              value={formatINR(stats.openingBalance)}
+              borderColor="border-l-primary"
+              current={stats.openingBalance}
+              previous={stats.prevOpeningBalance}
+            />
+            <StatCard
+              label="Total Credited"
+              value={formatINR(stats.totalCredited)}
+              borderColor="border-l-emerald-500"
+              current={stats.totalCredited}
+              previous={stats.prevTotalCredited}
+            />
+            <StatCard
+              label="Total Debited"
+              value={formatINR(stats.totalDebited)}
+              borderColor="border-l-rose-500"
+              current={stats.totalDebited}
+              previous={stats.prevTotalDebited}
+              inverted
+            />
+            <StatCard
+              label="Net Savings"
+              value={formatINR(stats.netSavings)}
+              borderColor="border-l-blue-400"
+              current={stats.netSavings}
+              previous={stats.prevNetSavings}
+            />
+            <StatCard
+              label="Investments"
+              value={formatINR(stats.investments)}
+              borderColor="border-l-purple-400"
+              current={stats.investments}
+              previous={stats.prevInvestments}
+            />
+            <StatCard
+              label="Closing Balance"
+              value={formatINR(stats.closingBalance)}
+              borderColor="border-l-white/20"
+              current={stats.closingBalance}
+              previous={stats.prevClosingBalance}
+            />
           </div>
-          <div className="glass-card p-5 rounded-xl border-l-4 border-l-rose-500 shadow-sm hover:translate-y-[-2px] transition-transform">
-            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-              Total Debited
-            </p>
-            <h3 className="text-2xl font-bold mt-1">₹42,000</h3>
-            <p className="text-rose-500 text-xs font-semibold mt-1 flex items-center gap-1">
-              <span className="material-icons-outlined text-xs">trending_down</span>{" "}
-              -2.1%
-            </p>
-          </div>
-          <div className="glass-card p-5 rounded-xl border-l-4 border-l-blue-400 shadow-sm hover:translate-y-[-2px] transition-transform">
-            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-              Net Savings
-            </p>
-            <h3 className="text-2xl font-bold mt-1">₹43,000</h3>
-            <p className="text-emerald-500 text-xs font-semibold mt-1 flex items-center gap-1">
-              <span className="material-icons-outlined text-xs">trending_up</span>{" "}
-              +12.3%
-            </p>
-          </div>
-          <div className="glass-card p-5 rounded-xl border-l-4 border-l-purple-400 shadow-sm hover:translate-y-[-2px] transition-transform">
-            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-              Investments
-            </p>
-            <h3 className="text-2xl font-bold mt-1">₹25,000</h3>
-            <p className="text-emerald-500 text-xs font-semibold mt-1 flex items-center gap-1">
-              <span className="material-icons-outlined text-xs">trending_up</span>{" "}
-              +4.0%
-            </p>
-          </div>
-          <div className="glass-card p-5 rounded-xl border-l-4 border-l-white/20 shadow-sm hover:translate-y-[-2px] transition-transform">
-            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-              Closing Balance
-            </p>
-            <h3 className="text-2xl font-bold mt-1">₹1,85,000</h3>
-            <p className="text-emerald-500 text-xs font-semibold mt-1 flex items-center gap-1">
-              <span className="material-icons-outlined text-xs">trending_up</span>{" "}
-              +6.8%
-            </p>
-          </div>
-        </div>
+        )}
 
-        {/* Alert Strip */}
-        <div className="bg-amber-500/10 border border-amber-500/20 text-amber-500 p-4 rounded-xl flex items-center justify-between shadow-sm">
-          <div className="flex items-center gap-3">
-            <span className="material-icons-outlined">warning</span>
-            <p className="text-sm font-medium">
-              Budget Alert: You have spent{" "}
-              <span className="font-bold">92%</span> of your "Dining" budget for
-              January.
-            </p>
+        {/* Budget Alert */}
+        {stats.topBudgetAlert && (
+          <div className="bg-amber-500/10 border border-amber-500/20 text-amber-500 p-4 rounded-xl flex items-center justify-between shadow-sm">
+            <div className="flex items-center gap-3">
+              <span className="material-icons-outlined">warning</span>
+              <p className="text-sm font-medium">
+                Budget Alert: You have spent{" "}
+                <span className="font-bold">
+                  {stats.topBudgetAlert.percent}%
+                </span>{" "}
+                of your &quot;
+                {stats.topBudgetAlert.categoryName}&quot; budget for{" "}
+                {formatMonthLabel(activeMonth)}.
+              </p>
+            </div>
+            <button
+              onClick={() => navigate("/budgets")}
+              className="text-xs font-bold uppercase tracking-wider bg-amber-500 text-background-dark px-4 py-1.5 rounded-lg hover:bg-amber-400 transition-colors"
+            >
+              Adjust Budget
+            </button>
           </div>
-          <button className="text-xs font-bold uppercase tracking-wider bg-amber-500 text-background-dark px-4 py-1.5 rounded-lg hover:bg-amber-400 transition-colors">
-            Adjust Budget
-          </button>
-        </div>
+        )}
 
-        {/* Placeholder for charts for now to fit in size */}
-        <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-12 lg:col-span-8 glass-card p-6 rounded-2xl flex flex-col items-center justify-center h-64">
-            <p className="text-slate-500 font-medium">
-              Daily Spend Chart Component placeholder
+        {isEmpty ? (
+          /* Empty state */
+          <div className="glass-card rounded-2xl p-12 flex flex-col items-center justify-center gap-4 text-center">
+            <span className="material-icons-outlined text-5xl text-slate-600">
+              receipt_long
+            </span>
+            <h3 className="text-lg font-semibold text-slate-300">
+              No transactions yet
+            </h3>
+            <p className="text-slate-500 text-sm max-w-sm">
+              Import a bank CSV or add transactions manually to see your
+              financial overview here.
             </p>
+            <button
+              onClick={() => navigate("/transactions")}
+              className="mt-2 px-5 py-2 bg-primary rounded-lg text-sm font-semibold hover:bg-primary/80 transition-colors"
+            >
+              Add Transactions
+            </button>
           </div>
-          <div className="col-span-12 lg:col-span-4 glass-card p-6 rounded-2xl flex flex-col items-center justify-center h-64">
-            <p className="text-slate-500 font-medium">
-              Donut Chart Component placeholder
-            </p>
+        ) : (
+          /* Charts */
+          <div className="grid grid-cols-12 gap-6">
+            {/* Daily Spend Bar Chart */}
+            <div className="col-span-12 lg:col-span-8 glass-card p-6 rounded-2xl">
+              <h4 className="text-sm font-semibold text-slate-300 mb-4">
+                Daily Spending — {formatMonthLabel(activeMonth)}
+              </h4>
+              {barData.length === 0 ? (
+                <div className="h-52 flex items-center justify-center text-slate-600 text-sm">
+                  No debit data this month
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart
+                    data={barData}
+                    margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+                  >
+                    <XAxis
+                      dataKey="name"
+                      tick={{ fill: "#64748b", fontSize: 11 }}
+                      axisLine={false}
+                      tickLine={false}
+                      interval="preserveStartEnd"
+                    />
+                    <YAxis
+                      tick={{ fill: "#64748b", fontSize: 11 }}
+                      axisLine={false}
+                      tickLine={false}
+                      tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        background: "#1e293b",
+                        border: "none",
+                        borderRadius: 8,
+                        color: "#f1f5f9",
+                        fontSize: 12,
+                      }}
+                      formatter={(v) => [formatINR(Number(v ?? 0)), "Spent"]}
+                    />
+                    <Bar
+                      dataKey="amount"
+                      fill="#6366f1"
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+
+            {/* Category Donut */}
+            <div className="col-span-12 lg:col-span-4 glass-card p-6 rounded-2xl">
+              <h4 className="text-sm font-semibold text-slate-300 mb-4">
+                Spending by Category
+              </h4>
+              {donutData.length === 0 ? (
+                <div className="h-52 flex items-center justify-center text-slate-600 text-sm">
+                  No category data
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height={220}>
+                  <PieChart>
+                    <Pie
+                      data={donutData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={55}
+                      outerRadius={80}
+                      paddingAngle={3}
+                      dataKey="value"
+                    >
+                      {donutData.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={entry.color}
+                          stroke="none"
+                        />
+                      ))}
+                    </Pie>
+                    <Legend
+                      iconType="circle"
+                      iconSize={8}
+                      formatter={(val) => (
+                        <span style={{ color: "#94a3b8", fontSize: 11 }}>
+                          {val}
+                        </span>
+                      )}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        background: "#1e293b",
+                        border: "none",
+                        borderRadius: 8,
+                        color: "#f1f5f9",
+                        fontSize: 12,
+                      }}
+                      formatter={(v) => [formatINR(Number(v ?? 0)), "Spent"]}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </main>
   );
