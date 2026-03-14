@@ -501,6 +501,8 @@ export default function TransactionsPage() {
   const [page, setPage] = useState(0);
   const [showMonthPicker, setShowMonthPicker] = useState(false);
   const [showCatPicker, setShowCatPicker] = useState(false);
+  const monthBtnRef = useRef<HTMLButtonElement>(null);
+  const catBtnRef = useRef<HTMLButtonElement>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showCsvModal, setShowCsvModal] = useState(false);
   const [editTx, setEditTx] = useState<Transaction | null>(null);
@@ -685,6 +687,7 @@ export default function TransactionsPage() {
             {/* Month picker */}
             <div className="relative">
               <button
+                ref={monthBtnRef}
                 onClick={() => {
                   setShowMonthPicker((v) => !v);
                   setShowCatPicker(false);
@@ -699,23 +702,39 @@ export default function TransactionsPage() {
                   expand_more
                 </span>
               </button>
-              {showMonthPicker && (
-                <div className="absolute top-11 left-0 glass-card rounded-xl border border-white/10 z-50 w-48 py-1 shadow-xl max-h-64 overflow-y-auto">
-                  {MONTHS.map((m) => (
-                    <button
-                      key={m}
-                      onClick={() => {
-                        setActiveMonth(m);
-                        setShowMonthPicker(false);
-                        resetPage();
-                      }}
-                      className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 ${m === activeMonth ? "text-primary font-semibold" : "text-slate-300"}`}
-                    >
-                      {formatMonthLabel(m)}
-                    </button>
-                  ))}
-                </div>
-              )}
+              {showMonthPicker &&
+                (() => {
+                  const rect = monthBtnRef.current?.getBoundingClientRect();
+                  return (
+                    <>
+                      <div
+                        className="fixed inset-0 z-40"
+                        onClick={() => setShowMonthPicker(false)}
+                      />
+                      <div
+                        className="fixed glass-card rounded-xl border border-white/10 z-50 w-48 py-1 shadow-xl max-h-64 overflow-y-auto"
+                        style={{
+                          top: (rect?.bottom ?? 0) + 4,
+                          left: rect?.left ?? 0,
+                        }}
+                      >
+                        {MONTHS.map((m) => (
+                          <button
+                            key={m}
+                            onClick={() => {
+                              setActiveMonth(m);
+                              setShowMonthPicker(false);
+                              resetPage();
+                            }}
+                            className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 ${m === activeMonth ? "text-primary font-semibold" : "text-slate-300"}`}
+                          >
+                            {formatMonthLabel(m)}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  );
+                })()}
             </div>
 
             <div className="h-6 w-px bg-primary/10 mx-1" />
@@ -723,6 +742,7 @@ export default function TransactionsPage() {
             {/* Category picker */}
             <div className="relative">
               <button
+                ref={catBtnRef}
                 onClick={() => {
                   setShowCatPicker((v) => !v);
                   setShowMonthPicker(false);
@@ -740,39 +760,55 @@ export default function TransactionsPage() {
                   expand_more
                 </span>
               </button>
-              {showCatPicker && (
-                <div className="absolute top-11 left-0 glass-card rounded-xl border border-white/10 z-50 w-52 py-1 shadow-xl max-h-64 overflow-y-auto">
-                  <button
-                    onClick={() => {
-                      setCatFilter("all");
-                      setShowCatPicker(false);
-                      resetPage();
-                    }}
-                    className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 ${catFilter === "all" ? "text-primary font-semibold" : "text-slate-300"}`}
-                  >
-                    All Categories
-                  </button>
-                  {DEFAULT_CATEGORIES.map((c) => (
-                    <button
-                      key={c.id}
-                      onClick={() => {
-                        setCatFilter(c.id);
-                        setShowCatPicker(false);
-                        resetPage();
-                      }}
-                      className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 flex items-center gap-2 ${catFilter === c.id ? "text-primary font-semibold" : "text-slate-300"}`}
-                    >
-                      <span
-                        className="material-icons-outlined text-sm"
-                        style={{ color: c.color }}
+              {showCatPicker &&
+                (() => {
+                  const rect = catBtnRef.current?.getBoundingClientRect();
+                  return (
+                    <>
+                      <div
+                        className="fixed inset-0 z-40"
+                        onClick={() => setShowCatPicker(false)}
+                      />
+                      <div
+                        className="fixed glass-card rounded-xl border border-white/10 z-50 w-52 py-1 shadow-xl max-h-64 overflow-y-auto"
+                        style={{
+                          top: (rect?.bottom ?? 0) + 4,
+                          left: rect?.left ?? 0,
+                        }}
                       >
-                        {c.icon}
-                      </span>
-                      {c.name}
-                    </button>
-                  ))}
-                </div>
-              )}
+                        <button
+                          onClick={() => {
+                            setCatFilter("all");
+                            setShowCatPicker(false);
+                            resetPage();
+                          }}
+                          className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 ${catFilter === "all" ? "text-primary font-semibold" : "text-slate-300"}`}
+                        >
+                          All Categories
+                        </button>
+                        {DEFAULT_CATEGORIES.map((c) => (
+                          <button
+                            key={c.id}
+                            onClick={() => {
+                              setCatFilter(c.id);
+                              setShowCatPicker(false);
+                              resetPage();
+                            }}
+                            className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 flex items-center gap-2 ${catFilter === c.id ? "text-primary font-semibold" : "text-slate-300"}`}
+                          >
+                            <span
+                              className="material-icons-outlined text-sm"
+                              style={{ color: c.color }}
+                            >
+                              {c.icon}
+                            </span>
+                            {c.name}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  );
+                })()}
             </div>
 
             <div className="h-6 w-px bg-primary/10 mx-1" />
