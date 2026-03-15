@@ -22,12 +22,14 @@ export function useTransactions(month?: string) {
 
   useEffect(() => {
     if (!user) {
-      setTransactions([]);
-      setLoading(false);
+      // Use queueMicrotask to avoid calling setState synchronously within an effect
+      queueMicrotask(() => {
+        setTransactions([]);
+        setLoading(false);
+      });
       return;
     }
 
-    setLoading(true);
     const ref = collection(db, 'users', user.uid, 'transactions');
 
     let q;

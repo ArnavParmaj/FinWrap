@@ -37,8 +37,8 @@ export default function AuthPage() {
         await createUserWithEmailAndPassword(auth, email, password);
       }
       navigate("/dashboard");
-    } catch (err: any) {
-      setError(err.message || "Authentication failed");
+    } catch (err: unknown) {
+      setError((err as Error).message || "Authentication failed");
     } finally {
       setLoading(false);
     }
@@ -50,8 +50,8 @@ export default function AuthPage() {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
       navigate("/dashboard");
-    } catch (err: any) {
-      setError(err.message || "Google sign-in failed");
+    } catch (err: unknown) {
+      setError((err as Error).message || "Google sign-in failed");
     }
   };
 

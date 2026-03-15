@@ -21,12 +21,14 @@ export function useBudgets(month: string) {
 
   useEffect(() => {
     if (!user) {
-      setBudgets([]);
-      setLoading(false);
+      // Use queueMicrotask to avoid calling setState synchronously within an effect
+      queueMicrotask(() => {
+        setBudgets([]);
+        setLoading(false);
+      });
       return;
     }
 
-    setLoading(true);
     const ref = collection(db, 'users', user.uid, 'budgets');
     const q = query(ref, where('month', '==', month));
 

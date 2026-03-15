@@ -430,13 +430,10 @@ function CsvImportModal({ onClose, onImport }: CsvModalProps) {
   );
 }
 
-// ── ROW ACTION MENU ───────────────────────────────────────────────────────────
 function RowMenu({
-  tx,
   onEdit,
   onDelete,
 }: {
-  tx: Transaction;
   onEdit: () => void;
   onDelete: () => void;
 }) {
@@ -684,7 +681,7 @@ export default function TransactionsPage() {
                     className="fixed inset-0 z-40"
                     onClick={() => setShowMonthPicker(false)}
                   />
-                  <div className="absolute top-11 left-0 glass-card rounded-xl border border-white/10 z-50 w-48 py-1 shadow-xl max-h-64 overflow-y-auto">
+                  <div className="absolute top-11 left-0 glass-card rounded-xl border border-white/10 z-50 w-48 py-1 shadow-2xl max-h-64 overflow-y-auto">
                     {MONTHS.map((m) => (
                       <button
                         key={m}
@@ -731,7 +728,7 @@ export default function TransactionsPage() {
                     className="fixed inset-0 z-40"
                     onClick={() => setShowCatPicker(false)}
                   />
-                  <div className="absolute top-11 left-0 glass-card rounded-xl border border-white/10 z-50 w-52 py-1 shadow-xl max-h-64 overflow-y-auto">
+                  <div className="absolute top-11 left-0 glass-card rounded-xl border border-white/10 z-50 w-52 py-1 shadow-2xl max-h-64 overflow-y-auto">
                     <button
                       onClick={() => {
                         setCatFilter("all");
@@ -892,7 +889,6 @@ export default function TransactionsPage() {
                         </td>
                         <td className="px-6 py-4 text-center">
                           <RowMenu
-                            tx={tx}
                             onEdit={() => setEditTx(tx)}
                             onDelete={() => removeTransaction(tx.id)}
                           />
