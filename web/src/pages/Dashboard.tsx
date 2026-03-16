@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   BarChart,
   Bar,
@@ -15,7 +15,6 @@ import {
 import { useTransactions } from "../hooks/useTransactions";
 import { useBudgets } from "../hooks/useBudgets";
 import { useAppStore } from "../store/useAppStore";
-import { useUserStore } from "../store/useUserStore";
 import {
   computeDashboardStats,
   pctChange,
@@ -98,8 +97,6 @@ const DONUT_COLORS = [
 ];
 
 export default function DashboardPage() {
-  const navigate = useNavigate();
-  const { user } = useUserStore();
   const { activeMonth, setActiveMonth } = useAppStore();
   const prevMonth = getPrevMonth(activeMonth);
 
@@ -154,9 +151,9 @@ export default function DashboardPage() {
 
   return (
     <main className="flex-1 flex flex-col overflow-y-auto">
-      {/* Top Bar */}
-      <header className="h-16 glass-card border-b border-white/5 flex items-center justify-between px-8 flex-shrink-0 sticky top-0 z-10">
-        <div className="flex items-center gap-6">
+      <div className="p-8 space-y-6">
+        {/* Month Selector */}
+        <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold tracking-tight text-slate-100">
             Overview
           </h2>
@@ -171,54 +168,27 @@ export default function DashboardPage() {
               </span>
             </button>
             {showMonthPicker && (
-              <div className="absolute top-10 left-0 glass-card rounded-xl border border-white/10 z-50 w-48 py-1 shadow-xl">
-                {MONTHS.map((m) => (
-                  <button
-                    key={m}
-                    onClick={() => {
-                      setActiveMonth(m);
-                      setShowMonthPicker(false);
-                    }}
-                    className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 ${m === activeMonth ? "text-primary font-semibold" : "text-slate-300"}`}
-                  >
-                    {formatMonthLabel(m)}
-                  </button>
-                ))}
-              </div>
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setShowMonthPicker(false)} />
+                <div className="absolute top-10 right-0 rounded-xl border border-white/10 z-50 w-48 py-1 shadow-2xl" style={{ background: '#0f172a' }}>
+                  {MONTHS.map((m) => (
+                    <button
+                      key={m}
+                      onClick={() => {
+                        setActiveMonth(m);
+                        setShowMonthPicker(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 ${m === activeMonth ? "text-primary font-semibold" : "text-slate-300"}`}
+                    >
+                      {formatMonthLabel(m)}
+                    </button>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="relative w-64">
-            <span className="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg">
-              search
-            </span>
-            <input
-              className="w-full bg-white/5 border-none rounded-full pl-10 pr-4 py-2 text-sm focus:ring-1 focus:ring-primary placeholder:text-slate-500"
-              placeholder="Search data..."
-              type="text"
-            />
-          </div>
-          <button className="size-10 glass-card rounded-full flex items-center justify-center hover:bg-white/10">
-            <span className="material-icons-outlined text-slate-400">
-              notifications
-            </span>
-          </button>
-          <button
-            onClick={() => navigate("/settings")}
-            className="size-10 glass-card rounded-full flex items-center justify-center hover:bg-white/10"
-          >
-            <span className="material-icons-outlined text-slate-400">
-              settings
-            </span>
-          </button>
-          <div className="size-10 rounded-full bg-slate-800 border-2 border-primary/20 overflow-hidden flex items-center justify-center text-sm font-bold text-slate-200">
-            {user?.name?.charAt(0).toUpperCase() ?? "U"}
-          </div>
-        </div>
-      </header>
 
-      <div className="p-8 space-y-6">
         {/* Stats Cards */}
         {loadingCurrent ? (
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -292,12 +262,12 @@ export default function DashboardPage() {
                 {formatMonthLabel(activeMonth)}.
               </p>
             </div>
-            <button
-              onClick={() => navigate("/budgets")}
-              className="text-xs font-bold uppercase tracking-wider bg-amber-500 text-background-dark px-4 py-1.5 rounded-lg hover:bg-amber-400 transition-colors"
+            <Link
+              to="/budgets"
+              className="text-xs font-bold uppercase tracking-wider bg-amber-500 text-background-dark px-4 py-1.5 rounded-lg hover:bg-amber-400 transition-colors inline-block"
             >
               Adjust Budget
-            </button>
+            </Link>
           </div>
         )}
 
@@ -314,12 +284,12 @@ export default function DashboardPage() {
               Import a bank CSV or add transactions manually to see your
               financial overview here.
             </p>
-            <button
-              onClick={() => navigate("/transactions")}
-              className="mt-2 px-5 py-2 bg-primary rounded-lg text-sm font-semibold hover:bg-primary/80 transition-colors"
+            <Link
+              to="/transactions"
+              className="mt-2 px-5 py-2 bg-primary rounded-lg text-sm font-semibold hover:bg-primary/80 transition-colors inline-block"
             >
               Add Transactions
-            </button>
+            </Link>
           </div>
         ) : (
           /* Charts */

@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../lib/firebase";
 import { useUserStore } from "../store/useUserStore";
@@ -34,7 +35,11 @@ export default function AuthPage() {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
       } else {
-        await createUserWithEmailAndPassword(auth, email, password);
+        const { user: newUser } = await createUserWithEmailAndPassword(auth, email, password);
+        // Save the user's name to their Firebase profile
+        if (name.trim()) {
+          await updateProfile(newUser, { displayName: name.trim() });
+        }
       }
       navigate("/dashboard");
     } catch (err: unknown) {

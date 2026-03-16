@@ -6,6 +6,7 @@ import {
   onSnapshot,
   addDoc,
   deleteDoc,
+  updateDoc,
   doc,
   orderBy,
   Timestamp
@@ -91,5 +92,13 @@ export function useTransactions(month?: string) {
     [user]
   );
 
-  return { transactions, loading, error, addTransaction, removeTransaction };
+  const updateTransaction = useCallback(
+    async (txId: string, changes: Partial<Omit<Transaction, 'id' | 'createdAt'>>) => {
+      if (!user) return;
+      await updateDoc(doc(db, 'users', user.uid, 'transactions', txId), changes);
+    },
+    [user]
+  );
+
+  return { transactions, loading, error, addTransaction, removeTransaction, updateTransaction };
 }

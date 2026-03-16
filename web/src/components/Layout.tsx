@@ -1,4 +1,5 @@
 import { useLocation, Outlet, Link } from "react-router-dom";
+import TopNav from "./TopNav";
 
 export default function Layout() {
   const location = useLocation();
@@ -64,16 +65,15 @@ export default function Layout() {
             <span className="text-sm">Wrapped</span>
           </Link>
         </nav>
-        <div className="p-4 border-t border-white/5">
-          <button className="w-full bg-primary/20 hover:bg-primary/30 text-primary py-2.5 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-all">
-            <span className="material-icons-outlined text-sm">stars</span>
-            Premium Plan
-          </button>
-        </div>
       </aside>
 
       {/* Main Content Area */}
-      <Outlet />
+      <div className="flex-1 flex flex-col h-full bg-background-dark overflow-hidden">
+        <TopNav />
+        <div className="flex-1 overflow-auto">
+          <Outlet />
+        </div>
+      </div>
     </div>
   );
 }

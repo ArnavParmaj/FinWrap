@@ -2,7 +2,6 @@ import { useState, useMemo, useRef } from "react";
 import Papa from "papaparse";
 import { useTransactions } from "../hooks/useTransactions";
 import { useAppStore } from "../store/useAppStore";
-import { useUserStore } from "../store/useUserStore";
 import {
   formatMonthLabel,
   formatINR,
@@ -476,24 +475,121 @@ function RowMenu({
   );
 }
 
+// ── DELETE CONFIRMATION MODAL ─────────────────────────────────────────────────
+interface DeleteConfirmModalProps {
+  transaction: Transaction | null;
+  onClose: () => void;
+  onConfirm: () => Promise<void>;
+}
+
+function DeleteConfirmModal({ transaction, onClose, onConfirm }: DeleteConfirmModalProps) {
+  const [deleting, setDeleting] = useState(false);
+
+  if (!transaction) return null;
+
+  const handleConfirm = async () => {
+    setDeleting(true);
+    try {
+      await onConfirm();
+      onClose();
+    } catch (e) {
+      console.error("Failed to delete:", e);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}
+    >
+      <div className="glass-card rounded-2xl p-6 w-full max-w-sm shadow-2xl border border-white/10">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-12 h-12 rounded-full bg-rose-500/20 flex items-center justify-center">
+            <span className="material-icons-outlined text-rose-500 text-2xl">delete_forever</span>
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-slate-100">Delete Transaction?</h3>
+            <p className="text-sm text-slate-400">This action cannot be undone.</p>
+          </div>
+        </div>
+
+        <div className="bg-white/5 rounded-xl p-4 mb-6">
+          <div className="flex items-center gap-3">
+            <div
+              className="w-10 h-10 rounded-lg flex items-center justify-center"
+              style={{
+                background:
+                  getCategoryInfo(transaction.categoryId).color + "20",
+              }}
+            >
+              <span
+                className="material-icons-outlined"
+                style={{ color: getCategoryInfo(transaction.categoryId).color }}
+              >
+                {getCategoryInfo(transaction.categoryId).icon}
+              </span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-slate-100 truncate">
+                {transaction.merchant}
+              </p>
+              <p className="text-xs text-slate-500">
+                {transaction.type === "credit" ? "+" : "-"}
+                {formatINR(transaction.amount)} · {transaction.date}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex gap-3">
+          <button
+            onClick={onClose}
+            disabled={deleting}
+            className="flex-1 py-2 rounded-lg bg-white/5 text-slate-400 text-sm font-semibold hover:bg-white/10 disabled:opacity-50"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleConfirm}
+            disabled={deleting}
+            className="flex-1 py-2 rounded-lg bg-rose-500 text-white text-sm font-bold hover:bg-rose-600 disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {deleting ? (
+              <>
+                <span className="material-icons-outlined text-sm animate-spin">refresh</span>
+                Deleting...
+              </>
+            ) : (
+              "Delete"
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── MAIN PAGE ─────────────────────────────────────────────────────────────────
 type TypeFilter = "all" | "debit" | "credit";
 
 export default function TransactionsPage() {
-  const { user } = useUserStore();
   const { activeMonth, setActiveMonth } = useAppStore();
 
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [catFilter, setCatFilter] = useState("all");
-  const [search, setSearch] = useState("");
+  // The search bar is now in TopNav, so local search filter is disabled for now.
+  const search = ""; 
   const [page, setPage] = useState(0);
   const [showMonthPicker, setShowMonthPicker] = useState(false);
   const [showCatPicker, setShowCatPicker] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showCsvModal, setShowCsvModal] = useState(false);
   const [editTx, setEditTx] = useState<Transaction | null>(null);
+  const [deleteTx, setDeleteTx] = useState<Transaction | null>(null);
 
-  const { transactions, loading, addTransaction, removeTransaction } =
+  const { transactions, loading, addTransaction, removeTransaction, updateTransaction } =
     useTransactions(activeMonth);
 
   const filtered = useMemo(() => {
@@ -538,8 +634,7 @@ export default function TransactionsPage() {
     >,
   ) => {
     if (!editTx) return;
-    await removeTransaction(editTx.id);
-    await addTransaction({
+    await updateTransaction(editTx.id, {
       ...data,
       isRecurring: editTx.isRecurring,
       accountId: editTx.accountId,
@@ -590,40 +685,16 @@ export default function TransactionsPage() {
           onImport={handleCsvImport}
         />
       )}
-
+      {deleteTx && (
+        <DeleteConfirmModal
+          transaction={deleteTx}
+          onClose={() => setDeleteTx(null)}
+          onConfirm={async () => {
+            await removeTransaction(deleteTx.id);
+          }}
+        />
+      )}
       <main className="flex-1 flex flex-col overflow-hidden">
-        {/* ── Top Bar (sticky) ── */}
-        <header className="h-16 border-b border-primary/10 flex items-center justify-between px-8 bg-background-dark/50 backdrop-blur-md z-10 flex-shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="text-slate-400 text-sm">Finances</span>
-            <span className="material-icons-outlined text-slate-400 text-sm">
-              chevron_right
-            </span>
-            <span className="text-sm font-semibold text-slate-100">
-              Transactions
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <span className="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">
-                search
-              </span>
-              <input
-                className="bg-primary/5 border-none rounded-lg pl-10 pr-4 py-1.5 text-sm w-64 focus:ring-1 focus:ring-primary placeholder:text-slate-500"
-                placeholder="Quick search..."
-                type="text"
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  resetPage();
-                }}
-              />
-            </div>
-            <div className="size-8 rounded-full bg-primary/20 overflow-hidden border border-primary/20 flex items-center justify-center text-sm font-bold text-slate-200">
-              {user?.name?.charAt(0).toUpperCase() ?? "U"}
-            </div>
-          </div>
-        </header>
 
         {/* ── Page Header — OUTSIDE scroll, so dropdowns aren't clipped ── */}
         <div className="px-8 pt-8 pb-4 flex-shrink-0 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -890,7 +961,7 @@ export default function TransactionsPage() {
                         <td className="px-6 py-4 text-center">
                           <RowMenu
                             onEdit={() => setEditTx(tx)}
-                            onDelete={() => removeTransaction(tx.id)}
+                            onDelete={() => setDeleteTx(tx)}
                           />
                         </td>
                       </tr>
