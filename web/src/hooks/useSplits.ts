@@ -5,6 +5,7 @@ import {
   onSnapshot,
   addDoc,
   deleteDoc,
+  updateDoc,
   doc,
   Timestamp,
   orderBy
@@ -89,7 +90,16 @@ export function useSplits() {
   const removeGroup = useCallback(async (id: string) => {
      if (!user) return;
      await deleteDoc(doc(db, 'users', user.uid, 'splitGroups', id));
-     // Optional: cleanup cascading
+  }, [user]);
+
+  const updateExpense = useCallback(async (id: string, data: Partial<Omit<SplitExpense, 'id' | 'createdAt' | 'userId'>>) => {
+    if (!user) return;
+    await updateDoc(doc(db, 'users', user.uid, 'splitExpenses', id), data);
+  }, [user]);
+
+  const deleteExpense = useCallback(async (id: string) => {
+    if (!user) return;
+    await deleteDoc(doc(db, 'users', user.uid, 'splitExpenses', id));
   }, [user]);
 
   return {
@@ -100,6 +110,8 @@ export function useSplits() {
     addGroup,
     addExpense,
     addSettlement,
-    removeGroup
+    removeGroup,
+    updateExpense,
+    deleteExpense
   };
 }

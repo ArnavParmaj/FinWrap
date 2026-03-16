@@ -136,3 +136,35 @@
 12:07:02 AM [vite] (client) hmr update /src/pages/Budgets.tsx, /src/index.css
 12:13:23 AM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css
 12:13:48 AM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css
+12:18:00 AM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css
+12:18:46 AM [vite] (client) hmr update /src/pages/Recurring.tsx, /src/index.css
+12:19:05 AM [vite] (client) hmr update /src/pages/Recurring.tsx, /src/index.css
+12:24:30 AM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
+12:24:47 AM [vite] (client) hmr update /src/index.css, /src/pages/Splits.tsx
+12:24:48 AM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
+12:33:33 AM [vite] .env changed, restarting server...
+12:33:33 AM [vite] server restarted.
+12:35:21 AM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
+12:47:43 AM [vite] (client) hmr update /src/index.css, /src/pages/Splits.tsx
+12:48:59 AM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
+12:48:59 AM [vite] Internal server error: Transform failed with 1 error:
+
+[31m[PARSE_ERROR] Error:[0m Unexpected token. Did you mean `{'>'}` or `&gt;`?
+     [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/pages/Splits.tsx:286:35 [38;5;246m][0m
+     [38;5;246m│[0m
+ [38;5;246m286 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m<[0m[38;5;249m/[0m[38;5;249md[0m[38;5;249mi[0m[38;5;249mv[0m[38;5;249m>[0m[38;5;249m>[0m
+ [38;5;240m    │[0m                                   │ 
+ [38;5;240m    │[0m                                   ╰─ 
+[38;5;246m─────╯[0m
+
+  Plugin: vite:oxc
+  File: /Users/arnavparmaj/Projects/FinWrap/web/src/pages/Splits.tsx
+      at transformWithOxc (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:3719:19)
+      at TransformPluginContext.transform (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:3795:26)
+      at EnvironmentPluginContainer.transform (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:29998:51)
+      at async loadAndTransform (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:24133:26)
+      at async viteTransformMiddleware (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:24941:20)
+12:49:09 AM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
+12:52:15 AM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
+12:57:46 AM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
+1:03:09 AM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css

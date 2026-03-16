@@ -120,13 +120,20 @@ export type SplitGroup = {
   createdAt: string;
 };
 
+export type SplitPayer = { memberName: string; amountPaid: number };
+export type SplitOwer = { memberName: string; amountOwed: number; percentage?: number; shares?: number };
+
 export type SplitExpense = {
   id: string;
   groupId: string;
   description: string;
   totalAmount: number;
-  paidBy: string; // name of the member, or 'You'
-  splitEqually: boolean;
+  category: string;
+  notes?: string;
+  receiptUrl?: string; // For Pro tier OCR receipts
+  payers: SplitPayer[]; 
+  splitType: 'equal' | 'exact' | 'percentage' | 'shares' | 'itemized';
+  owers: SplitOwer[]; 
   date: string;
   userId: string;
   createdAt: string;
