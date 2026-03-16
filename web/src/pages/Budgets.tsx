@@ -3,7 +3,8 @@ import { useBudgets } from "../hooks/useBudgets";
 import { useAppStore } from "../store/useAppStore";
 import { useUserStore } from "../store/useUserStore";
 import { formatINR, formatMonthLabel } from "../lib/dashboardStats";
-import type { Budget } from "../types";
+import { useTransactions } from "../hooks/useTransactions";
+import type { Budget, Transaction } from "../types";
 
 // Default categories for budget creation
 const DEFAULT_CATEGORIES = [
@@ -146,7 +147,7 @@ function AddBudgetModal({ onClose, onSave, month }: AddBudgetModalProps) {
   );
 }
 
-function BudgetCard({ budget }: { budget: Budget }) {
+function BudgetCard({ budget, onClick }: { budget: Budget; onClick: () => void }) {
   const percentUsed = budget.amount > 0 ? (budget.spent / budget.amount) * 100 : 0;
   const remaining = budget.amount - budget.spent;
   const isOverBudget = remaining < 0;
@@ -167,7 +168,8 @@ function BudgetCard({ budget }: { budget: Budget }) {
 
   return (
     <div
-      className={`glass-card rounded-2xl p-6 flex flex-col gap-5 hover:scale-[1.02] transition-transform duration-300 ${
+      onClick={onClick}
+      className={`glass-card rounded-2xl p-6 flex flex-col gap-5 hover:scale-[1.02] cursor-pointer transition-transform duration-300 ${
         isOverBudget ? "border border-rose-500/40" : ""
       }`}
     >
@@ -226,12 +228,24 @@ const MONTHS = Array.from({ length: 12 }, (_, i) => {
 export default function BudgetsPage() {
   const { user } = useUserStore();
   const { activeMonth, setActiveMonth } = useAppStore();
-  const { budgets, loading, addBudget } = useBudgets(activeMonth);
+  const { budgets, loading: budgetsLoading, addBudget } = useBudgets(activeMonth);
+  const { transactions, loading: txLoading } = useTransactions(activeMonth);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showMonthPicker, setShowMonthPicker] = useState(false);
+  const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
 
-  const totalBudget = useMemo(() => budgets.reduce((sum, b) => sum + b.amount, 0), [budgets]);
-  const totalSpent = useMemo(() => budgets.reduce((sum, b) => sum + b.spent, 0), [budgets]);
+  const dynamicBudgets = useMemo(() => {
+    return budgets.map((b) => {
+      const categoryTxs = transactions.filter(
+        (t) => t.categoryId === b.categoryId && t.type === "debit"
+      );
+      const spent = categoryTxs.reduce((sum, t) => sum + t.amount, 0);
+      return { ...b, spent };
+    });
+  }, [budgets, transactions]);
+
+  const totalBudget = useMemo(() => dynamicBudgets.reduce((sum, b) => sum + b.amount, 0), [dynamicBudgets]);
+  const totalSpent = useMemo(() => dynamicBudgets.reduce((sum, b) => sum + b.spent, 0), [dynamicBudgets]);
   const totalRemaining = totalBudget - totalSpent;
 
   const handleAddBudget = async (
@@ -296,7 +310,7 @@ export default function BudgetsPage() {
       </div>
 
       {/* Budget Summary */}
-      {budgets.length > 0 && (
+      {dynamicBudgets.length > 0 && (
         <div className="px-8 pb-6">
           <div className="glass-card rounded-2xl p-6 border-primary/20 bg-primary/5 flex flex-col md:flex-row items-center gap-6">
             <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary shrink-0">
@@ -330,12 +344,12 @@ export default function BudgetsPage() {
 
       {/* Budget Grid */}
       <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {loading ? (
+        {budgetsLoading || txLoading ? (
           // Loading skeletons
           Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="glass-card rounded-2xl p-6 h-64 animate-pulse bg-white/5" />
           ))
-        ) : budgets.length === 0 ? (
+        ) : dynamicBudgets.length === 0 ? (
           // Empty state
           <div className="col-span-full glass-card rounded-2xl p-12 flex flex-col items-center justify-center gap-4 text-center">
             <span className="material-icons-outlined text-5xl text-slate-600">account_balance_wallet</span>
@@ -352,12 +366,18 @@ export default function BudgetsPage() {
           </div>
         ) : (
           // Budget cards
-          budgets.map((budget) => <BudgetCard key={budget.id} budget={budget} />)
+          dynamicBudgets.map((budget) => (
+            <BudgetCard
+              key={budget.id}
+              budget={budget}
+              onClick={() => setSelectedBudget(budget)}
+            />
+          ))
         )}
       </div>
 
       {/* Footer info */}
-      {budgets.length > 0 && (
+      {dynamicBudgets.length > 0 && (
         <div className="px-8 pb-12">
           <div className="glass-card rounded-2xl p-6 border-primary/20 bg-primary/5 flex items-center gap-6">
             <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary">
@@ -381,6 +401,115 @@ export default function BudgetsPage() {
           month={activeMonth}
         />
       )}
+
+      {/* Budget Details Modal */}
+      {selectedBudget && (
+        <BudgetDetailsModal
+          budget={selectedBudget}
+          transactions={transactions.filter((t) => t.categoryId === selectedBudget.categoryId && t.type === "debit")}
+          onClose={() => setSelectedBudget(null)}
+        />
+      )}
     </main>
+  );
+}
+
+function BudgetDetailsModal({
+  budget,
+  transactions,
+  onClose,
+}: {
+  budget: Budget;
+  transactions: Transaction[];
+  onClose: () => void;
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background-dark/80 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="glass-card w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden border border-white/10 flex flex-col max-h-[85vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="p-6 border-b border-white/10 flex flex-col gap-4 bg-white/5 relative shrink-0">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center"
+                style={{ background: budget.categoryColor + "20", color: budget.categoryColor }}
+              >
+                <span className="material-icons-outlined text-2xl">{budget.categoryIcon}</span>
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-slate-100">{budget.categoryName} Details</h3>
+                <p className="text-sm text-slate-400">
+                  {formatMonthLabel(budget.month)} • {transactions.length} Transactions
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={onClose}
+              className="size-8 flex items-center justify-center rounded-full hover:bg-white/10"
+            >
+              <span className="material-icons-outlined text-lg text-slate-400">close</span>
+            </button>
+          </div>
+          <div className="flex items-center gap-6 mt-2 pb-2">
+            <div>
+              <p className="text-xs uppercase font-bold text-slate-500 mb-1">Spent</p>
+              <p className="text-xl font-black text-white">{formatINR(budget.spent)}</p>
+            </div>
+            <div className="w-px h-8 bg-white/10" />
+            <div>
+              <p className="text-xs uppercase font-bold text-slate-500 mb-1">Total Budget</p>
+              <p className="text-xl font-black text-slate-300">{formatINR(budget.amount)}</p>
+            </div>
+            <div className="w-px h-8 bg-white/10" />
+            <div>
+              <p className="text-xs uppercase font-bold text-slate-500 mb-1">Remaining</p>
+              <p
+                className={`text-xl font-black ${
+                  budget.amount - budget.spent >= 0 ? "text-emerald-400" : "text-rose-400"
+                }`}
+              >
+                {formatINR(budget.amount - budget.spent)}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-6 overflow-y-auto flex-1">
+          {transactions.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-48 text-slate-500">
+              <span className="material-icons-outlined text-4xl mb-3">receipt_long</span>
+              <p>No transactions found for this budget.</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {transactions.map((tx) => (
+                <div
+                  key={tx.id}
+                  className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300">
+                      <span className="material-icons-outlined text-[18px]">
+                        {tx.source === "csv" ? "upload_file" : "edit_note"}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-200">{tx.merchant}</p>
+                      <p className="text-xs text-slate-500">{tx.date}</p>
+                    </div>
+                  </div>
+                  <p className="font-bold text-slate-100">{formatINR(tx.amount)}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

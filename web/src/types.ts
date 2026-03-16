@@ -63,6 +63,7 @@ export type Goal = {
   icon: string;
   color: string;
   targetDate: string;
+  isArchived?: boolean;
   userId: string;
   createdAt: string;
 };

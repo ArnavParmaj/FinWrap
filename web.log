@@ -133,3 +133,6 @@
 12:00:02 AM [vite] (client) hmr update /src/pages/Recurring.tsx, /src/index.css
 12:00:02 AM [vite] (client) hmr update /src/pages/Wrapped.tsx, /src/index.css
 12:00:02 AM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
+12:07:02 AM [vite] (client) hmr update /src/pages/Budgets.tsx, /src/index.css
+12:13:23 AM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css
+12:13:48 AM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css
