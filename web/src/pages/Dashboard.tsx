@@ -170,7 +170,7 @@ export default function DashboardPage() {
             {showMonthPicker && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setShowMonthPicker(false)} />
-                <div className="absolute top-10 right-0 rounded-xl border border-white/10 z-50 w-48 py-1 shadow-2xl" style={{ background: '#0f172a' }}>
+                <div className="absolute top-10 right-0 glass-dropdown rounded-xl border border-white/10 z-50 w-48 py-1 shadow-2xl">
                   {MONTHS.map((m) => (
                     <button
                       key={m}

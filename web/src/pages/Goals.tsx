@@ -8,7 +8,9 @@ export default function GoalsPage() {
             <h2 className="text-xl font-bold">Goals Overview</h2>
             <div className="h-4 w-px bg-slate-700"></div>
             <div className="relative">
-              <span className="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">search</span>
+              <span className="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">
+                search
+              </span>
               <input
                 className="bg-slate-900/50 border-slate-800 rounded-lg pl-9 pr-4 py-1.5 text-sm focus:ring-primary focus:border-primary w-64"
                 placeholder="Search goals..."
@@ -21,21 +23,8 @@ export default function GoalsPage() {
               <span className="material-icons-outlined">notifications</span>
             </button>
             <div className="flex items-center gap-3 pl-4 border-l border-slate-800">
-              <div className="text-right">
-                <p className="text-sm font-semibold leading-none">
-                  Alex Rivera
-                </p>
-                <p className="text-[10px] text-slate-500 mt-1 uppercase">
-                  Premium Member
-                </p>
-              </div>
-              <div className="size-9 rounded-full bg-slate-800 border border-slate-700 overflow-hidden">
-                <img
-                  alt="Avatar"
-                  className="w-full h-full object-cover"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAK7KP1KjUsd36jahekQUwfP2m8cZKpy6cCGKbt4Y_aiZBbfaBJxp6mJr-PvahuSCecmMShF6nIdoAktYR4-aP3vq9nyfcwmdTa9USFdlxanuD_JHwvaKGIzDJWh0Ue38UkArIpdRQbsSyMS941SIwIIBTGEoY5BBbGcbtn3up7m0i184GfSRH5d8s3AzIrqUsVrvwiPonmelnYIUxAiNk1jVnB-eLKpI80NS2QyVA27Uc_uJ8qe5zkch6GnsAXB87hkHSaOzT-mI"
-                />
-              </div>
+              <div className="text-right"></div>
+              <div className="size-9 rounded-full bg-slate-800 border border-slate-700 overflow-hidden"></div>
             </div>
           </div>
         </header>
@@ -53,7 +42,9 @@ export default function GoalsPage() {
               </p>
             </div>
             <button className="bg-primary text-white px-6 py-2.5 rounded-lg font-bold flex items-center gap-2 hover:bg-primary/90 transition-all shadow-lg shadow-primary/25">
-              <span className="material-icons-outlined text-lg">add_circle</span>
+              <span className="material-icons-outlined text-lg">
+                add_circle
+              </span>
               Create New Goal
             </button>
           </div>
@@ -332,7 +323,9 @@ export default function GoalsPage() {
                 <p className="text-sm font-semibold text-primary">
                   Live Calculation Preview
                 </p>
-                <span className="material-icons-outlined text-primary text-sm">calculate</span>
+                <span className="material-icons-outlined text-primary text-sm">
+                  calculate
+                </span>
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">

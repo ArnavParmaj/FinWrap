@@ -448,7 +448,7 @@ function RowMenu({
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-6 z-50 glass-card rounded-xl border border-white/10 shadow-xl py-1 w-32">
+          <div className="absolute right-0 top-6 z-50 glass-dropdown rounded-xl border border-white/10 shadow-xl py-1 w-32">
             <button
               onClick={() => {
                 onEdit();
@@ -752,7 +752,7 @@ export default function TransactionsPage() {
                     className="fixed inset-0 z-40"
                     onClick={() => setShowMonthPicker(false)}
                   />
-                  <div className="absolute top-11 left-0 glass-card rounded-xl border border-white/10 z-50 w-48 py-1 shadow-2xl max-h-64 overflow-y-auto">
+                  <div className="absolute top-11 left-0 glass-dropdown rounded-xl border border-white/10 z-50 w-48 py-1 shadow-2xl max-h-64 overflow-y-auto">
                     {MONTHS.map((m) => (
                       <button
                         key={m}
@@ -799,7 +799,7 @@ export default function TransactionsPage() {
                     className="fixed inset-0 z-40"
                     onClick={() => setShowCatPicker(false)}
                   />
-                  <div className="absolute top-11 left-0 glass-card rounded-xl border border-white/10 z-50 w-52 py-1 shadow-2xl max-h-64 overflow-y-auto">
+                  <div className="absolute top-11 left-0 glass-dropdown rounded-xl border border-white/10 z-50 w-52 py-1 shadow-2xl max-h-64 overflow-y-auto">
                     <button
                       onClick={() => {
                         setCatFilter("all");

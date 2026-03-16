@@ -301,7 +301,7 @@ export default function BudgetsPage() {
           {showMonthPicker && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setShowMonthPicker(false)} />
-              <div className="absolute top-14 left-8 glass-card rounded-xl border border-white/10 z-50 w-48 py-1 shadow-2xl max-h-64 overflow-y-auto">
+              <div className="absolute top-14 left-8 glass-dropdown rounded-xl border border-white/10 z-50 w-48 py-1 shadow-2xl max-h-64 overflow-y-auto">
                 {MONTHS.map((m) => (
                   <button
                     key={m}

@@ -63,3 +63,11 @@
 11:45:00 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
 11:45:17 PM [vite] (client) hmr update /src/pages/Budgets.tsx, /src/index.css
 11:46:27 PM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
+11:48:38 PM [vite] (client) hmr update /src/index.css
+11:48:49 PM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
+11:49:18 PM [vite] (client) hmr update /src/components/TopNav.tsx, /src/index.css
+11:49:18 PM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css
+11:49:31 PM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css
+11:49:42 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+11:49:45 PM [vite] (client) hmr update /src/pages/Budgets.tsx, /src/index.css
+11:49:53 PM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css

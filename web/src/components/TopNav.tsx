@@ -84,7 +84,7 @@ export default function TopNav() {
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 top-12 w-56 rounded-xl border border-white/10 shadow-2xl py-2 z-50 flex flex-col" style={{ background: '#0f172a' }}>
+            <div className="absolute right-0 top-12 w-56 glass-dropdown rounded-xl border border-white/10 shadow-2xl py-2 z-50 flex flex-col">
               <div className="px-4 py-3 border-b border-white/5 mb-1">
                 <p className="text-sm font-bold text-slate-100 truncate">{user?.name || 'User'}</p>
                 <p className="text-xs text-slate-400 truncate">{user?.email || 'No email'}</p>
