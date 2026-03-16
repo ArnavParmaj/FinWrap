@@ -1,334 +1,450 @@
+import { useState, useMemo } from "react";
+import { useSplits } from "../hooks/useSplits";
+import { useTransactions } from "../hooks/useTransactions";
+import { formatINR } from "../lib/dashboardStats";
+import type { SplitGroup } from "../types";
+
 export default function SplitsPage() {
+  const { groups, expenses, settlements, addGroup, addExpense, addSettlement } = useSplits();
+  const { addTransaction } = useTransactions();
+  
+  const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
+  const [showAddGroup, setShowAddGroup] = useState(false);
+  const [showAddExpense, setShowAddExpense] = useState(false);
+  
+  const activeGroup = useMemo(() => groups.find(g => g.id === activeGroupId) || groups[0], [groups, activeGroupId]);
+
+  // Handle active group selection if none selected but groups exist
+  if (!activeGroupId && groups.length > 0) setActiveGroupId(groups[0].id);
+
+  // Balances calculation for the active group
+  const groupExpenses = useMemo(() => expenses.filter(e => e.groupId === activeGroup?.id), [expenses, activeGroup]);
+  const groupSettlements = useMemo(() => settlements.filter(s => s.groupId === activeGroup?.id), [settlements, activeGroup]);
+
+  const balances = useMemo(() => {
+    if (!activeGroup) return {};
+    const members = ['You', ...activeGroup.members.map(m => m.name)];
+    const bals: Record<string, number> = {};
+    members.forEach(m => bals[m] = 0);
+
+    groupExpenses.forEach(exp => {
+      const share = exp.totalAmount / members.length;
+      members.forEach(m => bals[m] -= share);
+      if (bals[exp.paidBy] !== undefined) {
+        bals[exp.paidBy] += exp.totalAmount;
+      }
+    });
+
+    groupSettlements.forEach(settle => {
+      if (bals[settle.from] !== undefined) bals[settle.from] += settle.amount;
+      if (bals[settle.to] !== undefined) bals[settle.to] -= settle.amount;
+    });
+
+    return bals;
+  }, [activeGroup, groupExpenses, groupSettlements]);
+
+  const myBalance = balances['You'] || 0;
+  const isOwed = myBalance > 0;
+  const iOwe = myBalance < 0;
+
+  const handleSettleUp = async (memberName: string, amount: number, direction: 'i_owe' | 'they_owe') => {
+    if (!activeGroup) return;
+    
+    // Create settlement
+    const from = direction === 'i_owe' ? 'You' : memberName;
+    const to = direction === 'i_owe' ? memberName : 'You';
+    
+    await addSettlement({
+      groupId: activeGroup.id,
+      from,
+      to,
+      amount,
+      date: new Date().toISOString().split('T')[0]
+    });
+
+    // Mirror to transactions to maintain dashboard integrity
+    if (direction === 'i_owe') {
+      // You paid someone back -> debit
+      await addTransaction({
+        amount,
+        type: 'debit',
+        categoryId: 'splits',
+        merchant: `Settled up with ${memberName}`,
+        date: new Date().toISOString().split('T')[0],
+        isRecurring: false,
+        accountId: 'default',
+        source: 'manual'
+      });
+    } else {
+      // Someone paid you back -> credit
+      await addTransaction({
+        amount,
+        type: 'credit',
+        categoryId: 'splits',
+        merchant: `${memberName} paid you back`,
+        date: new Date().toISOString().split('T')[0],
+        isRecurring: false,
+        accountId: 'default',
+        source: 'manual'
+      });
+    }
+  };
+
   return (
     <main className="flex-1 flex flex-col overflow-hidden relative aurora-glow">
-
       <div className="flex flex-1 overflow-hidden">
-        <aside className="w-[320px] border-r border-white/5 flex flex-col p-6 overflow-y-auto">
+        {/* Sidebar */}
+        <aside className="w-[320px] border-r border-white/5 flex flex-col p-6 overflow-y-auto shrink-0">
           <div className="flex items-center justify-between mb-8">
             <h3 className="text-lg font-bold text-slate-100">Your Groups</h3>
             <button className="material-icons-outlined text-slate-400 hover:text-white transition-colors">
               filter_list
             </button>
           </div>
-          <button className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-bold text-sm mb-6 transition-all shadow-lg shadow-primary/10">
+          <button 
+            onClick={() => setShowAddGroup(true)}
+            className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-bold text-sm mb-6 transition-all shadow-lg shadow-primary/10"
+          >
             <span className="material-icons-outlined text-lg">add_circle</span>
             New Group
           </button>
+          
           <div className="space-y-3">
-            <div className="glass-panel p-4 rounded-xl border-l-4 border-l-primary cursor-pointer hover:bg-white/5 transition-colors">
-              <div className="flex justify-between items-start mb-3">
-                <h4 className="font-bold text-slate-100">Ski Trip 2024</h4>
-                <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
-                  Active
-                </span>
-              </div>
-              <div className="flex justify-between items-end">
-                <div className="flex -space-x-2">
-                  <img
-                    className="size-7 rounded-full border-2 border-[#080A0F] object-cover"
-                    alt="Member avatar Sarah"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYK_Y5Y6NHXQ8uSD6Uzx5MYJvxt94bmUVERBb9zUVJg3X6OIxFCeomM9bMXnImYhGCuR_U4kCi8e013U3HWQrZzcpKRmzqn_wR6j2_fe18utHO2yy7PafIgITE4CwrsBXVohEScrxActSY6wdZTGZcfs1SHfokPAD8_esmw2tAQY6gz3HqrY7i99q5kbVaYQZP2RWZko7E64o808fzy-EOJR2F4869QZLQi5cRzEPst9BE7St9PgMUubWDFsH19LJCQJeyzuT0cyM"
-                  />
-                  <img
-                    className="size-7 rounded-full border-2 border-[#080A0F] object-cover"
-                    alt="Member avatar Mark"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnhOLojWJro-OzPgwjugtgH-X1C-DJXyJzUdmX2sYsmQ_PCafR8325cp9P5wCH3kewF3jjlflMTQTZBgZ9doyKqhzJwMSesYreyIPUA6DSegVu_aouwHHuREhk00nsT5kTLE_YSN1xVGsLvnUxxPpF80Qx7Uc9BMOkKhA2N7_VG_zqym8Qt7NTa2-xh6e6IY7iju6YUlczSDsb5DSt153VNpc2eBOUF8-g76bOe_Uc3Y0cONM1bixtL4oMS2Mw4blB3sC1jPOvjuE"
-                  />
-                  <img
-                    className="size-7 rounded-full border-2 border-[#080A0F] object-cover"
-                    alt="Member avatar John"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuD49ZfoK42THhWuMUW94pp36WBs_5p1B7MKgtnSydEWty-zAvlmY64c67dfH17bianVElZUh-eJhSFyHd1A8fsqthlzLh0EfZp86qNKCOly1gfNOocPsuRzgVO7g3GJx8EYCrdCNogvQylsJdC1OO9-p8-iPQDvIvBKUZsimITY_W_u-k4xrKLIXz-dO3Girx4IndiKn0kdvmXAdWEvJ86pnD6lK9mpeP8QLOPMgqGcRK4c8TVAVG55i3fCQuLBI6YGS7XrIqkP8zY"
-                  />
-                  <div className="size-7 rounded-full border-2 border-[#080A0F] bg-slate-800 flex items-center justify-center text-[10px] font-bold">
-                    +2
+            {groups.length === 0 ? (
+              <div className="text-center p-4 text-slate-500 text-sm">No groups yet.</div>
+            ) : (
+              groups.map(g => (
+                <div 
+                  key={g.id}
+                  onClick={() => setActiveGroupId(g.id)}
+                  className={`glass-panel p-4 rounded-xl cursor-pointer hover:bg-white/10 transition-colors border-l-4 ${g.id === activeGroupId ? 'border-primary bg-white/5' : 'border-transparent'}`}
+                >
+                  <div className="flex justify-between items-start mb-3">
+                    <h4 className="font-bold text-slate-100">{g.name}</h4>
+                    <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
+                      {g.members.length + 1} members
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-end">
+                    <div className="flex -space-x-2">
+                       <div className="size-7 rounded-full border-2 border-[#080A0F] bg-slate-700 flex items-center justify-center text-[10px] font-bold text-white">
+                        You
+                      </div>
+                      {g.members.slice(0, 3).map((m, i) => (
+                        <div key={i} className="size-7 rounded-full border-2 border-[#080A0F] bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">
+                          {m.name.charAt(0)}
+                        </div>
+                      ))}
+                      {g.members.length > 3 && (
+                        <div className="size-7 rounded-full border-2 border-[#080A0F] bg-slate-800 flex items-center justify-center text-[10px] font-bold">
+                          +{g.members.length - 3}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-[10px] text-slate-500 font-medium">
-                    You are owed
-                  </p>
-                  <p className="text-emerald-400 font-bold">₹420.50</p>
-                </div>
-              </div>
-            </div>
-            <div className="glass-panel p-4 rounded-xl cursor-pointer hover:bg-white/5 transition-colors border-transparent border-l-4">
-              <div className="flex justify-between items-start mb-3">
-                <h4 className="font-bold text-slate-100">Daily Coffee</h4>
-                <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
-                  2 days ago
-                </span>
-              </div>
-              <div className="flex justify-between items-end">
-                <div className="flex -space-x-2">
-                  <img
-                    className="size-7 rounded-full border-2 border-[#080A0F] object-cover"
-                    alt="Member avatar David"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLG0LALYVb85NOABaMesItn8zzu3K08i1EVt5FBD6IgtwBdkgDjvPi3G9aOgaqRg2kg-B_B_3IBDM8wqnRcIKpqTHJB7kpjo5als5tV2SSCv5Ss_JfOIdJYEjDB2Ia3nZUpl_BAK_ejvOOmuaLCikgIWdjXNlGGvdSMVhK3W6sJlWnBVo3PcG-uJxSbzI3GdYGqqJhpo3kGBTtggt2Tu1ajAEc0DW3kWJ7rDMXJX_8uwa6LAaZXFEwSt6gSp8tqpO957sdqphPLU4"
-                  />
-                  <img
-                    className="size-7 rounded-full border-2 border-[#080A0F] object-cover"
-                    alt="Member avatar Lisa"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC30o1YsxyR8UeOCWLfpB2mbeFSpUeJsTzQDO8pEKtAd2YaRw1lBBDhbsVip37rY-B-4BRzw4ZJGpSOiGWZ1bcW3_gu_qE16WErskKzzt9-DebvYD9F_Rcm5Cg6KpSzkPykF8dWczsB_5Q3LxrJWVdH0ceQ8xpjv6GM6RQVj4s3CHYWftxLE2WKRpAEsVxj4OuE1L-7fGXtiSdS7zTP4HPp1uJRXdR4DdMwSDYniOH2sBMCckUXQkfu_J29pRYEfW7lh-yEu9yZtDU"
-                  />
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] text-slate-500 font-medium">
-                    You owe
-                  </p>
-                  <p className="text-rose-400 font-bold">₹12.80</p>
-                </div>
-              </div>
-            </div>
-            <div className="glass-panel p-4 rounded-xl cursor-pointer hover:bg-white/5 transition-colors border-transparent border-l-4">
-              <div className="flex justify-between items-start mb-3">
-                <h4 className="font-bold text-slate-100">House Rent</h4>
-                <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
-                  Monthly
-                </span>
-              </div>
-              <div className="flex justify-between items-end">
-                <div className="flex -space-x-2">
-                  <img
-                    className="size-7 rounded-full border-2 border-[#080A0F] object-cover"
-                    alt="Member avatar Anna"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7CwXZt0I3NUOZl4OAHkyj6qszemJ2KKbkx6N-XoqxKWmyv53tomzKX7kYqksL-j-8F_IhAzJTNyX6lVyzfrOfRNlUnvnOcVptm18ySu8rMlrJaQDuHRUsF_SI9cFGLrmFjoVEG36hegq1MYOsZClPVjp5IHfnq85h8FJiQsXKkIi8jnGC8F-9fstLY1Sjvd3JqiqXzri4GCtHMpoCTNx_TIxiAckFxrDVa7xDHhmF_fcClRHMJPJ7-Xgi3BYKg7A8ax96HYWVUgY"
-                  />
-                  <img
-                    className="size-7 rounded-full border-2 border-[#080A0F] object-cover"
-                    alt="Member avatar Mike"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvDcM4BvotD3MUiRWrqy-fB_zksfTRQcRJ-NY-tkYI-HR0s6VcjxddDChh-hsMfJ1N44ZB4zR8x8Y_u99ih9-DpxDaLBh6qWwpLZBCp7H4jSiC_m1nkS78ag1PCDZM1CnS6mlh_MDJ4dwmjLkihbFYHBLk0puLY1glA32KzwvRIATr7maBMjHrS6xnHTs0d-rvhDWk2T4sPqmKSoqzGLhEomOg59bodGqQHdkLRXMOcAaJhhps34Qt0cGQ3zwLQ_BAIBX7dq8yPek"
-                  />
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] text-slate-500 font-medium">
-                    Settled up
-                  </p>
-                  <p className="text-slate-400 font-bold">₹0.00</p>
-                </div>
-              </div>
-            </div>
+              ))
+            )}
           </div>
         </aside>
 
-        <section className="flex-1 flex flex-col p-8 overflow-y-auto bg-background-dark/50">
-          <div className="flex items-center justify-between mb-10">
-            <div>
-              <div className="flex items-center gap-3 mb-1">
-                <h1 className="text-3xl font-black text-white tracking-tight">
-                  Ski Trip 2024
-                </h1>
-                <span className="material-icons-outlined text-slate-500 cursor-pointer hover:text-white transition-colors">settings</span>
-              </div>
-              <p className="text-slate-400 text-sm">
-                Created Jan 12 • 5 members • Aspen, Colorado
-              </p>
-            </div>
-            <div className="flex gap-4">
-              <button className="bg-primary hover:bg-primary/90 text-white rounded-lg h-11 px-6 flex items-center gap-2 font-bold transition-all">
-                <span className="material-icons-outlined">receipt_long</span>
-                Add Expense
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-6 mb-10">
-            <div className="glass-panel p-6 rounded-2xl flex items-center gap-4">
-              <div className="size-12 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400">
-                <span className="material-icons-outlined text-3xl">trending_up</span>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-slate-400">
-                  You are owed total
-                </p>
-                <p className="text-2xl font-black text-emerald-400">₹420.50</p>
-              </div>
-            </div>
-            <div className="glass-panel p-6 rounded-2xl flex items-center gap-4">
-              <div className="size-12 rounded-xl bg-rose-500/20 flex items-center justify-center text-rose-400">
-                <span className="material-icons-outlined text-3xl">trending_down</span>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-slate-400">
-                  You owe total
-                </p>
-                <p className="text-2xl font-black text-rose-400">₹125.00</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mb-10">
-            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-              <span className="material-icons-outlined text-primary">history</span>
-              Recent Activity
-            </h3>
-            <div className="space-y-4">
-              <div className="glass-panel p-4 rounded-xl flex items-center justify-between hover:border-primary/30 transition-all group">
-                <div className="flex items-center gap-4">
-                  <div className="size-12 rounded-full bg-white/5 flex items-center justify-center">
-                    <span className="material-icons-outlined text-slate-400">cottage</span>
+        {/* Main Content */}
+        <section className="flex-1 flex flex-col p-8 overflow-y-auto bg-background-dark/50 overflow-x-hidden">
+          {!activeGroup ? (
+             <div className="flex flex-col items-center justify-center h-full text-slate-500">
+               <span className="material-icons-outlined text-6xl mb-4 opacity-20">group</span>
+               <h2 className="text-xl font-bold">No Active Group</h2>
+               <p className="mt-2 text-sm max-w-sm text-center">Create a group from the sidebar to start splitting expenses with friends.</p>
+             </div>
+          ) : (
+            <>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 shrink-0">
+                <div>
+                  <div className="flex items-center gap-3 mb-1">
+                    <h1 className="text-3xl font-black text-white tracking-tight">
+                      {activeGroup.name}
+                    </h1>
+                    <span className="material-icons-outlined text-slate-500 cursor-pointer hover:text-white transition-colors">settings</span>
                   </div>
-                  <div>
-                    <h5 className="font-bold text-slate-100 group-hover:text-primary transition-colors">
-                      Airbnb Luxury Cabin
-                    </h5>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-slate-500">
-                        Paid by Sarah
-                      </span>
-                      <span className="bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded font-bold uppercase">
-                        Split equally
-                      </span>
-                    </div>
-                  </div>
+                  <p className="text-slate-400 text-sm">
+                    {activeGroup.description || `${activeGroup.members.length + 1} members`}
+                  </p>
                 </div>
-                <div className="text-right flex items-center gap-8">
-                  <div>
-                    <p className="text-xs text-slate-500">Total amount</p>
-                    <p className="text-lg font-bold text-slate-100">
-                      ₹1,250.00
-                    </p>
-                  </div>
-                  <div className="w-24">
-                    <p className="text-xs text-slate-500">You owe</p>
-                    <p className="text-lg font-bold text-rose-400">₹250.00</p>
-                  </div>
-                  <button className="material-icons-outlined text-slate-600 hover:text-white transition-colors">
-                    more_vert
+                <div className="flex gap-4 shrink-0">
+                  <button onClick={() => setShowAddExpense(true)} className="bg-primary hover:bg-primary/90 text-white rounded-lg h-11 px-6 flex items-center gap-2 font-bold transition-all whitespace-nowrap">
+                    <span className="material-icons-outlined">receipt_long</span>
+                    Add Expense
                   </button>
                 </div>
               </div>
 
-              <div className="glass-panel p-4 rounded-xl flex items-center justify-between hover:border-primary/30 transition-all group">
-                <div className="flex items-center gap-4">
-                  <div className="size-12 rounded-full bg-white/5 flex items-center justify-center">
-                    <span className="material-icons-outlined text-slate-400">restaurant</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 shrink-0">
+                <div className="glass-panel p-6 rounded-2xl flex items-center gap-4">
+                  <div className="size-12 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+                    <span className="material-icons-outlined text-3xl">trending_up</span>
                   </div>
-                  <div>
-                    <h5 className="font-bold text-slate-100 group-hover:text-primary transition-colors">
-                      Group Dinner & Drinks
-                    </h5>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-slate-500">
-                        Paid by You
-                      </span>
-                      <span className="bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded font-bold uppercase">
-                        Custom split
-                      </span>
-                    </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-slate-400 truncate">Total Owed to You</p>
+                    <p className="text-2xl font-black text-emerald-400">{formatINR(isOwed ? myBalance : 0)}</p>
                   </div>
                 </div>
-                <div className="text-right flex items-center gap-8">
-                  <div>
-                    <p className="text-xs text-slate-500">Total amount</p>
-                    <p className="text-lg font-bold text-slate-100">₹340.20</p>
+                <div className="glass-panel p-6 rounded-2xl flex items-center gap-4">
+                  <div className="size-12 rounded-xl bg-rose-500/20 flex items-center justify-center text-rose-400 shrink-0">
+                    <span className="material-icons-outlined text-3xl">trending_down</span>
                   </div>
-                  <div className="w-24">
-                    <p className="text-xs text-slate-500">You are owed</p>
-                    <p className="text-lg font-bold text-emerald-400">
-                      ₹272.16
-                    </p>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-slate-400 truncate">Total You Owe</p>
+                    <p className="text-2xl font-black text-rose-400">{formatINR(iOwe ? Math.abs(myBalance) : 0)}</p>
                   </div>
-                  <button className="material-icons-outlined text-slate-600 hover:text-white transition-colors">
-                    more_vert
-                  </button>
                 </div>
               </div>
 
-              <div className="glass-panel p-4 rounded-xl flex items-center justify-between hover:border-primary/30 transition-all group">
-                <div className="flex items-center gap-4">
-                  <div className="size-12 rounded-full bg-white/5 flex items-center justify-center">
-                    <span className="material-icons-outlined text-slate-400">directions_car</span>
-                  </div>
-                  <div>
-                    <h5 className="font-bold text-slate-100 group-hover:text-primary transition-colors">
-                      Gas & Tolls
-                    </h5>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-slate-500">
-                        Paid by Mark
-                      </span>
-                      <span className="bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded font-bold uppercase">
-                        Split equally
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right flex items-center gap-8">
-                  <div>
-                    <p className="text-xs text-slate-500">Total amount</p>
-                    <p className="text-lg font-bold text-slate-100">₹85.00</p>
-                  </div>
-                  <div className="w-24">
-                    <p className="text-xs text-slate-500">You owe</p>
-                    <p className="text-lg font-bold text-rose-400">₹17.00</p>
-                  </div>
-                  <button className="material-icons-outlined text-slate-600 hover:text-white transition-colors">
-                    more_vert
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+              <div className="mb-10 shrink-0">
+                <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                  <span className="material-icons-outlined text-primary">history</span>
+                  Recent Activity
+                </h3>
+                <div className="space-y-4">
+                  {groupExpenses.length === 0 ? (
+                    <div className="p-8 text-center text-slate-500 glass-panel rounded-xl">No expenses recorded yet.</div>
+                  ) : (
+                    groupExpenses.map(exp => {
+                      const share = exp.totalAmount / (activeGroup.members.length + 1);
+                      let oweStatus = "";
+                      let oweAmount = "";
+                      let colorClass = "";
+                      
+                      if (exp.paidBy === 'You') {
+                        oweStatus = "You lent";
+                        oweAmount = formatINR(exp.totalAmount - share);
+                        colorClass = "text-emerald-400";
+                      } else {
+                        oweStatus = "You borrowed";
+                        oweAmount = formatINR(share);
+                        colorClass = "text-rose-400";
+                      }
 
-          <div className="mt-auto pt-8 border-t border-white/5">
-            <h3 className="text-lg font-bold text-white mb-6">
-              Group Balances
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div className="glass-panel p-4 rounded-xl flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <img
-                    className="size-10 rounded-full object-cover"
-                    alt="Member avatar Sarah"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzyRkyXz-YP-hN3G5hMtXLd0jb8wnWQGJdsx7MhZMngMOD6hYQipi5JuHFWBtacp9MThFIPJid03zCWFUyhUsz3JANV5ChlFVcQ7s7vLPPaJslfJBVm3wJcsIyA9BjJZPjU7MgXzObEMlvnrbcKA4LIYBEqNF0GfTT8IF9-NqVYj-1CMnuV3KPHgjhQo6nB2hVozaHcrgnZA4dbiXzY-I6yJZ2oe6uHiqTz-g6ZC--i0LNgf_TpxLWS9t8zoWQvkdHsAEvYVmaZSc"
-                  />
-                  <div>
-                    <p className="text-sm font-bold">Sarah Jenkins</p>
-                    <p className="text-xs text-rose-400">You owe her ₹125.00</p>
-                  </div>
+                      return (
+                        <div key={exp.id} className="glass-panel p-4 rounded-xl flex items-center justify-between hover:border-primary/30 transition-all group overflow-x-auto relative">
+                          <div className="flex items-center gap-4 shrink-0 pr-4">
+                            <div className="size-12 rounded-full bg-white/5 flex items-center justify-center shrink-0">
+                              <span className="material-icons-outlined text-slate-400">receipt</span>
+                            </div>
+                            <div className="min-w-[120px]">
+                              <h5 className="font-bold text-slate-100 group-hover:text-primary transition-colors truncate max-w-[200px]">
+                                {exp.description}
+                              </h5>
+                              <div className="flex items-center gap-2 mt-1">
+                                <span className="text-xs text-slate-500 whitespace-nowrap">
+                                  Paid by {exp.paidBy}
+                                </span>
+                                <span className="bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded font-bold uppercase whitespace-nowrap">
+                                  {exp.splitEqually ? 'Split equally' : 'Custom'}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right flex items-center gap-8 shrink-0">
+                            <div className="min-w-[80px]">
+                              <p className="text-xs text-slate-500">Total amount</p>
+                              <p className="text-lg font-bold text-slate-100">{formatINR(exp.totalAmount)}</p>
+                            </div>
+                            <div className="min-w-[80px]">
+                              <p className="text-xs text-slate-500">{oweStatus}</p>
+                              <p className={`text-lg font-bold ${colorClass}`}>{oweAmount}</p>
+                            </div>
+                            <button className="material-icons-outlined text-slate-600 hover:text-white transition-colors shrink-0">
+                              more_vert
+                            </button>
+                          </div>
+                        </div>
+                      )
+                    })
+                  )}
                 </div>
-                <button className="text-primary hover:bg-primary/10 border border-primary/30 rounded-lg px-4 py-1.5 text-xs font-bold transition-all">
-                  Settle Up
-                </button>
-              </div>
-
-              <div className="glass-panel p-4 rounded-xl flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <img
-                    className="size-10 rounded-full object-cover"
-                    alt="Member avatar Mark"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY_vAB0cgUECoTvju-thu0OhqKtQFYJiwEn6UT9FTjU_eKwPITiuaESqoRqKRTrHhMvlAN2grWLYGcyG7WBZPwzOeGDcgDI8x98-zMMuIzFaPOy8uNALWDHNDB5IhrID1gAGYWZWI1Ip5METgzrNfO5p2-63fcE4jhtd4SVitQ_EYuOOQwiAYRg4k4iZb07eUswnJRT9Ss31yla6tb87OGeegWuyMP6ylQ9y7yjVGgVjb_EMlVHEyjYaGHns2wbWiImTF_gX0hNMA"
-                  />
-                  <div>
-                    <p className="text-sm font-bold">Mark Wilson</p>
-                    <p className="text-xs text-emerald-400">Owes you ₹240.50</p>
-                  </div>
-                </div>
-                <button className="text-primary hover:bg-primary/10 border border-primary/30 rounded-lg px-4 py-1.5 text-xs font-bold transition-all">
-                  Remind
-                </button>
               </div>
 
-              <div className="glass-panel p-4 rounded-xl flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <img
-                    className="size-10 rounded-full object-cover"
-                    alt="Member avatar John"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOtYH_ha-gmLMLWVXQLNrVlYpaJIyxsGAXlzHOEnPicVb_6ilASVtmPNmxYi_0XdRCj9P7bx53JtyaY-2BBOUoNaJYyoHf0m5l1LIdHzDoelXuH5mebwlAIoUVKt45s7GXHZrPjLZjrg-ckUxJMYfTghfLG_2e1YVwjj-8UGSYD4Y380USAMOF7TY5McyWyW2HTsvYoqpSqkp-ltTmSHNytM8Amm4mCEqxDnxP47q63tKoTGm9HZWIbUNpMRtjumquivzE5g5pV50"
-                  />
-                  <div>
-                    <p className="text-sm font-bold">John Davis</p>
-                    <p className="text-xs text-emerald-400">Owes you ₹180.00</p>
-                  </div>
+              <div className="mt-auto pt-8 border-t border-white/5 shrink-0">
+                <h3 className="text-lg font-bold text-white mb-6">Group Balances</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {activeGroup.members.map((m, idx) => {
+                    const b = balances[m.name] || 0;
+                    if (b === 0) return (
+                      <div key={idx} className="glass-panel p-4 rounded-xl flex items-center justify-between">
+                         <div className="flex items-center gap-3 min-w-0">
+                           <div className="size-10 rounded-full bg-slate-800 flex items-center justify-center font-bold text-slate-400 shrink-0">{m.name.charAt(0)}</div>
+                           <div className="min-w-0 pr-4">
+                             <p className="text-sm font-bold truncate">{m.name}</p>
+                             <p className="text-xs text-slate-500 truncate">Settled up</p>
+                           </div>
+                         </div>
+                      </div>
+                    );
+                    
+                    const MathAbsB = Math.abs(b);
+                    // Approximation logic for star topology vs exact graph logic.
+                    // Assuming user settles all debts directly
+                    const isOwingMe = b < 0; // if their balance is negative, they owe money
+                    
+                    return (
+                      <div key={idx} className="glass-panel p-4 rounded-xl flex items-center justify-between">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="size-10 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary shrink-0">{m.name.charAt(0)}</div>
+                          <div className="min-w-0 pr-4">
+                            <p className="text-sm font-bold truncate">{m.name}</p>
+                            <p className={`text-xs truncate ${isOwingMe ? 'text-emerald-400' : 'text-rose-400'}`}>
+                              {isOwingMe ? `Owes you ${formatINR(MathAbsB)}` : `You owe them ${formatINR(MathAbsB)}`}
+                            </p>
+                          </div>
+                        </div>
+                        <button 
+                          onClick={() => handleSettleUp(m.name, MathAbsB, isOwingMe ? 'they_owe' : 'i_owe')}
+                          className="text-primary hover:bg-primary/10 border border-primary/30 rounded-lg px-4 py-1.5 text-xs font-bold transition-all whitespace-nowrap shrink-0"
+                        >
+                          {isOwingMe ? 'Remind' : 'Settle Up'}
+                        </button>
+                      </div>
+                    )
+                  })}
                 </div>
-                <button className="text-primary hover:bg-primary/10 border border-primary/30 rounded-lg px-4 py-1.5 text-xs font-bold transition-all">
-                  Remind
-                </button>
               </div>
-            </div>
-          </div>
+            </>
+          )}
         </section>
       </div>
+
+      {showAddGroup && <AddGroupModal onClose={() => setShowAddGroup(false)} onSave={addGroup as any} />}
+      {showAddExpense && activeGroup && (
+        <AddExpenseModal 
+          group={activeGroup} 
+          onClose={() => setShowAddExpense(false)} 
+          onSave={addExpense as any} 
+          onSaveTransaction={addTransaction as any}
+        />
+      )}
     </main>
+  );
+}
+
+function AddGroupModal({ onClose, onSave }: { onClose: () => void; onSave: (g: any) => Promise<void> }) {
+  const [name, setName] = useState("");
+  const [membersStr, setMembersStr] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!name) return;
+    setSaving(true);
+    const members = membersStr.split(',').map(m => m.trim()).filter(Boolean).map(m => ({ name: m }));
+    await onSave({ name, description: 'Added manually', members });
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background-dark/80 backdrop-blur-xl">
+      <div className="glass-card w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden border border-slate-700/50">
+        <div className="p-6 border-b border-slate-800 flex items-center justify-between">
+          <h3 className="text-xl font-bold text-white">New Split Group</h3>
+          <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
+            <span className="material-icons-outlined">close</span>
+          </button>
+        </div>
+        <div className="p-6 space-y-4">
+          <div className="space-y-1.5">
+            <label className="text-[10px] uppercase font-bold text-slate-500">Group Name</label>
+            <input className="w-full bg-slate-900 border-slate-700 rounded-lg text-sm focus:ring-primary text-white px-3 py-2" type="text" placeholder="Ski Trip 2024" value={name} onChange={e => setName(e.target.value)} />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] uppercase font-bold text-slate-500">Members (Comma separated)</label>
+            <input className="w-full bg-slate-900 border-slate-700 rounded-lg text-sm focus:ring-primary text-white px-3 py-2" type="text" placeholder="Sarah, Mark, John" value={membersStr} onChange={e => setMembersStr(e.target.value)} />
+            <p className="text-xs text-slate-500 mt-1">* You are automatically included.</p>
+          </div>
+        </div>
+        <div className="p-6 border-t border-slate-800 flex gap-3">
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-lg border border-slate-700 text-slate-300 text-sm font-bold hover:bg-white/5 transition-colors">Cancel</button>
+          <button onClick={handleSubmit} disabled={saving} className="flex-[2] py-2.5 rounded-lg bg-primary text-white text-sm font-bold transition-all disabled:opacity-50">Create</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AddExpenseModal({ group, onClose, onSave, onSaveTransaction }: { group: SplitGroup, onClose: () => void; onSave: (e: any) => Promise<void>, onSaveTransaction: (tx: any) => Promise<void> }) {
+  const [desc, setDesc] = useState("");
+  const [amount, setAmount] = useState("");
+  const [paidBy, setPaidBy] = useState("You");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async () => {
+    if (!desc) return setError("Description required");
+    const parsedAmount = parseFloat(amount);
+    if (!parsedAmount || parsedAmount <= 0) return setError("Valid amount required");
+
+    setSaving(true);
+    try {
+      await onSave({
+        groupId: group.id,
+        description: desc,
+        totalAmount: parsedAmount,
+        paidBy: paidBy,
+        splitEqually: true,
+        date: new Date().toISOString().split('T')[0]
+      });
+
+      // Mirror to transactions if YOU paid so the Dashboard balances match your pocket
+      if (paidBy === 'You') {
+        await onSaveTransaction({
+          amount: parsedAmount,
+          type: 'debit',
+          categoryId: 'splits',
+          merchant: desc,
+          date: new Date().toISOString().split('T')[0],
+          isRecurring: false,
+          accountId: 'default',
+          source: 'manual'
+        });
+      }
+
+      onClose();
+    } catch (e: any) {
+      setError(e.message);
+      setSaving(false);
+    }
+  };
+
+  const payerOptions = ['You', ...group.members.map(m => m.name)];
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background-dark/80 backdrop-blur-xl">
+      <div className="glass-card w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden border border-slate-700/50">
+        <div className="p-6 border-b border-slate-800 flex items-center justify-between">
+          <h3 className="text-xl font-bold text-white">Add Expense</h3>
+          <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
+            <span className="material-icons-outlined">close</span>
+          </button>
+        </div>
+        <div className="p-6 space-y-4">
+          <div className="space-y-1.5">
+            <label className="text-[10px] uppercase font-bold text-slate-500">Description</label>
+            <input className="w-full bg-slate-900 border-slate-700 rounded-lg text-sm focus:ring-primary text-white px-3 py-2" type="text" placeholder="Dinner at Joe's" value={desc} onChange={e => setDesc(e.target.value)} />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] uppercase font-bold text-slate-500">Total Amount (₹)</label>
+            <input className="w-full bg-slate-900 border-slate-700 rounded-lg text-sm focus:ring-primary text-white px-3 py-2" type="number" placeholder="1000" value={amount} onChange={e => setAmount(e.target.value)} />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] uppercase font-bold text-slate-500">Paid By</label>
+            <select className="w-full bg-slate-900 border-slate-700 rounded-lg text-sm focus:ring-primary text-white px-3 py-2" value={paidBy} onChange={e => setPaidBy(e.target.value)}>
+              {payerOptions.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
+          </div>
+          {error && <p className="text-xs text-rose-400">{error}</p>}
+        </div>
+        <div className="p-6 border-t border-slate-800 flex gap-3">
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-lg border border-slate-700 text-slate-300 text-sm font-bold hover:bg-white/5 transition-colors">Cancel</button>
+          <button onClick={handleSubmit} disabled={saving} className="flex-[2] py-2.5 rounded-lg bg-primary text-white text-sm font-bold transition-all disabled:opacity-50">Save Expense</button>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -110,3 +110,35 @@ export type DashboardStats = {
   categoryBreakdown: CategorySpend[];
   topBudgetAlert: { categoryName: string; percent: number } | null;
 };
+
+export type SplitGroup = {
+  id: string;
+  name: string;
+  description?: string;
+  members: { name: string; avatarUrl?: string }[];
+  userId: string;
+  createdAt: string;
+};
+
+export type SplitExpense = {
+  id: string;
+  groupId: string;
+  description: string;
+  totalAmount: number;
+  paidBy: string; // name of the member, or 'You'
+  splitEqually: boolean;
+  date: string;
+  userId: string;
+  createdAt: string;
+};
+
+export type SplitSettlement = {
+  id: string;
+  groupId: string;
+  from: string; // name
+  to: string; // name
+  amount: number;
+  date: string;
+  userId: string;
+  createdAt: string;
+};
