@@ -68,6 +68,20 @@ export type Goal = {
   createdAt: string;
 };
 
+export type Subscription = {
+  id: string;
+  name: string;
+  amount: number;
+  category: string;
+  cycle: 'monthly' | 'yearly' | 'weekly';
+  nextPaymentDate: string; // YYYY-MM-DD
+  status: 'active' | 'missing' | 'cancelled';
+  isActive: boolean;
+  iconUrl?: string;
+  userId: string;
+  createdAt: string;
+};
+
 export type DailySpend = {
   date: string; // YYYY-MM-DD
   amount: number;

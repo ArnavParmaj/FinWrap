@@ -177,7 +177,7 @@ function AddContributionModal({ goal, onClose, onSave }: { goal: Goal, onClose: 
   );
 }
 
-function GoalCard({ goal, onContribute, onArchive }: { goal: Goal, onContribute: () => void, onArchive?: () => void }) {
+function GoalCard({ goal, onContribute, onArchive, onUnarchive }: { goal: Goal, onContribute: () => void, onArchive?: () => void, onUnarchive?: () => void }) {
   const percent = Math.min((goal.savedAmount / goal.targetAmount) * 100, 100);
   const isCompleted = goal.savedAmount >= goal.targetAmount;
   
@@ -255,6 +255,11 @@ function GoalCard({ goal, onContribute, onArchive }: { goal: Goal, onContribute:
           {!goal.isArchived && !isCompleted && onArchive && (
              <button onClick={onArchive} className="flex items-center justify-center size-8 rounded-full bg-white/5 text-slate-400 hover:text-white hover:bg-white/10" title="Archive Goal">
               <span className="material-icons-outlined text-sm">archive</span>
+            </button>
+          )}
+          {goal.isArchived && onUnarchive && (
+             <button onClick={onUnarchive} className="flex items-center justify-center size-8 rounded-full bg-white/5 text-slate-400 hover:text-white hover:bg-white/10" title="Unarchive Goal">
+              <span className="material-icons-outlined text-sm">unarchive</span>
             </button>
           )}
           {!isCompleted && !goal.isArchived && (
@@ -361,6 +366,7 @@ export default function GoalsPage() {
                   goal={goal}
                   onContribute={() => setContributionGoal(goal)}
                   onArchive={() => updateGoal(goal.id, { isArchived: true })}
+                  onUnarchive={() => updateGoal(goal.id, { isArchived: false })}
                 />
               ))
             )}
