@@ -2,32 +2,6 @@ export default function GoalsPage() {
   return (
     <>
       <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Bar */}
-        <header className="h-16 border-b border-slate-800 flex items-center justify-between px-8 bg-background-dark/30 backdrop-blur-md z-10">
-          <div className="flex items-center gap-4">
-            <h2 className="text-xl font-bold">Goals Overview</h2>
-            <div className="h-4 w-px bg-slate-700"></div>
-            <div className="relative">
-              <span className="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">
-                search
-              </span>
-              <input
-                className="bg-slate-900/50 border-slate-800 rounded-lg pl-9 pr-4 py-1.5 text-sm focus:ring-primary focus:border-primary w-64"
-                placeholder="Search goals..."
-                type="text"
-              />
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <button className="size-10 rounded-lg flex items-center justify-center text-slate-400 hover:bg-white/5">
-              <span className="material-icons-outlined">notifications</span>
-            </button>
-            <div className="flex items-center gap-3 pl-4 border-l border-slate-800">
-              <div className="text-right"></div>
-              <div className="size-9 rounded-full bg-slate-800 border border-slate-700 overflow-hidden"></div>
-            </div>
-          </div>
-        </header>
 
         {/* Dashboard Content */}
         <div className="flex-1 overflow-y-auto p-8">

@@ -1,28 +1,7 @@
 export default function RecurringPage() {
   return (
     <main className="flex-1 flex flex-col overflow-y-auto">
-      {/* Top Nav */}
-      <header className="h-20 px-8 border-b border-slate-200 dark:border-white/10 flex items-center justify-between sticky top-0 bg-background-dark/80 backdrop-blur-xl z-10">
-        <div className="flex items-center gap-4 flex-1 max-w-xl">
-          <div className="relative w-full">
-            <span className="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">search</span>
-            <input
-              className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-primary focus:border-primary"
-              placeholder="Search recurring bills..."
-              type="text"
-            />
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <button className="p-2.5 glass-card rounded-xl text-slate-400 hover:text-white transition-colors">
-            <span className="material-icons-outlined">notifications</span>
-          </button>
-          <button className="bg-primary text-white px-5 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 hover:bg-primary/90 transition-all">
-            <span className="material-icons-outlined text-lg">add</span>
-            New Sub
-          </button>
-        </div>
-      </header>
+
       <div className="p-8 max-w-6xl mx-auto w-full">
         {/* Hero Stat Card */}
         <div className="glass-card p-10 rounded-[2rem] border-primary/20 bg-primary/5 relative overflow-hidden mb-12 shadow-2xl shadow-primary/10">
@@ -51,6 +30,10 @@ export default function RecurringPage() {
         <div className="flex items-center justify-between mb-6 px-2">
           <h3 className="text-xl font-bold">Active Subscriptions</h3>
           <div className="flex gap-2">
+            <button className="bg-primary text-white px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-2 hover:bg-primary/90 transition-all">
+              <span className="material-icons-outlined text-sm">add</span>
+              New Sub
+            </button>
             <button className="px-4 py-2 rounded-lg glass-card text-sm font-medium hover:bg-white/10">
               Filter
             </button>

@@ -1,55 +1,7 @@
 export default function SplitsPage() {
   return (
     <main className="flex-1 flex flex-col overflow-hidden relative aurora-glow">
-      <header className="flex items-center justify-between border-b border-white/5 px-8 py-4 shrink-0">
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-3 text-primary">
-            {/* Omitted redundant FinWrap logo since Layout has it */}
-          </div>
-          <nav className="flex items-center gap-6">
-            <a
-              className="text-white text-sm font-medium transition-colors border-b-2 border-primary pb-1"
-              href="javascript:void(0)"
-            >
-              Groups
-            </a>
-            <a
-              className="text-slate-400 hover:text-white text-sm font-medium transition-colors"
-              href="javascript:void(0)"
-            >
-              Expenses
-            </a>
-            <a
-              className="text-slate-400 hover:text-white text-sm font-medium transition-colors"
-              href="javascript:void(0)"
-            >
-              Reports
-            </a>
-          </nav>
-        </div>
-        <div className="flex items-center gap-6">
-          <div className="relative w-64">
-            <span className="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xl">search</span>
-            <input
-              className="w-full bg-white/5 border-none rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-1 focus:ring-primary placeholder:text-slate-500"
-              placeholder="Search expenses..."
-            />
-          </div>
-          <div className="flex items-center gap-3 border-l border-white/10 pl-6">
-            <div className="text-right hidden sm:block">
-              <p className="text-xs text-slate-400">Welcome back,</p>
-              <p className="text-sm font-semibold">Alex Rivera</p>
-            </div>
-            <div className="size-10 rounded-full bg-gradient-to-tr from-primary to-indigo-400 p-0.5">
-              <img
-                className="size-full rounded-full object-cover"
-                alt="User profile avatar of Alex Rivera"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCSIoiLznO_0krFwG3Iu9LhShbhpJ573g1WrqHHmPA6aCiYTOoB6Ib_zsoQXiObCASoW4HJCM7BlysiX9WJ991TqUBVptp0ZArgfBvXxdfnwKih_njE8qNJgcTURUiG9m5w25kbsnbwxfjElwyk2UTTUoohXF4EyBhHqkWyZ0dxubsfe13muOvqQoxZjXbHq6zkFvEb7dQbsXSPYyYEh2K-rPH7331Ky26_icDtZAih0UceReae8_k8r97t_1lMBREwPhXUaX0sEg"
-              />
-            </div>
-          </div>
-        </div>
-      </header>
+
       <div className="flex flex-1 overflow-hidden">
         <aside className="w-[320px] border-r border-white/5 flex flex-col p-6 overflow-y-auto">
           <div className="flex items-center justify-between mb-8">
@@ -95,7 +47,7 @@ export default function SplitsPage() {
                   <p className="text-[10px] text-slate-500 font-medium">
                     You are owed
                   </p>
-                  <p className="text-emerald-400 font-bold">$420.50</p>
+                  <p className="text-emerald-400 font-bold">₹420.50</p>
                 </div>
               </div>
             </div>
@@ -123,7 +75,7 @@ export default function SplitsPage() {
                   <p className="text-[10px] text-slate-500 font-medium">
                     You owe
                   </p>
-                  <p className="text-rose-400 font-bold">$12.80</p>
+                  <p className="text-rose-400 font-bold">₹12.80</p>
                 </div>
               </div>
             </div>
@@ -151,7 +103,7 @@ export default function SplitsPage() {
                   <p className="text-[10px] text-slate-500 font-medium">
                     Settled up
                   </p>
-                  <p className="text-slate-400 font-bold">$0.00</p>
+                  <p className="text-slate-400 font-bold">₹0.00</p>
                 </div>
               </div>
             </div>
@@ -188,7 +140,7 @@ export default function SplitsPage() {
                 <p className="text-sm font-medium text-slate-400">
                   You are owed total
                 </p>
-                <p className="text-2xl font-black text-emerald-400">$420.50</p>
+                <p className="text-2xl font-black text-emerald-400">₹420.50</p>
               </div>
             </div>
             <div className="glass-panel p-6 rounded-2xl flex items-center gap-4">
@@ -199,7 +151,7 @@ export default function SplitsPage() {
                 <p className="text-sm font-medium text-slate-400">
                   You owe total
                 </p>
-                <p className="text-2xl font-black text-rose-400">$125.00</p>
+                <p className="text-2xl font-black text-rose-400">₹125.00</p>
               </div>
             </div>
           </div>
@@ -233,12 +185,12 @@ export default function SplitsPage() {
                   <div>
                     <p className="text-xs text-slate-500">Total amount</p>
                     <p className="text-lg font-bold text-slate-100">
-                      $1,250.00
+                      ₹1,250.00
                     </p>
                   </div>
                   <div className="w-24">
                     <p className="text-xs text-slate-500">You owe</p>
-                    <p className="text-lg font-bold text-rose-400">$250.00</p>
+                    <p className="text-lg font-bold text-rose-400">₹250.00</p>
                   </div>
                   <button className="material-icons-outlined text-slate-600 hover:text-white transition-colors">
                     more_vert
@@ -268,12 +220,12 @@ export default function SplitsPage() {
                 <div className="text-right flex items-center gap-8">
                   <div>
                     <p className="text-xs text-slate-500">Total amount</p>
-                    <p className="text-lg font-bold text-slate-100">$340.20</p>
+                    <p className="text-lg font-bold text-slate-100">₹340.20</p>
                   </div>
                   <div className="w-24">
                     <p className="text-xs text-slate-500">You are owed</p>
                     <p className="text-lg font-bold text-emerald-400">
-                      $272.16
+                      ₹272.16
                     </p>
                   </div>
                   <button className="material-icons-outlined text-slate-600 hover:text-white transition-colors">
@@ -304,11 +256,11 @@ export default function SplitsPage() {
                 <div className="text-right flex items-center gap-8">
                   <div>
                     <p className="text-xs text-slate-500">Total amount</p>
-                    <p className="text-lg font-bold text-slate-100">$85.00</p>
+                    <p className="text-lg font-bold text-slate-100">₹85.00</p>
                   </div>
                   <div className="w-24">
                     <p className="text-xs text-slate-500">You owe</p>
-                    <p className="text-lg font-bold text-rose-400">$17.00</p>
+                    <p className="text-lg font-bold text-rose-400">₹17.00</p>
                   </div>
                   <button className="material-icons-outlined text-slate-600 hover:text-white transition-colors">
                     more_vert
@@ -332,7 +284,7 @@ export default function SplitsPage() {
                   />
                   <div>
                     <p className="text-sm font-bold">Sarah Jenkins</p>
-                    <p className="text-xs text-rose-400">You owe her $125.00</p>
+                    <p className="text-xs text-rose-400">You owe her ₹125.00</p>
                   </div>
                 </div>
                 <button className="text-primary hover:bg-primary/10 border border-primary/30 rounded-lg px-4 py-1.5 text-xs font-bold transition-all">
@@ -349,7 +301,7 @@ export default function SplitsPage() {
                   />
                   <div>
                     <p className="text-sm font-bold">Mark Wilson</p>
-                    <p className="text-xs text-emerald-400">Owes you $240.50</p>
+                    <p className="text-xs text-emerald-400">Owes you ₹240.50</p>
                   </div>
                 </div>
                 <button className="text-primary hover:bg-primary/10 border border-primary/30 rounded-lg px-4 py-1.5 text-xs font-bold transition-all">
@@ -366,7 +318,7 @@ export default function SplitsPage() {
                   />
                   <div>
                     <p className="text-sm font-bold">John Davis</p>
-                    <p className="text-xs text-emerald-400">Owes you $180.00</p>
+                    <p className="text-xs text-emerald-400">Owes you ₹180.00</p>
                   </div>
                 </div>
                 <button className="text-primary hover:bg-primary/10 border border-primary/30 rounded-lg px-4 py-1.5 text-xs font-bold transition-all">

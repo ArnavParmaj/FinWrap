@@ -242,33 +242,6 @@ export default function BudgetsPage() {
 
   return (
     <main className="flex-1 flex flex-col overflow-y-auto">
-      {/* Top Bar */}
-      <header className="h-16 border-b border-slate-200 flex items-center justify-between px-8 glass-card sticky top-0 z-10">
-        <div className="flex items-center gap-4 flex-1">
-          <div className="relative max-w-md w-full">
-            <span className="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">
-              search
-            </span>
-            <input
-              className="w-full bg-slate-100 dark:bg-slate-900/50 border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary/50 placeholder:text-slate-500"
-              placeholder="Search budgets or categories..."
-              type="text"
-            />
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <button className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-all">
-            <span className="material-icons-outlined">notifications</span>
-          </button>
-          <div className="h-8 w-[1px] bg-slate-200 mx-2"></div>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/20 flex items-center justify-center text-sm font-bold text-slate-200">
-              {user?.name?.charAt(0).toUpperCase() ?? "U"}
-            </div>
-            <span className="text-sm font-semibold">{user?.name ?? "User"}</span>
-          </div>
-        </div>
-      </header>
 
       {/* Page Header */}
       <div className="px-8 pt-8 pb-4">

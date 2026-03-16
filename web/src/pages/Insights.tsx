@@ -1,34 +1,6 @@
 export default function InsightsPage() {
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-      {/* Header */}
-      <header className="h-16 border-b border-slate-800 flex items-center justify-between px-8 glass-card shrink-0">
-        <div className="flex items-center gap-4">
-          <span className="material-icons-outlined text-slate-400">search</span>
-          <input
-            className="bg-transparent border-none text-sm focus:ring-0 placeholder-slate-500 w-64"
-            placeholder="Search transactions, reports..."
-            type="text"
-          />
-        </div>
-        <div className="flex items-center gap-6">
-          <button className="relative text-slate-400 hover:text-white">
-            <span className="material-icons-outlined">notifications</span>
-            <span className="absolute top-0 right-0 w-2 h-2 bg-rose-500 rounded-full border-2 border-background-dark"></span>
-          </button>
-          <div className="flex items-center gap-3 border-l border-slate-800 pl-6">
-            <div className="text-right">
-              <p className="text-xs font-bold">Alex Sterling</p>
-              <p className="text-[10px] text-slate-500">Pro Member</p>
-            </div>
-            <img
-              className="w-10 h-10 rounded-full border border-slate-700"
-              alt="User profile avatar of Alex Sterling"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7dTpAEaXpYGMHNAE0F2XtcQQ2SnwspbwCLpCQ7N0PcS9tY9TqkEv_CBwvmntP-efmdTJg3_oazz_WmRGCekI8oUMeDRb6r9cLusfUrPZeR69uUS1lpsVm2KQISYGEQZcbatClMtcrMSdIKbJXoxY4dCuZpMXSv4KWPpZmCb8bPEIN6J2fCIviBtdwxi9n76USEsc6rKZ1E-YX3pO2ecQxK-d-CuJsM07_LdY-VsEgtTOi69K7fL8am03upLbqkOP3fM0KooLowTs"
-            />
-          </div>
-        </div>
-      </header>
 
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto p-8 space-y-8 pb-48">
@@ -73,11 +45,11 @@ export default function InsightsPage() {
                   to digital services. Your recurring subscriptions are
                   currently optimized, but our predictive engine suggests a{" "}
                   <span className="text-primary font-bold">
-                    potential savings of $120
+                    potential savings of ₹120
                   </span>{" "}
                   if you consolidate your cloud storage plans. Current
                   projection: You are on track to exceed your savings goal by{" "}
-                  <span className="text-emerald-400 font-bold">$450</span> by
+                  <span className="text-emerald-400 font-bold">₹450</span> by
                   end of month.
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -85,7 +57,7 @@ export default function InsightsPage() {
                     <p className="text-[10px] uppercase text-slate-500 font-bold mb-1">
                       Weekly Spend
                     </p>
-                    <p className="text-2xl font-bold text-slate-100">$2,430</p>
+                    <p className="text-2xl font-bold text-slate-100">₹2,430</p>
                   </div>
                   <div className="bg-white/5 p-4 rounded-xl border border-white/5">
                     <p className="text-[10px] uppercase text-slate-500 font-bold mb-1">
@@ -98,7 +70,7 @@ export default function InsightsPage() {
                       Cash Flow
                     </p>
                     <p className="text-2xl font-bold text-emerald-400">
-                      +$1,200
+                      +₹1,200
                     </p>
                   </div>
                   <div className="bg-white/5 p-4 rounded-xl border border-white/5">
@@ -130,7 +102,7 @@ export default function InsightsPage() {
                   <p className="text-xs text-slate-500 mb-1">Oct 18, 2023</p>
                   <h4 className="font-bold text-lg">Unknown Merchant</h4>
                 </div>
-                <span className="text-rose-400 font-bold">-$499.00</span>
+                <span className="text-rose-400 font-bold">-₹499.00</span>
               </div>
               <p className="text-sm text-slate-400 mb-6 leading-relaxed">
                 This transaction originated from a restricted region (LATAM) and
@@ -153,7 +125,7 @@ export default function InsightsPage() {
                   <p className="text-xs text-slate-500 mb-1">Oct 17, 2023</p>
                   <h4 className="font-bold text-lg">CloudSaaS Recurring</h4>
                 </div>
-                <span className="text-rose-400 font-bold">-$89.00</span>
+                <span className="text-rose-400 font-bold">-₹89.00</span>
               </div>
               <p className="text-sm text-slate-400 mb-6 leading-relaxed">
                 Duplicate subscription charge detected. This is the second
@@ -176,7 +148,7 @@ export default function InsightsPage() {
                   <p className="text-xs text-slate-500 mb-1">Oct 15, 2023</p>
                   <h4 className="font-bold text-lg">Global Hotel Group</h4>
                 </div>
-                <span className="text-rose-400 font-bold">-$1,240.00</span>
+                <span className="text-rose-400 font-bold">-₹1,240.00</span>
               </div>
               <p className="text-sm text-slate-400 mb-6 leading-relaxed">
                 High-value transaction without pre-authorization or associated
@@ -206,7 +178,7 @@ export default function InsightsPage() {
             <div>
               <p className="text-sm leading-relaxed text-slate-200">
                 I've analyzed your travel expenses for Q3. You spent{" "}
-                <span className="text-primary font-bold">$4,200</span> on
+                <span className="text-primary font-bold">₹4,200</span> on
                 flights and hotels. By switching to your Chase Sapphire card for
                 these specific categories, you would have earned{" "}
                 <span className="text-emerald-400 font-bold">

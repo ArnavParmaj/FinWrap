@@ -46,7 +46,7 @@ export default function TopNav() {
   };
 
   return (
-    <header className="h-16 border-b border-primary/10 flex items-center justify-between px-8 bg-background-dark/50 backdrop-blur-md z-10 flex-shrink-0">
+    <header className="h-16 border-b border-primary/10 flex items-center justify-between px-8 bg-background-dark/50 backdrop-blur-md z-50 flex-shrink-0">
       <div className="flex items-center gap-2">
         <span className="text-slate-400 text-sm">Finances</span>
         <span className="material-icons-outlined text-slate-400 text-sm">
