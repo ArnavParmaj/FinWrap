@@ -55,6 +55,12 @@ export type Budget = {
   createdAt: string;
 };
 
+export type GoalContribution = {
+  id: string; // Unique ID for the contribution
+  amount: number;
+  date: string; // ISO string when added
+};
+
 export type Goal = {
   id: string;
   name: string;
@@ -64,6 +70,7 @@ export type Goal = {
   color: string;
   targetDate: string;
   isArchived?: boolean;
+  contributions?: GoalContribution[];
   userId: string;
   createdAt: string;
 };

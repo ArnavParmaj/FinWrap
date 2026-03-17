@@ -1,4 +1,4 @@
-import type { Transaction, Budget, DashboardStats, DailySpend, CategorySpend } from '../types';
+import type { Transaction, Budget, Goal, Subscription, DashboardStats, DailySpend, CategorySpend } from '../types';
 
 const INVESTMENT_CATEGORIES = ['investment', 'mutual fund', 'stocks', 'sip', 'fd', 'rd'];
 
@@ -9,6 +9,8 @@ function isInvestment(tx: Transaction, categoryName?: string): boolean {
 
 function calcStats(
   transactions: Transaction[],
+  subscriptions: Subscription[],
+  goals: Goal[],
   openingBalance: number,
   categoryMap: Record<string, { name: string; color: string }>
 ) {
@@ -38,6 +40,32 @@ function calcStats(
     }
   }
 
+  // Factor in Subscriptions
+  for (const sub of subscriptions) {
+    // Only count active subscriptions
+    if (sub.status === 'active') {
+      const catInfo = categoryMap[sub.category] || { name: sub.category || 'Subscriptions', color: '#8b5cf6' };
+      totalDebited += sub.amount;
+      
+      const label = catInfo.name;
+      if (!catMap[label]) catMap[label] = { value: 0, color: catInfo.color };
+      catMap[label].value += sub.amount;
+    }
+  }
+
+  // Factor in Goal Savings
+  for (const goal of goals) {
+    if (goal.savedAmount && goal.savedAmount > 0) {
+      // Treat goal savings as an "investment" style debit from the liquid cashflow
+      investments += goal.savedAmount;
+      totalDebited += goal.savedAmount;
+
+      const label = "Goals & Savings";
+      if (!catMap[label]) catMap[label] = { value: 0, color: '#10b981' }; // Emerald for goals
+      catMap[label].value += goal.savedAmount;
+    }
+  }
+
   const netSavings = totalCredited - totalDebited;
   const closingBalance = openingBalance + netSavings;
 
@@ -56,13 +84,16 @@ function calcStats(
 export function computeDashboardStats(
   currentTransactions: Transaction[],
   prevTransactions: Transaction[],
+  currentSubscriptions: Subscription[],
+  currentGoals: Goal[],
   openingBalance: number,
   prevOpeningBalance: number,
   budgets: Budget[],
   categoryMap: Record<string, { name: string; color: string }>
 ): DashboardStats {
-  const current = calcStats(currentTransactions, openingBalance, categoryMap);
-  const prev = calcStats(prevTransactions, prevOpeningBalance, categoryMap);
+  const current = calcStats(currentTransactions, currentSubscriptions, currentGoals, openingBalance, categoryMap);
+  // For previous month, we pass empty arrays for subs and goals since we don't have historical snapshots of them in this basic model
+  const prev = calcStats(prevTransactions, [], [], prevOpeningBalance, categoryMap);
 
   // Find the budget most over-limit
   let topBudgetAlert: DashboardStats['topBudgetAlert'] = null;

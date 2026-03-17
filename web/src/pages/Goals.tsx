@@ -131,14 +131,14 @@ function AddGoalModal({ onClose, onSave }: { onClose: () => void; onSave: (goal:
   );
 }
 
-function AddContributionModal({ goal, onClose, onSave }: { goal: Goal, onClose: () => void, onSave: (id: string, newAmount: number) => Promise<void> }) {
+function AddContributionModal({ goal, onClose, onSave }: { goal: Goal, onClose: () => void, onSave: (id: string, newAmount: number, currentSaved: number) => Promise<void> }) {
   const [amount, setAmount] = useState("");
   const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
     if (!amount || parseFloat(amount) <= 0) return;
     setSaving(true);
-    await onSave(goal.id, goal.savedAmount + parseFloat(amount));
+    await onSave(goal.id, parseFloat(amount), goal.savedAmount);
     onClose();
   };
 
@@ -177,7 +177,142 @@ function AddContributionModal({ goal, onClose, onSave }: { goal: Goal, onClose: 
   );
 }
 
-function GoalCard({ goal, onContribute, onArchive, onUnarchive }: { goal: Goal, onContribute: () => void, onArchive?: () => void, onUnarchive?: () => void }) {
+function GoalDetailsModal({ 
+  goal, 
+  onClose, 
+  onContribute, 
+  onDelete, 
+  onArchive, 
+  onUnarchive 
+}: { 
+  goal: Goal; 
+  onClose: () => void; 
+  onContribute: () => void; 
+  onDelete: (id: string) => Promise<void>;
+  onArchive?: () => void;
+  onUnarchive?: () => void;
+}) {
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const percent = Math.min((goal.savedAmount / goal.targetAmount) * 100, 100);
+  const isCompleted = goal.savedAmount >= goal.targetAmount;
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    await onDelete(goal.id);
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 items-center justify-center p-4 bg-background-dark/80 backdrop-blur-xl flex">
+      <div className="glass-card w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden border border-slate-700/50 flex flex-col max-h-[85vh]">
+        {/* Header */}
+        <div className="p-6 border-b border-slate-800 flex items-center justify-between flex-shrink-0">
+          <div className="flex items-center gap-3">
+             <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/5" style={{ color: goal.color }}>
+              <span className="material-icons-outlined">{goal.icon}</span>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-white">{goal.name}</h3>
+              <p className="text-sm text-slate-400">Target: {formatINR(goal.targetAmount)} • Due {new Date(goal.targetDate).toLocaleDateString()}</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
+            <span className="material-icons-outlined">close</span>
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="p-6 overflow-y-auto space-y-8 flex-1">
+          {/* Progress Section */}
+          <div className="space-y-3">
+            <div className="flex justify-between text-sm">
+              <span className="font-medium text-white text-lg">
+                {formatINR(goal.savedAmount)} <span className="text-slate-500 text-sm font-normal">saved</span>
+              </span>
+              <span className="text-slate-400 font-medium">{Math.round(percent)}% reached</span>
+            </div>
+            <div className="h-4 w-full bg-slate-800 rounded-full overflow-hidden border border-slate-700/50">
+              <div className="h-full progress-glow rounded-full transition-all duration-1000" style={{ width: `${percent}%`, backgroundColor: goal.color }}></div>
+            </div>
+          </div>
+
+          {/* Action Row */}
+          <div className="flex flex-wrap gap-3">
+             {!isCompleted && !goal.isArchived && (
+              <button onClick={onContribute} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
+                <span className="material-icons-outlined text-[18px]">add</span>
+                Add Contribution
+              </button>
+            )}
+            {!goal.isArchived && !isCompleted && onArchive && (
+               <button onClick={onArchive} className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white/5 text-slate-300 text-sm font-bold hover:bg-white/10 transition-all">
+                <span className="material-icons-outlined text-[18px]">archive</span>
+                Archive
+              </button>
+            )}
+            {goal.isArchived && onUnarchive && (
+               <button onClick={onUnarchive} className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white/5 text-slate-300 text-sm font-bold hover:bg-white/10 transition-all">
+                <span className="material-icons-outlined text-[18px]">unarchive</span>
+                Unarchive
+              </button>
+            )}
+          </div>
+
+          {/* Contribution History */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-bold uppercase tracking-wider text-slate-500">Contribution History</h4>
+            {(!goal.contributions || goal.contributions.length === 0) ? (
+              <div className="text-center py-8 rounded-xl border border-dashed border-slate-700">
+                <p className="text-slate-500 text-sm">No recorded contributions yet.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {goal.contributions.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map(c => (
+                  <div key={c.id} className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+                        <span className="material-icons-outlined text-sm">south_west</span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-slate-200">Deposit</p>
+                        <p className="text-xs text-slate-400">{new Date(c.date).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}</p>
+                      </div>
+                    </div>
+                    <span className="font-bold text-emerald-400">+{formatINR(c.amount)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Footer / Danger Zone */}
+        <div className="p-6 border-t border-slate-800 bg-background-dark/50 flex-shrink-0">
+          {showDeleteConfirm ? (
+            <div className="flex items-center justify-between bg-rose-500/10 border border-rose-500/20 p-4 rounded-xl">
+              <p className="text-sm text-rose-400 font-medium">Are you sure? This action is permanent.</p>
+              <div className="flex gap-2">
+                <button onClick={() => setShowDeleteConfirm(false)} className="px-4 py-2 rounded-lg text-sm text-slate-300 hover:bg-white/5 transition-colors font-medium">Cancel</button>
+                <button onClick={handleDelete} disabled={deleting} className="px-4 py-2 rounded-lg bg-rose-500 text-white text-sm font-bold hover:bg-rose-600 transition-colors disabled:opacity-50">
+                  {deleting ? "Deleting..." : "Yes, Delete"}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button onClick={() => setShowDeleteConfirm(true)} className="flex items-center gap-2 text-rose-500 text-sm font-medium hover:text-rose-400 transition-colors">
+              <span className="material-icons-outlined text-[18px]">delete</span>
+              Delete Goal
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GoalCard({ goal, onClick }: { goal: Goal, onClick: () => void }) {
   const percent = Math.min((goal.savedAmount / goal.targetAmount) * 100, 100);
   const isCompleted = goal.savedAmount >= goal.targetAmount;
   
@@ -189,7 +324,10 @@ function GoalCard({ goal, onContribute, onArchive, onUnarchive }: { goal: Goal, 
   const monthlyPace = monthsRemaining > 0 ? remainingAmount / monthsRemaining : remainingAmount;
 
   return (
-    <div className="glass-card rounded-2xl p-6 flex flex-col gap-6 relative overflow-hidden group">
+    <div 
+      onClick={onClick}
+      className="glass-card rounded-2xl p-6 flex flex-col gap-6 relative overflow-hidden group cursor-pointer hover:border-slate-600 transition-colors"
+    >
       <div className="absolute top-0 left-0 w-full h-1 opacity-50" style={{ background: `linear-gradient(to right, ${goal.color}, transparent)` }}></div>
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-3">
@@ -251,23 +389,9 @@ function GoalCard({ goal, onContribute, onArchive, onUnarchive }: { goal: Goal, 
           )}
         </div>
         
-        <div className="flex items-center gap-2">
-          {!goal.isArchived && !isCompleted && onArchive && (
-             <button onClick={onArchive} className="flex items-center justify-center size-8 rounded-full bg-white/5 text-slate-400 hover:text-white hover:bg-white/10" title="Archive Goal">
-              <span className="material-icons-outlined text-sm">archive</span>
-            </button>
-          )}
-          {goal.isArchived && onUnarchive && (
-             <button onClick={onUnarchive} className="flex items-center justify-center size-8 rounded-full bg-white/5 text-slate-400 hover:text-white hover:bg-white/10" title="Unarchive Goal">
-              <span className="material-icons-outlined text-sm">unarchive</span>
-            </button>
-          )}
-          {!isCompleted && !goal.isArchived && (
-            <button onClick={onContribute} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-sm font-bold hover:bg-primary/20 transition-colors">
-              <span className="material-icons-outlined text-lg">add</span>
-              Fund
-            </button>
-          )}
+        <div className="flex items-center gap-2 text-primary font-medium text-sm transition-opacity opacity-0 group-hover:opacity-100 hidden md:flex">
+          View Details
+          <span className="material-icons-outlined text-sm">arrow_forward</span>
         </div>
       </div>
     </div>
@@ -275,9 +399,10 @@ function GoalCard({ goal, onContribute, onArchive, onUnarchive }: { goal: Goal, 
 }
 
 export default function GoalsPage() {
-  const { goals, loading, addGoal, updateGoal } = useGoals();
+  const { goals, loading, addGoal, updateGoal, deleteGoal, addContribution } = useGoals();
   const [activeTab, setActiveTab] = useState<'active' | 'completed' | 'archived'>('active');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
   const [contributionGoal, setContributionGoal] = useState<Goal | null>(null);
 
   const filteredGoals = useMemo(() => {
@@ -364,9 +489,7 @@ export default function GoalsPage() {
                 <GoalCard
                   key={goal.id}
                   goal={goal}
-                  onContribute={() => setContributionGoal(goal)}
-                  onArchive={() => updateGoal(goal.id, { isArchived: true })}
-                  onUnarchive={() => updateGoal(goal.id, { isArchived: false })}
+                  onClick={() => setSelectedGoal(goal)}
                 />
               ))
             )}
@@ -381,11 +504,22 @@ export default function GoalsPage() {
         />
       )}
 
+      {selectedGoal && (
+        <GoalDetailsModal
+          goal={selectedGoal}
+          onClose={() => setSelectedGoal(null)}
+          onContribute={() => setContributionGoal(selectedGoal)}
+          onDelete={deleteGoal}
+          onArchive={() => updateGoal(selectedGoal.id, { isArchived: true })}
+          onUnarchive={() => updateGoal(selectedGoal.id, { isArchived: false })}
+        />
+      )}
+
       {contributionGoal && (
         <AddContributionModal
           goal={contributionGoal}
           onClose={() => setContributionGoal(null)}
-          onSave={(id, amount) => updateGoal(id, { savedAmount: amount })}
+          onSave={addContribution}
         />
       )}
     </>

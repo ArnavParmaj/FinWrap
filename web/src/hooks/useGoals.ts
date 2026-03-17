@@ -8,7 +8,8 @@ import {
   updateDoc,
   doc,
   Timestamp,
-  orderBy
+  orderBy,
+  arrayUnion
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useUserStore } from '../store/useUserStore';
@@ -65,6 +66,24 @@ export function useGoals() {
     [user]
   );
 
+  const addContribution = useCallback(
+    async (id: string, amount: number, currentSaved: number) => {
+      if (!user) return;
+      
+      const newContribution = {
+        id: crypto.randomUUID(),
+        amount,
+        date: Timestamp.now().toDate().toISOString()
+      };
+
+      await updateDoc(doc(db, 'users', user.uid, 'goals', id), {
+        savedAmount: currentSaved + amount,
+        contributions: arrayUnion(newContribution)
+      });
+    },
+    [user]
+  );
+
   const deleteGoal = useCallback(
     async (id: string) => {
       if (!user) return;
@@ -73,5 +92,5 @@ export function useGoals() {
     [user]
   );
 
-  return { goals, loading, addGoal, updateGoal, deleteGoal };
+  return { goals, loading, addGoal, updateGoal, deleteGoal, addContribution };
 }

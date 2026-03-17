@@ -14,6 +14,8 @@ import {
 } from "recharts";
 import { useTransactions } from "../hooks/useTransactions";
 import { useBudgets } from "../hooks/useBudgets";
+import { useGoals } from "../hooks/useGoals";
+import { useSubscriptions } from "../hooks/useSubscriptions";
 import { useAppStore } from "../store/useAppStore";
 import {
   computeDashboardStats,
@@ -84,16 +86,17 @@ function StatCard({
   );
 }
 
-const EMPTY_CAT_MAP: Record<string, { name: string; color: string }> = {};
-
 const DONUT_COLORS = [
-  "#6366f1",
-  "#22d3ee",
-  "#f59e0b",
-  "#10b981",
-  "#f43f5e",
-  "#a78bfa",
-  "#34d399",
+  "#6366f1", // Indigo
+  "#22d3ee", // Cyan
+  "#f59e0b", // Amber
+  "#10b981", // Emerald
+  "#f43f5e", // Rose
+  "#a78bfa", // Purple
+  "#34d399", // Green
+  "#38bdf8", // Sky
+  "#fb923c", // Orange
+  "#e879f9", // Fuchsia
 ];
 
 export default function DashboardPage() {
@@ -106,8 +109,32 @@ export default function DashboardPage() {
     useTransactions(activeMonth);
   const { transactions: prevTx } = useTransactions(prevMonth);
   const { budgets } = useBudgets(activeMonth);
+  const { goals } = useGoals();
+  const { subscriptions } = useSubscriptions();
 
-  // Opening balance = closingBalance of previous month (simplified: 0 for now until accounts feature)
+  // Dynamic Category Map Builder
+  const dynamicCatMap = useMemo(() => {
+    const map: Record<string, { name: string; color: string }> = {};
+    const usedColors = new Set<string>();
+    
+    currentTx.forEach(tx => {
+      if (!tx.categoryId) return;
+      if (!map[tx.categoryId]) {
+        // Pick the next available color from DONUT_COLORS
+        const color = DONUT_COLORS.find(c => !usedColors.has(c)) || DONUT_COLORS[Math.floor(Math.random() * DONUT_COLORS.length)];
+        usedColors.add(color);
+        map[tx.categoryId] = {
+           name: tx.categoryId.charAt(0).toUpperCase() + tx.categoryId.slice(1).replace(/_/g, " "),
+           color
+        };
+      }
+    });
+    return map;
+  }, [currentTx]);
+
+  // Opening balance computation (Basic heuristic for now: current transactions total delta)
+  // To truly compute opening balance, we would need all past transactions before the activeMonth.
+  // For UI representation, we'll keep it at 0 until we implement a running ledger.
   const openingBalance = 0;
   const prevOpeningBalance = 0;
 
@@ -116,12 +143,14 @@ export default function DashboardPage() {
       computeDashboardStats(
         currentTx,
         prevTx,
+        subscriptions,
+        goals,
         openingBalance,
         prevOpeningBalance,
         budgets,
-        EMPTY_CAT_MAP,
+        dynamicCatMap,
       ),
-    [currentTx, prevTx, budgets, openingBalance, prevOpeningBalance],
+    [currentTx, prevTx, subscriptions, goals, budgets, openingBalance, prevOpeningBalance, dynamicCatMap],
   );
 
   // Build category breakdown with fallback colors

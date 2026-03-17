@@ -1,4 +1,98 @@
+import { useMemo } from 'react';
+import { useTransactions } from '../hooks/useTransactions';
+
+// Simple formatter
+const formatINR = (value: number) => {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(value);
+};
+
 export default function WrappedPage() {
+  const { transactions } = useTransactions();
+
+  const {
+    totalSpent,
+    totalSaved,
+    biggestCategory,
+    biggestSplurge,
+    categorySplurgeAmount,
+    mostFrequentedMerchant,
+    roastText
+  } = useMemo(() => {
+    let spent = 0;
+    let income = 0;
+    const catMap: Record<string, number> = {};
+    const merchantMap: Record<string, number> = {};
+    let topSplurge = { merchant: 'Nothing yet', amount: 0 };
+    
+    // Using current month for this example 'wrapped' scope
+    const now = new Date();
+    const currentMonthPrefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    
+    const monthTx = transactions.filter(t => t.date.startsWith(currentMonthPrefix));
+
+    monthTx.forEach(t => {
+      if (t.type === 'debit') {
+        spent += t.amount;
+        catMap[t.categoryId] = (catMap[t.categoryId] || 0) + t.amount;
+        merchantMap[t.merchant] = (merchantMap[t.merchant] || 0) + 1;
+        
+        if (t.amount > topSplurge.amount) {
+          topSplurge = { merchant: t.merchant, amount: t.amount };
+        }
+      } else {
+        income += t.amount;
+      }
+    });
+
+    let topCat = 'None';
+    let topCatVal = 0;
+    Object.entries(catMap).forEach(([cat, val]) => {
+      if (val > topCatVal) {
+        topCatVal = val;
+        // capitalize category name for display
+        topCat = cat.charAt(0).toUpperCase() + cat.slice(1);
+      }
+    });
+
+    let topMerchant = 'Unknown';
+    let topMerchVal = 0;
+    Object.entries(merchantMap).forEach(([m, val]) => {
+      if (val > topMerchVal) {
+        topMerchVal = val;
+        topMerchant = m;
+      }
+    });
+
+    const saved = income - spent;
+    
+    let roast = "You haven't spent much this month. Excellent discipline, or just forgot your wallet?";
+    if (spent > income && income > 0) {
+      roast = `Your income was ${formatINR(income)}, but your spending was ${formatINR(spent)}. The math isn't mathing.`;
+    } else if (topCat === 'Dining' || topCatVal > spent * 0.3) {
+      roast = `"You spent enough on ${topCat} this month to buy a small plantation. Maybe your 'savings' are just your baristas feeling sorry for you?"`;
+    } else if (topSplurge.amount > spent * 0.4 && spent > 0) {
+      roast = `"That ${topSplurge.merchant} purchase accounted for nearly half your monthly spend. Hope it was worth it."`;
+    } else if (saved > spent && spent > 0) {
+      roast = `"You saved more than you spent. We'd roast you, but honestly we're just intimidated."`;
+    }
+
+    return {
+      totalSpent: spent,
+      totalSaved: saved,
+      biggestCategory: topCat,
+      categorySplurgeAmount: topCatVal,
+      biggestSplurge: topSplurge,
+      mostFrequentedMerchant: topMerchant,
+      roastText: roast
+    };
+  }, [transactions]);
+
+  const currentMonthName = new Date().toLocaleString('en-US', { month: 'long' });
+
   return (
     <div className="relative flex min-h-screen w-full flex-col items-center justify-center p-6 sm:p-10 aurora-glow">
       {/* Main Container: 480px width */}
@@ -12,7 +106,7 @@ export default function WrappedPage() {
             </span>
           </div>
           <h3 className="text-slate-400 text-xs font-bold tracking-[0.2em] uppercase">
-            FINWRAP · MARCH 2025
+            FINWRAP · {currentMonthName.toUpperCase()} {new Date().getFullYear()}
           </h3>
         </div>
 
@@ -28,12 +122,14 @@ export default function WrappedPage() {
               Total Spent
             </p>
             <h1 className="text-6xl font-extrabold text-white tracking-tighter">
-              ₹28,400
+              {formatINR(totalSpent)}
             </h1>
-            <div className="mt-2 inline-flex items-center gap-1 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
-              <span className="material-icons-outlined text-emerald-500 text-sm">trending_down</span>
-              <p className="text-emerald-500 text-sm font-bold">
-                You saved ₹6,200
+            <div className={`mt-2 inline-flex items-center gap-1 px-3 py-1 ${totalSaved >= 0 ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-rose-500/10 border-rose-500/20'} border rounded-full`}>
+              <span className={`material-icons-outlined text-sm ${totalSaved >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                {totalSaved >= 0 ? 'trending_up' : 'trending_down'}
+              </span>
+              <p className={`text-sm font-bold ${totalSaved >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                {totalSaved >= 0 ? `You saved ${formatINR(totalSaved)}` : `Overspent by ${formatINR(Math.abs(totalSaved))}`}
               </p>
             </div>
           </div>
@@ -50,12 +146,12 @@ export default function WrappedPage() {
                   <p className="text-xs text-slate-400 font-medium uppercase">
                     Biggest Category
                   </p>
-                  <p className="text-base font-bold text-white">
-                    Food & Dining
+                  <p className="text-base font-bold text-white truncate max-w-[150px]">
+                    {biggestCategory}
                   </p>
                 </div>
               </div>
-              <p className="text-lg font-bold text-white">₹12,400</p>
+              <p className="text-lg font-bold text-white whitespace-nowrap">{formatINR(categorySplurgeAmount)}</p>
             </div>
 
             {/* Splurge */}
@@ -68,12 +164,12 @@ export default function WrappedPage() {
                   <p className="text-xs text-slate-400 font-medium uppercase">
                     Biggest Splurge
                   </p>
-                  <p className="text-base font-bold text-white">
-                    Wireless Headphones
+                  <p className="text-base font-bold text-white truncate max-w-[150px]">
+                    {biggestSplurge.merchant || 'None'}
                   </p>
                 </div>
               </div>
-              <p className="text-lg font-bold text-white">₹8,999</p>
+              <p className="text-lg font-bold text-white whitespace-nowrap">{formatINR(biggestSplurge.amount)}</p>
             </div>
 
             {/* Streak */}
@@ -84,14 +180,13 @@ export default function WrappedPage() {
                 </div>
                 <div>
                   <p className="text-xs text-slate-400 font-medium uppercase">
-                    Savings Streak
+                    Favorite Merchant
                   </p>
-                  <p className="text-base font-bold text-white">
-                    3 Months Strong
+                  <p className="text-base font-bold text-white truncate max-w-[150px]">
+                    {mostFrequentedMerchant}
                   </p>
                 </div>
               </div>
-              <p className="text-lg font-bold text-emerald-500">+12%</p>
             </div>
           </div>
 
@@ -100,41 +195,12 @@ export default function WrappedPage() {
             <div className="flex gap-2 items-start opacity-70 italic text-slate-400 text-sm">
               <span className="material-icons-outlined text-primary text-base shrink-0 mt-0.5">smart_toy</span>
               <p>
-                "You spent enough on coffee this month to buy a small
-                plantation. Maybe your 'savings' are just your baristas feeling
-                sorry for you?"
+                {roastText}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-4 w-full">
-          <button className="flex-1 flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-primary/20">
-            <span className="material-icons-outlined">download</span>
-            <span>Download</span>
-          </button>
-          <button className="flex-1 flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 text-white font-bold py-4 rounded-2xl transition-all border border-white/10">
-            <span className="material-icons-outlined">share</span>
-            <span>Share Moment</span>
-          </button>
-        </div>
-
-        {/* Footer Meta */}
-        <div className="flex justify-center items-center gap-6 mt-4">
-          <div className="flex items-center gap-1.5 opacity-50">
-            <span className="material-icons-outlined text-sm">verified_user</span>
-            <span className="text-xs font-medium uppercase tracking-tighter">
-              Bank-Grade Security
-            </span>
-          </div>
-          <div className="flex items-center gap-1.5 opacity-50">
-            <span className="material-icons-outlined text-sm">history</span>
-            <span className="text-xs font-medium uppercase tracking-tighter">
-              Updated 2m ago
-            </span>
-          </div>
-        </div>
       </div>
     </div>
   );

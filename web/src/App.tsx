@@ -13,6 +13,7 @@ import RecurringPage from "./pages/Recurring";
 import SplitsPage from "./pages/Splits";
 import InsightsPage from "./pages/Insights";
 import WrappedPage from "./pages/Wrapped";
+import SettingsPage from "./pages/Settings";
 import { useAuth } from "./hooks/useAuth";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -59,6 +60,7 @@ function App() {
           <Route path="/splits" element={<SplitsPage />} />
           <Route path="/insights" element={<InsightsPage />} />
           <Route path="/wrapped" element={<WrappedPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
