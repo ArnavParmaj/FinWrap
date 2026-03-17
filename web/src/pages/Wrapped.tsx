@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useTransactions } from '../hooks/useTransactions';
+import { generateWrappedNarrative } from '../lib/gemini';
 
 // Simple formatter
 const formatINR = (value: number) => {
@@ -90,6 +91,20 @@ export default function WrappedPage() {
       roastText: roast
     };
   }, [transactions]);
+
+  const [aiStory, setAiStory] = useState("Loading your unique financial story...");
+
+  useEffect(() => {
+    if (!biggestCategory || !biggestSplurge) return;
+    generateWrappedNarrative(
+      totalSpent,
+      totalSaved,
+      biggestCategory,
+      categorySplurgeAmount || 0,
+      biggestSplurge.merchant,
+      biggestSplurge.amount
+    ).then(res => setAiStory(res));
+  }, [totalSpent, totalSaved, biggestCategory, biggestSplurge, categorySplurgeAmount]);
 
   const currentMonthName = new Date().toLocaleString('en-US', { month: 'long' });
 
@@ -195,7 +210,7 @@ export default function WrappedPage() {
             <div className="flex gap-2 items-start opacity-70 italic text-slate-400 text-sm">
               <span className="material-icons-outlined text-primary text-base shrink-0 mt-0.5">smart_toy</span>
               <p>
-                {roastText}
+                {aiStory}
               </p>
             </div>
           </div>

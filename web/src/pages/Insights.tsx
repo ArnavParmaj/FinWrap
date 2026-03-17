@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTransactions } from '../hooks/useTransactions';
+import { generateDeepInsights as fetchGeminiInsights } from '../lib/gemini';
+import ReactMarkdown from 'react-markdown';
 
 // Simple formatter
 const formatINR = (value: number) => {
@@ -14,6 +16,9 @@ export default function InsightsPage() {
   const { transactions } = useTransactions();
   const [dismissedAnomalies, setDismissedAnomalies] = useState<string[]>([]);
   const [flaggedAnomalies, setFlaggedAnomalies] = useState<string[]>([]);
+  const [loadingInsights, setLoadingInsights] = useState(false);
+  const [aiResponse, setAiResponse] = useState<string | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   // Calculate Last 7 Days metrics
   const { weeklySpend, weeklyIncome, cashFlow, anomalies, currentWeekStr } = useMemo(() => {
@@ -74,8 +79,17 @@ export default function InsightsPage() {
     alert("Transaction flagged for review. A support ticket placeholder would be created here.");
   };
 
-  const generateDeepInsights = () => {
-    alert("Gemini AI API connection pending. Please provide the API key in settings to unlock deep narrative insights.");
+  const handleGenerateInsights = async () => {
+    setLoadingInsights(true);
+    setAiError(null);
+    try {
+      const resp = await fetchGeminiInsights(transactions);
+      setAiResponse(resp);
+    } catch (err: any) {
+      setAiError(err.message || "Failed to generate insights.");
+    } finally {
+      setLoadingInsights(false);
+    }
   };
 
   return (
@@ -117,23 +131,39 @@ export default function InsightsPage() {
                     Automated Narrative Analysis
                   </h3>
                   <button 
-                    onClick={generateDeepInsights}
-                    className="text-xs bg-primary/20 text-primary px-3 py-1.5 rounded-lg font-bold hover:bg-primary/30 transition-colors flex items-center gap-1"
+                    onClick={handleGenerateInsights}
+                    disabled={loadingInsights}
+                    className="text-xs bg-primary/20 text-primary px-3 py-1.5 rounded-lg font-bold hover:bg-primary/30 transition-colors flex items-center gap-1 disabled:opacity-50"
                   >
-                    <span className="material-icons-outlined text-[14px]">bolt</span>
-                    Run Deep Scan
+                    <span className={`material-icons-outlined text-[14px] ${loadingInsights ? 'animate-spin' : ''}`}>
+                      {loadingInsights ? 'sync' : 'bolt'}
+                    </span>
+                    {loadingInsights ? 'Scanning...' : aiResponse ? 'Regenerate Scan' : 'Run Deep Scan'}
                   </button>
                 </div>
+
+                {/* AI Response Area */}
+                {aiError && (
+                  <div className="bg-rose-500/20 text-rose-400 p-4 rounded-xl border border-rose-500/20 mb-6 text-sm">
+                    {aiError}
+                  </div>
+                )}
                 
-                <p className="text-slate-300 text-[16px] leading-relaxed mb-6">
-                   Based on your recent activity, you have spent <span className="text-rose-400 font-bold">{formatINR(weeklySpend)}</span> this week. 
-                   Your total inflowing cash was <span className="text-emerald-400 font-bold">{formatINR(weeklyIncome)}</span>.
-                   {cashFlow > 0 
-                     ? " You are running a positive cash flow, which is excellent for your savings goals!" 
-                     : " Your spending has exceeded your income for this period. Consider reviewing the anomalies below."}
-                   <br/><br/>
-                   <span className="text-sm text-slate-500 italic">* Deep AI analysis requires a Gemini API key. Click "Run Deep Scan" to generate advanced insights once configured.</span>
-                </p>
+                {aiResponse ? (
+                  <div className="prose prose-invert prose-p:text-slate-300 prose-headings:text-white prose-a:text-primary max-w-none mb-6">
+                     <ReactMarkdown>{aiResponse}</ReactMarkdown>
+                  </div>
+                ) : (
+                  <p className="text-slate-300 text-[16px] leading-relaxed mb-6">
+                     Based on your recent activity, you have spent <span className="text-rose-400 font-bold">{formatINR(weeklySpend)}</span> this week. 
+                     Your total inflowing cash was <span className="text-emerald-400 font-bold">{formatINR(weeklyIncome)}</span>.
+                     {cashFlow > 0 
+                       ? " You are running a positive cash flow, which is excellent for your savings goals!" 
+                       : " Your spending has exceeded your income for this period. Consider reviewing the anomalies below."}
+                     <br/><br/>
+                     <span className="text-sm text-slate-500 italic">* Deep AI analysis requires a Gemini API key. Click "Run Deep Scan" to generate advanced insights once configured.</span>
+                  </p>
+                )}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-white/5 p-4 rounded-xl border border-white/5">
                     <p className="text-[10px] uppercase text-slate-500 font-bold mb-1">
