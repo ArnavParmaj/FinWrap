@@ -2,30 +2,38 @@
 > web@0.0.0 dev
 > vite
 
-11:38:26 PM [vite] (client) Re-optimizing dependencies because lockfile has changed
 
-  VITE v8.0.0  ready in 309 ms
+  VITE v8.0.0  ready in 270 ms
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: use --host to expose
-11:41:58 PM [vite] (client) hmr update /src/components/Layout.tsx, /src/index.css
-11:42:29 PM [vite] (client) hmr update /src/components/Layout.tsx, /src/index.css
-11:42:44 PM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
-11:43:04 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
-11:43:25 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
-11:43:36 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
-11:43:36 PM [vite] Internal server error: Transform failed with 1 error:
+7:19:46 PM [vite] (client) hmr update /src/pages/Insights.tsx, /src/index.css
+7:19:59 PM [vite] (client) hmr update /src/pages/Insights.tsx, /src/index.css
+7:26:10 PM [vite] (client) hmr update /src/pages/Wrapped.tsx, /src/index.css
+7:26:10 PM [vite] (client) ✨ new dependencies optimized: html2canvas
+7:26:10 PM [vite] (client) ✨ optimized dependencies changed. reloading
+7:31:00 PM [vite] (client) hmr update /src/pages/Wrapped.tsx, /src/index.css
+7:31:13 PM [vite] (client) hmr update /src/pages/Wrapped.tsx, /src/index.css
+7:32:46 PM [vite] (client) hmr update /src/pages/Wrapped.tsx, /src/index.css
+7:33:45 PM [vite] (client) error while updating dependencies:
+Error: ENOENT: no such file or directory, open '/Users/arnavparmaj/Projects/FinWrap/web/node_modules/html2canvas/dist/html2canvas.js'
+    at Object.readFileSync (node:fs:439:20)
+    at extractExportsData (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:31595:26)
+    at async file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:31362:23
+    at async Promise.all (index 4)
+    at async prepareRolldownOptimizerRun (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:31360:2)
+7:34:10 PM [vite] (client) hmr update /src/pages/Wrapped.tsx, /src/index.css
+7:35:13 PM [vite] (client) hmr update /src/pages/Wrapped.tsx, /src/index.css
+7:42:36 PM [vite] (client) hmr update /src/App.tsx, /src/index.css
+7:42:57 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+7:42:57 PM [vite] Internal server error: Transform failed with 1 error:
 
-[31m[PARSE_ERROR] Error:[0m Expected corresponding JSX closing tag for 'button'.
-     [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/pages/Dashboard.tsx:185:23 [38;5;246m][0m
+[31m[PARSE_ERROR] Error:[0m Unexpected token
+     [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/pages/Dashboard.tsx:106:1 [38;5;246m][0m
      [38;5;246m│[0m
- [38;5;246m176 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m<[0mbutton
- [38;5;240m    │[0m                      ───┬──  
- [38;5;240m    │[0m                         ╰──── Opened here
- [38;5;240m    │[0m 
- [38;5;246m185 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m<[0m[38;5;249m/[0mLink[38;5;249m>[0m
- [38;5;240m    │[0m                       ──┬─  
- [38;5;240m    │[0m                         ╰─── Expected `</button>`
+ [38;5;246m106 │[0m ][38;5;249m;[0m
+ [38;5;240m    │[0m ┬  
+ [38;5;240m    │[0m ╰── 
 [38;5;246m─────╯[0m
 
   Plugin: vite:oxc
@@ -35,136 +43,35 @@
       at EnvironmentPluginContainer.transform (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:29998:51)
       at async loadAndTransform (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:24133:26)
       at async viteTransformMiddleware (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:24941:20)
-11:43:50 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
-11:43:50 PM [vite] Internal server error: Transform failed with 1 error:
-
-[31m[PARSE_ERROR] Error:[0m Expected corresponding JSX closing tag for 'button'.
-     [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/pages/Dashboard.tsx:185:23 [38;5;246m][0m
-     [38;5;246m│[0m
- [38;5;246m176 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m<[0mbutton
- [38;5;240m    │[0m                      ───┬──  
- [38;5;240m    │[0m                         ╰──── Opened here
- [38;5;240m    │[0m 
- [38;5;246m185 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m<[0m[38;5;249m/[0mLink[38;5;249m>[0m
- [38;5;240m    │[0m                       ──┬─  
- [38;5;240m    │[0m                         ╰─── Expected `</button>`
-[38;5;246m─────╯[0m
-
-  Plugin: vite:oxc
-  File: /Users/arnavparmaj/Projects/FinWrap/web/src/pages/Dashboard.tsx
-      at transformWithOxc (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:3719:19)
-      at TransformPluginContext.transform (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:3795:26)
-      at EnvironmentPluginContainer.transform (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:29998:51)
-      at async loadAndTransform (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:24133:26)
-      at async viteTransformMiddleware (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:24941:20)
-11:44:06 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
-11:44:16 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
-11:44:25 PM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
-11:45:00 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
-11:45:17 PM [vite] (client) hmr update /src/pages/Budgets.tsx, /src/index.css
-11:46:27 PM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
-11:48:38 PM [vite] (client) hmr update /src/index.css
-11:48:49 PM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
-11:49:18 PM [vite] (client) hmr update /src/components/TopNav.tsx, /src/index.css
-11:49:18 PM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css
-11:49:31 PM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css
-11:49:42 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
-11:49:45 PM [vite] (client) hmr update /src/pages/Budgets.tsx, /src/index.css
-11:49:53 PM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css
-11:50:09 PM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css
-11:50:09 PM [vite] Internal server error: Transform failed with 3 errors:
+7:43:10 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+7:51:46 PM [vite] (client) hmr update /src/index.css, /src/pages/Transactions.tsx, /src/pages/Dashboard.tsx, /src/pages/Goals.tsx, /src/pages/Recurring.tsx, /src/pages/Budgets.tsx, /src/pages/Splits.tsx
+7:52:05 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+7:52:06 PM [vite] (client) hmr update /src/index.css, /src/pages/Transactions.tsx, /src/pages/Dashboard.tsx, /src/pages/Goals.tsx, /src/pages/Recurring.tsx, /src/pages/Budgets.tsx, /src/pages/Splits.tsx
+7:59:30 PM [vite] (client) hmr update /src/index.css, /src/pages/Goals.tsx, /src/pages/Dashboard.tsx
+8:00:09 PM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css
+8:07:51 PM [vite] (client) hmr update /src/pages/Settings.tsx, /src/index.css
+8:07:51 PM [vite] Internal server error: Transform failed with 1 error:
 
 [31m[PARSE_ERROR] Error:[0m Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
-     [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/pages/Goals.tsx:362:1 [38;5;246m][0m
-     [38;5;246m│[0m
- [38;5;246m362 │[0m [38;5;249m}[0m
- [38;5;240m    │[0m │ 
- [38;5;240m    │[0m ╰─ 
-[38;5;246m─────╯[0m
-
-[31m[PARSE_ERROR] Error:[0m Expected corresponding JSX closing tag for 'div'.
-    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/pages/Goals.tsx:28:11 [38;5;246m][0m
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/pages/Settings.tsx:47:1 [38;5;246m][0m
     [38;5;246m│[0m
- [38;5;246m21 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m<[0mdiv[38;5;249m [0m[38;5;249mc[0m[38;5;249ml[0m[38;5;249ma[0m[38;5;249ms[0m[38;5;249ms[0m[38;5;249mN[0m[38;5;249ma[0m[38;5;249mm[0m[38;5;249me[0m[38;5;249m=[0m[38;5;249m"[0m[38;5;249mf[0m[38;5;249ml[0m[38;5;249me[0m[38;5;249mx[0m[38;5;249m [0m[38;5;249mi[0m[38;5;249mt[0m[38;5;249me[0m[38;5;249mm[0m[38;5;249ms[0m[38;5;249m-[0m[38;5;249mc[0m[38;5;249me[0m[38;5;249mn[0m[38;5;249mt[0m[38;5;249me[0m[38;5;249mr[0m[38;5;249m [0m[38;5;249mg[0m[38;5;249ma[0m[38;5;249mp[0m[38;5;249m-[0m[38;5;249m4[0m[38;5;249m"[0m[38;5;249m>[0m
- [38;5;240m   │[0m            ─┬─  
- [38;5;240m   │[0m             ╰─── Opened here
- [38;5;240m   │[0m 
- [38;5;246m28 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m<[0m[38;5;249m/[0mheader[38;5;249m>[0m
- [38;5;240m   │[0m           ───┬──  
- [38;5;240m   │[0m              ╰──── Expected `</div>`
+ [38;5;246m47 │[0m [38;5;249m}[0m
+ [38;5;240m   │[0m │ 
+ [38;5;240m   │[0m ╰─ 
 [38;5;246m────╯[0m
 
-[31m[PARSE_ERROR] Error:[0m Expected corresponding JSX closing tag for 'header'.
-     [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/pages/Goals.tsx:253:9 [38;5;246m][0m
-     [38;5;246m│[0m
- [38;5;246m  6 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m<[0mheader[38;5;249m [0m[38;5;249mc[0m[38;5;249ml[0m[38;5;249ma[0m[38;5;249ms[0m[38;5;249ms[0m[38;5;249mN[0m[38;5;249ma[0m[38;5;249mm[0m[38;5;249me[0m[38;5;249m=[0m[38;5;249m"[0m[38;5;249mh[0m[38;5;249m-[0m[38;5;249m1[0m[38;5;249m6[0m[38;5;249m [0m[38;5;249mb[0m[38;5;249mo[0m[38;5;249mr[0m[38;5;249md[0m[38;5;249me[0m[38;5;249mr[0m[38;5;249m-[0m[38;5;249mb[0m[38;5;249m [0m[38;5;249mb[0m[38;5;249mo[0m[38;5;249mr[0m[38;5;249md[0m[38;5;249me[0m[38;5;249mr[0m[38;5;249m-[0m[38;5;249ms[0m[38;5;249ml[0m[38;5;249ma[0m[38;5;249mt[0m[38;5;249me[0m[38;5;249m-[0m[38;5;249m8[0m[38;5;249m0[0m[38;5;249m0[0m[38;5;249m [0m[38;5;249mf[0m[38;5;249ml[0m[38;5;249me[0m[38;5;249mx[0m[38;5;249m [0m[38;5;249mi[0m[38;5;249mt[0m[38;5;249me[0m[38;5;249mm[0m[38;5;249ms[0m[38;5;249m-[0m[38;5;249mc[0m[38;5;249me[0m[38;5;249mn[0m[38;5;249mt[0m[38;5;249me[0m[38;5;249mr[0m[38;5;249m [0m[38;5;249mj[0m[38;5;249mu[0m[38;5;249ms[0m[38;5;249mt[0m[38;5;249mi[0m[38;5;249mf[0m[38;5;249my[0m[38;5;249m-[0m[38;5;249mb[0m[38;5;249me[0m[38;5;249mt[0m[38;5;249mw[0m[38;5;249me[0m[38;5;249me[0m[38;5;249mn[0m[38;5;249m [0m[38;5;249mp[0m[38;5;249mx[0m[38;5;249m-[0m[38;5;249m8[0m[38;5;249m [0m[38;5;249mb[0m[38;5;249mg[0m[38;5;249m-[0m[38;5;249mb[0m[38;5;249ma[0m[38;5;249mc[0m[38;5;249mk[0m[38;5;249mg[0m[38;5;249mr[0m[38;5;249mo[0m[38;5;249mu[0m[38;5;249mn[0m[38;5;249md[0m[38;5;249m-[0m[38;5;249md[0m[38;5;249ma[0m[38;5;249mr[0m[38;5;249mk[0m[38;5;249m/[0m[38;5;249m3[0m[38;5;249m0[0m[38;5;249m [0m[38;5;249mb[0m[38;5;249ma[0m[38;5;249mc[0m[38;5;249mk[0m[38;5;249md[0m[38;5;249mr[0m[38;5;249mo[0m[38;5;249mp[0m[38;5;249m-[0m[38;5;249mb[0m[38;5;249ml[0m[38;5;249mu[0m[38;5;249mr[0m[38;5;249m-[0m[38;5;249mm[0m[38;5;249md[0m[38;5;249m [0m[38;5;249mz[0m[38;5;249m-[0m[38;5;249m1[0m[38;5;249m0[0m[38;5;249m"[0m[38;5;249m>[0m
- [38;5;240m    │[0m          ───┬──  
- [38;5;240m    │[0m             ╰──── Opened here
- [38;5;240m    │[0m 
- [38;5;246m253 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m<[0m[38;5;249m/[0mmain[38;5;249m>[0m
- [38;5;240m    │[0m         ──┬─  
- [38;5;240m    │[0m           ╰─── Expected `</header>`
-[38;5;246m─────╯[0m
-
   Plugin: vite:oxc
-  File: /Users/arnavparmaj/Projects/FinWrap/web/src/pages/Goals.tsx
+  File: /Users/arnavparmaj/Projects/FinWrap/web/src/pages/Settings.tsx
       at transformWithOxc (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:3719:19)
       at TransformPluginContext.transform (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:3795:26)
       at EnvironmentPluginContainer.transform (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:29998:51)
       at async loadAndTransform (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:24133:26)
       at async viteTransformMiddleware (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:24941:20)
-11:50:24 PM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css
-11:55:16 PM [vite] (client) hmr update /src/components/TopNav.tsx, /src/index.css
-11:56:18 PM [vite] (client) hmr update /src/pages/Budgets.tsx, /src/index.css
-11:56:51 PM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css
-11:56:57 PM [vite] (client) hmr update /src/pages/Insights.tsx, /src/index.css
-11:57:04 PM [vite] (client) hmr update /src/pages/Recurring.tsx, /src/index.css
-11:57:06 PM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
-12:00:02 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
-12:00:02 AM [vite] (client) page reload src/main.tsx
-12:00:02 AM [vite] (client) hmr update /src/components/Layout.tsx, /src/index.css
-12:00:02 AM [vite] (client) hmr update /src/components/TopNav.tsx, /src/index.css
-12:00:02 AM [vite] (client) hmr update /src/pages/Auth.tsx, /src/index.css
-12:00:02 AM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css
-12:00:02 AM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
-12:00:02 AM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
-12:00:02 AM [vite] (client) hmr update /src/pages/Budgets.tsx, /src/index.css
-12:00:02 AM [vite] (client) hmr update /src/pages/Insights.tsx, /src/index.css
-12:00:02 AM [vite] (client) hmr update /src/pages/Recurring.tsx, /src/index.css
-12:00:02 AM [vite] (client) hmr update /src/pages/Wrapped.tsx, /src/index.css
-12:00:02 AM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
-12:07:02 AM [vite] (client) hmr update /src/pages/Budgets.tsx, /src/index.css
-12:13:23 AM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css
-12:13:48 AM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css
-12:18:00 AM [vite] (client) hmr update /src/pages/Goals.tsx, /src/index.css
-12:18:46 AM [vite] (client) hmr update /src/pages/Recurring.tsx, /src/index.css
-12:19:05 AM [vite] (client) hmr update /src/pages/Recurring.tsx, /src/index.css
-12:24:30 AM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
-12:24:47 AM [vite] (client) hmr update /src/index.css, /src/pages/Splits.tsx
-12:24:48 AM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
-12:33:33 AM [vite] .env changed, restarting server...
-12:33:33 AM [vite] server restarted.
-12:35:21 AM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
-12:47:43 AM [vite] (client) hmr update /src/index.css, /src/pages/Splits.tsx
-12:48:59 AM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
-12:48:59 AM [vite] Internal server error: Transform failed with 1 error:
-
-[31m[PARSE_ERROR] Error:[0m Unexpected token. Did you mean `{'>'}` or `&gt;`?
-     [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/pages/Splits.tsx:286:35 [38;5;246m][0m
-     [38;5;246m│[0m
- [38;5;246m286 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m<[0m[38;5;249m/[0m[38;5;249md[0m[38;5;249mi[0m[38;5;249mv[0m[38;5;249m>[0m[38;5;249m>[0m
- [38;5;240m    │[0m                                   │ 
- [38;5;240m    │[0m                                   ╰─ 
-[38;5;246m─────╯[0m
-
-  Plugin: vite:oxc
-  File: /Users/arnavparmaj/Projects/FinWrap/web/src/pages/Splits.tsx
-      at transformWithOxc (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:3719:19)
-      at TransformPluginContext.transform (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:3795:26)
-      at EnvironmentPluginContainer.transform (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:29998:51)
-      at async loadAndTransform (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:24133:26)
-      at async viteTransformMiddleware (file:///Users/arnavparmaj/Projects/FinWrap/web/node_modules/vite/dist/node/chunks/node.js:24941:20)
-12:49:09 AM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
-12:52:15 AM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
-12:57:46 AM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
-1:03:09 AM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
+8:08:09 PM [vite] (client) hmr update /src/pages/Settings.tsx, /src/index.css
+8:08:22 PM [vite] .env changed, restarting server...
+8:08:22 PM [vite] (client) Re-optimizing dependencies because lockfile has changed
+8:08:22 PM [vite] server restarted.
+8:09:12 PM [vite] .env changed, restarting server...
+8:09:12 PM [vite] server restarted.
+8:16:47 PM [vite] (client) ✨ new dependencies optimized: @google/genai, react-markdown
+8:16:47 PM [vite] (client) ✨ optimized dependencies changed. reloading

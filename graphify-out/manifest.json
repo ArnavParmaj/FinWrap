@@ -1,0 +1,242 @@
+{
+  "/Users/arnavparmaj/Projects/FinWrap/web/eslint.config.js": {
+    "mtime": 1773512339.297596,
+    "hash": "b8893da386a89dfd3672dad848f4ec7e"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/vite.config.ts": {
+    "mtime": 1773512392.9132018,
+    "hash": "5b641ab5f85eff4b0b9acec3417ca9b5"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/App.tsx": {
+    "mtime": 1773756755.8471932,
+    "hash": "15b7e715542e3e9f418fb1458cb8ea53"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/main.tsx": {
+    "mtime": 1773685801.9030519,
+    "hash": "787e5a07efeb2bf6209d5937195f2f68"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/types.ts": {
+    "mtime": 1773757768.0620956,
+    "hash": "e49412b746df8ac4fcbfcc20a9ef1247"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/components/Layout.tsx": {
+    "mtime": 1773685801.9032393,
+    "hash": "e2accf30962485466dec8159d0c56a40"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/components/TopNav.tsx": {
+    "mtime": 1773685801.9033308,
+    "hash": "eb033722d1d621a8a5c08578cc262757"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/hooks/useTransactions.ts": {
+    "mtime": 1773565130.402626,
+    "hash": "ec3e054c577d1c83140617da4b5e8771"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/hooks/useSubscriptions.ts": {
+    "mtime": 1773686924.112386,
+    "hash": "93f6705e352f805406938467647899ad"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/hooks/useBudgets.ts": {
+    "mtime": 1773559531.9655042,
+    "hash": "3d3115a7a9988eafea8fcc655a17ff73"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/hooks/useSplits.ts": {
+    "mtime": 1773688663.4071796,
+    "hash": "028e997b8ce500f6a2ccbb680fe8354a"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/hooks/useAuth.ts": {
+    "mtime": 1773518440.9178638,
+    "hash": "fa6497f34550ef3ac4de72e3ee7e82ff"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/hooks/useGoals.ts": {
+    "mtime": 1773757770.096285,
+    "hash": "3883558ad20b9d671e417ce724ab8603"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/lib/dashboardStats.ts": {
+    "mtime": 1773757326.7392027,
+    "hash": "97b23fc4833f5f5421f57b7a8c31cc8c"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/lib/firebase.ts": {
+    "mtime": 1773519281.1501114,
+    "hash": "f7a855fe1580db563b2014d7aed5bb22"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/lib/gemini.ts": {
+    "mtime": 1773758542.6600487,
+    "hash": "589825e2e763ff514691b59392399ca0"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/pages/Settings.tsx": {
+    "mtime": 1773758288.8681521,
+    "hash": "1f6595ffb02b20e59c2957b4c3b94774"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/pages/Auth.tsx": {
+    "mtime": 1773685801.9037588,
+    "hash": "1f237f1ad73e0dba51ad7f7ba3ba5fe2"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/pages/Goals.tsx": {
+    "mtime": 1773757809.5841742,
+    "hash": "cc64716177788c190d49db87434eddcf"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/pages/Dashboard.tsx": {
+    "mtime": 1773757325.510265,
+    "hash": "5e3fd970d1730a5269d836974218292f"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/pages/Transactions.tsx": {
+    "mtime": 1773685801.9050035,
+    "hash": "42bb6607973a9cf4838aacc5825fdd00"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/pages/Budgets.tsx": {
+    "mtime": 1773686222.2276893,
+    "hash": "472f7d93ab06863db4b21f0d0c4a4ea6"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/pages/Insights.tsx": {
+    "mtime": 1773758471.4460316,
+    "hash": "de210a957dcfeac3888f6bd540c32b4c"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/pages/Recurring.tsx": {
+    "mtime": 1773686945.8935416,
+    "hash": "73d8cc03495ab74ca2800a7dec58b66e"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/pages/Wrapped.tsx": {
+    "mtime": 1773758592.355505,
+    "hash": "8e07b67f53b4742713e520a71f3cb8da"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/pages/Splits.tsx": {
+    "mtime": 1773689589.102746,
+    "hash": "746ddba33f7ba17fe7b3daf3cf4ea545"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/store/useUserStore.ts": {
+    "mtime": 1773512432.222156,
+    "hash": "6e78b935903e7889db7e71401d2d44d5"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/store/useAppStore.ts": {
+    "mtime": 1773512439.5578134,
+    "hash": "f46de18b5d2dd2d2bad758a7db881c3d"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/finwrap-ui-requirements.md": {
+    "mtime": 1773511661.2173834,
+    "hash": "f60723e8d8dc797098d6e75c40ae3ccf"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/finwrap_prd_final.md": {
+    "mtime": 1773511219.9765444,
+    "hash": "0e0b888e903ae892239d10f98636eb79"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/CLAUDE.md": {
+    "mtime": 1773555952.047457,
+    "hash": "963783df29bf9b6ba37ad210a7b8abb2"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/recurring_payments/code.html": {
+    "mtime": 1773495896.0,
+    "hash": "c61b5fbe80315e9acb6f8e1b4a7d122d"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/auth/code.html": {
+    "mtime": 1773495896.0,
+    "hash": "495cbb05da27d5a7c8c26e11744fe2c6"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/savings_goals/code.html": {
+    "mtime": 1773495896.0,
+    "hash": "1acd80d97b9ee418a324d9377e9079d9"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/budget_goals/code.html": {
+    "mtime": 1773495896.0,
+    "hash": "0f7b7857846701472ac72f58006de62a"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/dashboard/code.html": {
+    "mtime": 1773495896.0,
+    "hash": "c0e2aaf16612f396e5640ceeb2bb3bcb"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/transactions/code.html": {
+    "mtime": 1773495896.0,
+    "hash": "35c059bc8700a97bacbb1734293d4019"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/ai_insights/code.html": {
+    "mtime": 1773495896.0,
+    "hash": "056b94beb5b8d9ef7aedb5560be0c58c"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/split_expenses/code.html": {
+    "mtime": 1773495896.0,
+    "hash": "e9e20260e78ed080c10d1ec782c7bbc9"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/monthly_wrapped/code.html": {
+    "mtime": 1773495896.0,
+    "hash": "d15cda5bd833a581c2ad937d59813da5"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/sign_up/code.html": {
+    "mtime": 1773495896.0,
+    "hash": "add58697f51a2691ca684e1ea76f67d2"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/index.html": {
+    "mtime": 1773518144.5791383,
+    "hash": "6b27c8ca755b4d831e7872a74c2f2364"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/README.md": {
+    "mtime": 1773512339.2972374,
+    "hash": "f6e3faf55d738cf2affe1b44195f27cf"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/pages/AuthGenerated.html": {
+    "mtime": 1773513737.2257955,
+    "hash": "8e9f2321916d7f13b5ed40c88dd279bf"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/pages/TransactionsGenerated.html": {
+    "mtime": 1773514219.3389704,
+    "hash": "a23068a134c4dca706d42bc05349a156"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/recurring_payments/screen.png": {
+    "mtime": 1773495896.0,
+    "hash": "0c5844270ff6912b2a2761f9963fdb9f"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/auth/screen.png": {
+    "mtime": 1773495896.0,
+    "hash": "d85a0b4388b94fec991c00fa0a1ca987"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/savings_goals/screen.png": {
+    "mtime": 1773495896.0,
+    "hash": "99cec1ecad1e9b8faab21051f3b93cde"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/budget_goals/screen.png": {
+    "mtime": 1773495896.0,
+    "hash": "60c2e95ca532e2db9493a1fd96ce456d"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/dashboard/screen.png": {
+    "mtime": 1773495896.0,
+    "hash": "c9143edf5057f88ed80ce0e7322200f7"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/transactions/screen.png": {
+    "mtime": 1773495896.0,
+    "hash": "ee52183068703045b33fa2451401be00"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/ai_insights/screen.png": {
+    "mtime": 1773495896.0,
+    "hash": "d1cac48e7bfc31dd2c76aa1920c0530f"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/split_expenses/screen.png": {
+    "mtime": 1773495896.0,
+    "hash": "f3e685b1264a873de8c86ade83ac9405"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/monthly_wrapped/screen.png": {
+    "mtime": 1773495896.0,
+    "hash": "07e567e60e465f5eef60d1a606a8cd21"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/ui/stitch/sign_up/screen.png": {
+    "mtime": 1773495896.0,
+    "hash": "04162e9e46d3fe358b4fd2053ba238a6"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/public/icons.svg": {
+    "mtime": 1773512339.2984478,
+    "hash": "3b4fcfcf393eca4d264dca4a4663bc37"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/public/favicon.svg": {
+    "mtime": 1773512339.2980785,
+    "hash": "7e840862161341271697daa99a40d76b"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/assets/hero.png": {
+    "mtime": 1773512339.2993083,
+    "hash": "5cf2b0762834cdddc0dd3ec1397b5011"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/assets/vite.svg": {
+    "mtime": 1773512339.2996202,
+    "hash": "9960a24288958394ac50e57ff638b036"
+  },
+  "/Users/arnavparmaj/Projects/FinWrap/web/src/assets/react.svg": {
+    "mtime": 1773512339.2994828,
+    "hash": "f0402b67b6ce880f65666bb49e841696"
+  }
+}
