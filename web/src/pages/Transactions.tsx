@@ -575,12 +575,10 @@ function DeleteConfirmModal({ transaction, onClose, onConfirm }: DeleteConfirmMo
 type TypeFilter = "all" | "debit" | "credit";
 
 export default function TransactionsPage() {
-  const { activeMonth, setActiveMonth } = useAppStore();
+  const { activeMonth, setActiveMonth, searchQuery } = useAppStore();
 
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [catFilter, setCatFilter] = useState("all");
-  // The search bar is now in TopNav, so local search filter is disabled for now.
-  const search = ""; 
   const [page, setPage] = useState(0);
   const [showMonthPicker, setShowMonthPicker] = useState(false);
   const [showCatPicker, setShowCatPicker] = useState(false);
@@ -593,21 +591,34 @@ export default function TransactionsPage() {
     useTransactions(activeMonth);
 
   const filtered = useMemo(() => {
-    let result = transactions;
+    let result = [...transactions];
     if (typeFilter !== "all")
       result = result.filter((t) => t.type === typeFilter);
     if (catFilter !== "all")
       result = result.filter((t) => t.categoryId === catFilter);
-    if (search.trim()) {
-      const q = search.toLowerCase();
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
       result = result.filter(
         (t) =>
           t.merchant.toLowerCase().includes(q) ||
-          t.note?.toLowerCase().includes(q),
+          t.note?.toLowerCase().includes(q) ||
+          getCategoryInfo(t.categoryId).name.toLowerCase().includes(q)
       );
     }
+    
+    // Sort sequentially by date (newest first), falling back to creation time if on the same day
+    result.sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      if (dateA !== dateB) return dateB - dateA;
+      
+      const createA = new Date(a.createdAt || 0).getTime();
+      const createB = new Date(b.createdAt || 0).getTime();
+      return createB - createA;
+    });
+    
     return result;
-  }, [transactions, typeFilter, catFilter, search]);
+  }, [transactions, typeFilter, catFilter, searchQuery]);
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const paginated = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);

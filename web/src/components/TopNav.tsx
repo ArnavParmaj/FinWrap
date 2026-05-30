@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useUserStore } from "../store/useUserStore";
+import { useAppStore } from "../store/useAppStore";
 import { signOut } from "firebase/auth";
 import { auth } from "../lib/firebase";
 
 export default function TopNav() {
   const { user, setUser } = useUserStore();
+  const { searchQuery, setSearchQuery } = useAppStore();
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -66,6 +68,8 @@ export default function TopNav() {
             className="w-full bg-white/5 border-none rounded-full pl-10 pr-4 py-2 text-sm focus:ring-1 focus:ring-primary placeholder:text-slate-500"
             placeholder="Search data..."
             type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
         

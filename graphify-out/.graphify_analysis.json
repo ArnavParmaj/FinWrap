@@ -1,0 +1,374 @@
+{
+  "communities": {
+    "0": [
+      "components_layout_layout",
+      "components_topnav_topnav",
+      "hooks_useauth_useauth",
+      "lib_firebase_auth",
+      "lib_firebase_firebaseconfig",
+      "lib_firebase_storage",
+      "pages_auth_authpage",
+      "pages_recurring_addsubscriptionmodal",
+      "pages_recurring_recurringpage",
+      "pages_settings_settingspage",
+      "src_app_app",
+      "src_app_privateroute",
+      "src_app_tsx",
+      "src_components_layout_tsx",
+      "src_components_topnav_tsx",
+      "src_hooks_useauth_ts",
+      "src_hooks_usesubscriptions_ts",
+      "src_lib_firebase_ts",
+      "src_main_tsx",
+      "src_pages_auth_tsx",
+      "src_pages_recurring_tsx",
+      "src_pages_settings_tsx",
+      "src_store_useuserstore_ts",
+      "src_types_subscription",
+      "store_useuserstore_userstate",
+      "store_useuserstore_useuserstore"
+    ],
+    "1": [
+      "lib_dashboardstats_calcstats",
+      "lib_dashboardstats_computedashboardstats",
+      "lib_dashboardstats_formatmonthlabel",
+      "lib_dashboardstats_getprevmonth",
+      "lib_dashboardstats_investment_categories",
+      "lib_dashboardstats_isinvestment",
+      "lib_dashboardstats_pctchange",
+      "pages_budgets_addbudgetmodal",
+      "pages_budgets_budgetcard",
+      "pages_budgets_budgetdetailsmodal",
+      "pages_budgets_budgetspage",
+      "pages_budgets_months",
+      "pages_dashboard_dashboardpage",
+      "pages_dashboard_donut_colors",
+      "pages_dashboard_pctbadge",
+      "pages_dashboard_statcard",
+      "src_hooks_usebudgets_ts",
+      "src_pages_budgets_tsx",
+      "src_pages_dashboard_tsx",
+      "src_store_useappstore_ts",
+      "src_types_budget",
+      "src_types_categoryspend",
+      "src_types_dailyspend",
+      "src_types_dashboardstats",
+      "store_useappstore_appstate",
+      "store_useappstore_getcurrentmonth"
+    ],
+    "2": [
+      "finwrap_finwrap_prd_final_codeblock_1",
+      "finwrap_finwrap_prd_final_finwrap_product_requirements_document_final",
+      "finwrap_finwrap_prd_final_firestore_data_architecture",
+      "finwrap_finwrap_prd_final_out_of_scope_v1",
+      "finwrap_finwrap_prd_final_phase_1_web_app_build_now",
+      "finwrap_finwrap_prd_final_phase_2_mobile_app",
+      "finwrap_finwrap_prd_final_phase_3_expand",
+      "finwrap_finwrap_prd_final_phase_overview",
+      "finwrap_finwrap_prd_final_platform_roadmap",
+      "finwrap_finwrap_prd_final_product_vision",
+      "finwrap_finwrap_prd_final_resume_description",
+      "finwrap_finwrap_prd_final_sprint_1_foundation_week_1",
+      "finwrap_finwrap_prd_final_sprint_2_transactions_week_1_2",
+      "finwrap_finwrap_prd_final_sprint_3_dashboard_week_2",
+      "finwrap_finwrap_prd_final_sprint_4_goals_budgets_week_3",
+      "finwrap_finwrap_prd_final_sprint_5_recurring_splits_week_3_4",
+      "finwrap_finwrap_prd_final_sprint_6_ai_wrapped_week_4",
+      "finwrap_finwrap_prd_final_sprint_7_polish_deploy_week_4_5",
+      "finwrap_finwrap_prd_final_sprint_8_flutter_app_month_2",
+      "finwrap_finwrap_prd_final_sprint_roadmap",
+      "finwrap_finwrap_prd_final_tech_stack",
+      "finwrap_prd_final_md"
+    ],
+    "3": [
+      "claude_md",
+      "finwrap_claude_architecture",
+      "finwrap_claude_backend_services",
+      "finwrap_claude_code_quality",
+      "finwrap_claude_codeblock_1",
+      "finwrap_claude_codeblock_2",
+      "finwrap_claude_common_development_tasks",
+      "finwrap_claude_component_structure",
+      "finwrap_claude_data_flow_patterns",
+      "finwrap_claude_environment_variables",
+      "finwrap_claude_frontend_stack",
+      "finwrap_claude_key_files_and_directories",
+      "finwrap_claude_project_overview",
+      "finwrap_claude_project_specific_conventions",
+      "finwrap_claude_running_the_application",
+      "finwrap_claude_state_management",
+      "finwrap_claude_styling_system",
+      "finwrap_claude_testing"
+    ],
+    "4": [
+      "finwrap_finwrap_prd_final_10_monthly_wrapped_wrapped",
+      "finwrap_finwrap_prd_final_11_settings_settings",
+      "finwrap_finwrap_prd_final_1_authentication",
+      "finwrap_finwrap_prd_final_2_dashboard_dashboard",
+      "finwrap_finwrap_prd_final_3_transactions_transactions",
+      "finwrap_finwrap_prd_final_4_budget_goals_budgets",
+      "finwrap_finwrap_prd_final_5_smart_savings_goals_goals",
+      "finwrap_finwrap_prd_final_6_recurring_payments_recurring",
+      "finwrap_finwrap_prd_final_7_bill_reminders_bills_phase_2_flutter_fcm",
+      "finwrap_finwrap_prd_final_8_split_expenses_splits",
+      "finwrap_finwrap_prd_final_9_ai_insights_insights",
+      "finwrap_finwrap_prd_final_features_full_spec",
+      "finwrap_finwrap_ui_requirements_1_dashboard_dashboard",
+      "finwrap_finwrap_ui_requirements_9_auth_screens_login_signup",
+      "finwrap_finwrap_ui_requirements_screens_to_design"
+    ],
+    "5": [
+      "pages_splits_addgroupmodal",
+      "pages_splits_expensemodal",
+      "pages_splits_splitspage",
+      "src_hooks_usesplits_ts",
+      "src_pages_splits_tsx",
+      "src_types_account",
+      "src_types_category",
+      "src_types_goalcontribution",
+      "src_types_splitexpense",
+      "src_types_splitgroup",
+      "src_types_splitower",
+      "src_types_splitpayer",
+      "src_types_splitsettlement",
+      "src_types_ts",
+      "src_types_user"
+    ],
+    "6": [
+      "finwrap_finwrap_ui_requirements_codeblock_1",
+      "finwrap_finwrap_ui_requirements_codeblock_2",
+      "finwrap_finwrap_ui_requirements_codeblock_3",
+      "finwrap_finwrap_ui_requirements_color_tokens_for_tailwind_config",
+      "finwrap_finwrap_ui_requirements_component_conventions",
+      "finwrap_finwrap_ui_requirements_finwrap_ui_design_requirements",
+      "finwrap_finwrap_ui_requirements_fonts",
+      "finwrap_finwrap_ui_requirements_layout_structure",
+      "finwrap_finwrap_ui_requirements_light_mode",
+      "finwrap_finwrap_ui_requirements_notes_for_antigravity",
+      "finwrap_finwrap_ui_requirements_overall_vibe",
+      "finwrap_finwrap_ui_requirements_stitch_prompt",
+      "finwrap_finwrap_ui_requirements_visual_direction",
+      "finwrap_ui_requirements_md"
+    ],
+    "7": [
+      "pages_budgets_default_categories",
+      "pages_transactions_addmodalprops",
+      "pages_transactions_addtransactionmodal",
+      "pages_transactions_csvimportmodal",
+      "pages_transactions_csvmodalprops",
+      "pages_transactions_deleteconfirmmodal",
+      "pages_transactions_emptyform",
+      "pages_transactions_getcategoryinfo",
+      "pages_transactions_rowmenu",
+      "pages_transactions_transactionformdata",
+      "pages_transactions_typefilter",
+      "src_types_transaction"
+    ],
+    "8": [
+      "hooks_usegoals_usegoals",
+      "lib_firebase_db",
+      "pages_goals_addcontributionmodal",
+      "pages_goals_addgoalmodal",
+      "pages_goals_goal_templates",
+      "pages_goals_goalcard",
+      "pages_goals_goaldetailsmodal",
+      "pages_goals_goalspage",
+      "src_hooks_usegoals_ts",
+      "src_pages_goals_tsx",
+      "src_types_goal"
+    ],
+    "9": [
+      "lib_gemini_generatedeepinsights",
+      "lib_gemini_generatewrappednarrative",
+      "pages_insights_insightspage",
+      "pages_wrapped_formatinr",
+      "pages_wrapped_wrappedpage",
+      "src_hooks_usetransactions_ts",
+      "src_lib_gemini_ts",
+      "src_pages_insights_tsx",
+      "src_pages_wrapped_tsx"
+    ],
+    "10": [
+      "web_readme_codeblock_1",
+      "web_readme_codeblock_2",
+      "web_readme_expanding_the_eslint_configuration",
+      "web_readme_md",
+      "web_readme_react_compiler",
+      "web_readme_react_typescript_vite"
+    ],
+    "11": [
+      "eslint_config_js"
+    ],
+    "12": [
+      "vite_config_ts"
+    ],
+    "13": [
+      "Users_arnavparmaj_Projects_FinWrap_ui_stitch_auth_code_html"
+    ],
+    "14": [
+      "Users_arnavparmaj_Projects_FinWrap_web_index_html"
+    ],
+    "15": [
+      "Users_arnavparmaj_Projects_FinWrap_web_src_pages_AuthGenerated_html"
+    ],
+    "16": [
+      "Users_arnavparmaj_Projects_FinWrap_web_src_pages_TransactionsGenerated_html"
+    ],
+    "17": [
+      "Users_arnavparmaj_Projects_FinWrap_ui_stitch_auth_screen_png"
+    ],
+    "18": [
+      "Users_arnavparmaj_Projects_FinWrap_web_public_icons_svg"
+    ],
+    "19": [
+      "Users_arnavparmaj_Projects_FinWrap_web_public_favicon_svg"
+    ],
+    "20": [
+      "Users_arnavparmaj_Projects_FinWrap_web_src_assets_hero_png"
+    ],
+    "21": [
+      "Users_arnavparmaj_Projects_FinWrap_web_src_assets_vite_svg"
+    ],
+    "22": [
+      "Users_arnavparmaj_Projects_FinWrap_web_src_assets_react_svg"
+    ]
+  },
+  "cohesion": {
+    "0": 0.15,
+    "1": 0.14,
+    "2": 0.09,
+    "3": 0.11,
+    "4": 0.19,
+    "5": 0.22,
+    "6": 0.14,
+    "7": 0.2,
+    "8": 0.24,
+    "9": 0.44,
+    "10": 0.33,
+    "11": 1.0,
+    "12": 1.0,
+    "13": 1.0,
+    "14": 1.0,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0
+  },
+  "gods": [
+    {
+      "id": "src_types_transaction",
+      "label": "Transaction",
+      "degree": 22
+    },
+    {
+      "id": "src_types_dashboardstats",
+      "label": "DashboardStats",
+      "degree": 20
+    },
+    {
+      "id": "store_useuserstore_useuserstore",
+      "label": "useUserStore",
+      "degree": 17
+    },
+    {
+      "id": "finwrap_finwrap_prd_final_features_full_spec",
+      "label": "Features \u2014 Full Spec",
+      "degree": 12
+    },
+    {
+      "id": "pages_wrapped_formatinr",
+      "label": "formatINR()",
+      "degree": 11
+    },
+    {
+      "id": "finwrap_finwrap_ui_requirements_screens_to_design",
+      "label": "Screens to Design",
+      "degree": 10
+    },
+    {
+      "id": "finwrap_finwrap_prd_final_finwrap_product_requirements_document_final",
+      "label": "FinWrap \u2014 Product Requirements Document (Final)",
+      "degree": 10
+    },
+    {
+      "id": "finwrap_finwrap_prd_final_sprint_roadmap",
+      "label": "Sprint Roadmap",
+      "degree": 9
+    },
+    {
+      "id": "finwrap_claude_common_development_tasks",
+      "label": "Common Development Tasks",
+      "degree": 9
+    },
+    {
+      "id": "pages_dashboard_dashboardpage",
+      "label": "DashboardPage()",
+      "degree": 8
+    }
+  ],
+  "surprises": [
+    {
+      "source": "TopNav()",
+      "target": "useUserStore",
+      "source_files": [
+        "web/src/components/TopNav.tsx",
+        "web/src/store/useUserStore.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "peripheral node `TopNav()` unexpectedly reaches hub `useUserStore`"
+    },
+    {
+      "source": "useGoals()",
+      "target": "useUserStore",
+      "source_files": [
+        "web/src/hooks/useGoals.ts",
+        "web/src/store/useUserStore.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "useGoals()",
+      "target": "GoalsPage()",
+      "source_files": [
+        "web/src/hooks/useGoals.ts",
+        "web/src/pages/Goals.tsx"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "peripheral node `GoalsPage()` unexpectedly reaches hub `useGoals()`"
+    },
+    {
+      "source": "useGoals()",
+      "target": "DashboardPage()",
+      "source_files": [
+        "web/src/hooks/useGoals.ts",
+        "web/src/pages/Dashboard.tsx"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "formatMonthLabel()",
+      "target": "BudgetDetailsModal()",
+      "source_files": [
+        "web/src/lib/dashboardStats.ts",
+        "web/src/pages/Budgets.tsx"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "peripheral node `BudgetDetailsModal()` unexpectedly reaches hub `formatMonthLabel()`"
+    }
+  ],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}

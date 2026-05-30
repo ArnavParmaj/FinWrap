@@ -20,8 +20,7 @@ export default function WrappedPage() {
     biggestCategory,
     biggestSplurge,
     categorySplurgeAmount,
-    mostFrequentedMerchant,
-    roastText
+    mostFrequentedMerchant
   } = useMemo(() => {
     let spent = 0;
     let income = 0;

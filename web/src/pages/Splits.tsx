@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useSplits } from "../hooks/useSplits";
 import { useTransactions } from "../hooks/useTransactions";
-import { formatINR } from "../lib/dashboardStats";
+import { formatINRSplit, simplifyDebts } from "../lib/splits";
 import type { SplitGroup, SplitExpense, SplitPayer, SplitOwer } from "../types";
 
 export default function SplitsPage() {
@@ -21,38 +21,49 @@ export default function SplitsPage() {
   const groupExpenses = useMemo(() => expenses.filter(e => e.groupId === activeGroup?.id), [expenses, activeGroup]);
   const groupSettlements = useMemo(() => settlements.filter(s => s.groupId === activeGroup?.id), [settlements, activeGroup]);
 
-  const balances = useMemo(() => {
-    if (!activeGroup) return {};
+  const { rawBalances, simplifiedDebts } = useMemo(() => {
+    if (!activeGroup) return { rawBalances: {}, simplifiedDebts: [] };
     const members = ['You', ...activeGroup.members.map(m => m.name)];
-    const bals: Record<string, number> = {};
-    members.forEach(m => bals[m] = 0);
+    const balsCents: Record<string, number> = {};
+    members.forEach(m => balsCents[m] = 0);
 
     groupExpenses.forEach((exp: any) => {
       const payers = exp.payers || (exp.paidBy ? [{ memberName: exp.paidBy, amountPaid: exp.totalAmount }] : []);
       
       let owers = exp.owers || [];
       if (owers.length === 0 && exp.splitEqually !== undefined) {
-        const splitAmount = exp.totalAmount / members.length;
-        owers = members.map(m => ({ memberName: m, amountOwed: splitAmount }));
+        const totalCents = Math.round(exp.totalAmount * 100);
+        const baseCents = Math.floor(totalCents / members.length);
+        const remainderCents = totalCents % members.length;
+        owers = members.map((m, idx) => {
+          const extra = idx < remainderCents ? 1 : 0;
+          return { memberName: m, amountOwed: (baseCents + extra) / 100 };
+        });
       }
 
       payers.forEach((p: any) => {
-        if (bals[p.memberName] !== undefined) bals[p.memberName] += p.amountPaid;
+        if (balsCents[p.memberName] !== undefined) balsCents[p.memberName] += Math.round(p.amountPaid * 100);
       });
       owers.forEach((o: any) => {
-        if (bals[o.memberName] !== undefined) bals[o.memberName] -= o.amountOwed;
+        if (balsCents[o.memberName] !== undefined) balsCents[o.memberName] -= Math.round(o.amountOwed * 100);
       });
     });
 
     groupSettlements.forEach(settle => {
-      if (bals[settle.from] !== undefined) bals[settle.from] += settle.amount;
-      if (bals[settle.to] !== undefined) bals[settle.to] -= settle.amount;
+      const amtCents = Math.round(settle.amount * 100);
+      if (balsCents[settle.from] !== undefined) balsCents[settle.from] += amtCents;
+      if (balsCents[settle.to] !== undefined) balsCents[settle.to] -= amtCents;
     });
 
-    return bals;
+    const rawBalances: Record<string, number> = {};
+    members.forEach(m => rawBalances[m] = balsCents[m] / 100);
+
+    const simplifiedDebts = simplifyDebts(rawBalances);
+
+    return { rawBalances, simplifiedDebts };
   }, [activeGroup, groupExpenses, groupSettlements]);
 
-  const myBalance = balances['You'] || 0;
+  const myBalance = rawBalances['You'] || 0;
   const isOwed = myBalance > 0;
   const iOwe = myBalance < 0;
 
@@ -93,6 +104,14 @@ export default function SplitsPage() {
         source: 'manual'
       });
     }
+  };
+
+  const handleRemind = (memberName: string, amount: number) => {
+    const text = `Hey ${memberName}, just a reminder that you owe me ${formatINRSplit(amount)} in the "${activeGroup?.name}" group on FinWrap.`;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+    }
+    alert(`Reminder text copied to clipboard!\nYou can paste it in your chat apps to remind ${memberName}.`);
   };
 
   return (
@@ -188,7 +207,7 @@ export default function SplitsPage() {
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-slate-400 truncate">Total Owed to You</p>
-                    <p className="text-2xl font-black text-emerald-400">{formatINR(isOwed ? myBalance : 0)}</p>
+                    <p className="text-2xl font-black text-emerald-400">{formatINRSplit(isOwed ? myBalance : 0)}</p>
                   </div>
                 </div>
                 <div className="glass-panel p-6 rounded-2xl flex items-center gap-4">
@@ -197,7 +216,7 @@ export default function SplitsPage() {
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-slate-400 truncate">Total You Owe</p>
-                    <p className="text-2xl font-black text-rose-400">{formatINR(iOwe ? Math.abs(myBalance) : 0)}</p>
+                    <p className="text-2xl font-black text-rose-400">{formatINRSplit(iOwe ? Math.abs(myBalance) : 0)}</p>
                   </div>
                 </div>
               </div>
@@ -230,15 +249,15 @@ export default function SplitsPage() {
                       
                       if (net > 0) {
                         oweStatus = "You lent";
-                        oweAmount = formatINR(net);
+                        oweAmount = formatINRSplit(net);
                         colorClass = "text-emerald-400";
                       } else if (net < 0) {
                         oweStatus = "You borrowed";
-                        oweAmount = formatINR(Math.abs(net));
+                        oweAmount = formatINRSplit(Math.abs(net));
                         colorClass = "text-rose-400";
                       } else {
                         oweStatus = "Not involved";
-                        oweAmount = "₹0";
+                        oweAmount = "₹0.00";
                         colorClass = "text-slate-500";
                       }
 
@@ -268,7 +287,7 @@ export default function SplitsPage() {
                           <div className="text-right flex items-center gap-8 shrink-0">
                             <div className="min-w-[80px]">
                               <p className="text-xs text-slate-500">Total amount</p>
-                              <p className="text-lg font-bold text-slate-100">{formatINR(exp.totalAmount)}</p>
+                              <p className="text-lg font-bold text-slate-100">{formatINRSplit(exp.totalAmount)}</p>
                             </div>
                             <div className="min-w-[80px]">
                               <p className="text-xs text-slate-500">{oweStatus}</p>
@@ -301,45 +320,88 @@ export default function SplitsPage() {
               </div>
 
               <div className="mt-8 pt-6 border-t border-white/5 shrink-0 w-full overflow-hidden">
-                <h3 className="text-lg font-bold text-white mb-4">Group Balances</h3>
+                <h3 className="text-lg font-bold text-white mb-4">Simplified Debts</h3>
                 <div className="flex gap-4 overflow-x-auto pb-4 snap-x">
-                  {activeGroup.members.map((m, idx) => {
-                    const b = balances[m.name] || 0;
-                    if (Math.abs(b) < 0.01) return (
-                      <div key={idx} className="glass-panel p-4 rounded-xl flex items-center justify-between shrink-0 min-w-[280px] snap-center">
-                         <div className="flex items-center gap-3 min-w-0">
-                           <div className="size-10 rounded-full bg-slate-800 flex items-center justify-center font-bold text-slate-400 shrink-0">{m.name.charAt(0)}</div>
-                           <div className="min-w-0 pr-4">
-                             <p className="text-sm font-bold truncate">{m.name}</p>
-                             <p className="text-xs text-slate-500 truncate">Settled up</p>
-                           </div>
+                  {simplifiedDebts.length === 0 ? (
+                    <div className="glass-panel p-4 rounded-xl flex items-center justify-between shrink-0 min-w-[280px] snap-center">
+                       <div className="flex items-center gap-3 min-w-0">
+                         <div className="size-10 rounded-full bg-slate-800 flex items-center justify-center font-bold text-emerald-400 shrink-0">
+                           <span className="material-icons-outlined">check</span>
                          </div>
-                      </div>
-                    );
-                    
-                    const MathAbsB = Math.abs(b);
-                    const isOwingMe = b < 0;
-                    
-                    return (
-                      <div key={idx} className="glass-panel p-4 rounded-xl flex items-center justify-between shrink-0 min-w-[280px] snap-center">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="size-10 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary shrink-0">{m.name.charAt(0)}</div>
-                          <div className="min-w-0 pr-4">
-                            <p className="text-sm font-bold truncate">{m.name}</p>
-                            <p className={`text-xs truncate ${isOwingMe ? 'text-emerald-400' : 'text-rose-400'}`}>
-                              {isOwingMe ? `Owes you ${formatINR(MathAbsB)}` : `You owe them ${formatINR(MathAbsB)}`}
-                            </p>
+                         <div className="min-w-0 pr-4">
+                           <p className="text-sm font-bold text-white">All settled up</p>
+                           <p className="text-xs text-slate-500 truncate">No outstanding debts in this group.</p>
+                         </div>
+                       </div>
+                    </div>
+                  ) : (
+                    simplifiedDebts.map((debt, idx) => {
+                      const amInvolved = debt.debtor === 'You' || debt.creditor === 'You';
+                      const iOweThem = debt.debtor === 'You';
+                      
+                      let title = '';
+                      let desc = '';
+                      let actionText = '';
+                      let iconColor = '';
+                      let direction: 'i_owe' | 'they_owe' | null = null;
+                      
+                      if (amInvolved) {
+                        if (iOweThem) {
+                          title = debt.creditor;
+                          desc = `You owe ${formatINRSplit(debt.amount)}`;
+                          actionText = 'Settle Up';
+                          iconColor = 'text-rose-400 bg-rose-500/20';
+                          direction = 'i_owe';
+                        } else {
+                          title = debt.debtor;
+                          desc = `Owes you ${formatINRSplit(debt.amount)}`;
+                          actionText = 'Remind';
+                          iconColor = 'text-emerald-400 bg-emerald-500/20';
+                          direction = 'they_owe';
+                        }
+                      } else {
+                        title = `${debt.debtor} owes ${debt.creditor}`;
+                        desc = formatINRSplit(debt.amount);
+                        iconColor = 'text-slate-400 bg-slate-800';
+                      }
+
+                      const avatarLetter = (amInvolved && iOweThem ? debt.creditor.charAt(0) : debt.debtor.charAt(0));
+
+                      return (
+                        <div key={idx} className="glass-panel p-4 rounded-xl flex items-center justify-between shrink-0 min-w-[280px] snap-center">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className={`size-10 rounded-full flex items-center justify-center font-bold shrink-0 ${iconColor}`}>
+                              {avatarLetter}
+                            </div>
+                            <div className="min-w-0 pr-4">
+                              <p className="text-sm font-bold truncate">{title}</p>
+                              <p className={`text-xs truncate ${iOweThem ? 'text-rose-400' : (amInvolved ? 'text-emerald-400' : 'text-slate-400')}`}>
+                                {desc}
+                              </p>
+                            </div>
                           </div>
+                          {amInvolved && direction && (
+                            <div className="flex gap-2">
+                              {direction === 'they_owe' && (
+                                <button 
+                                  onClick={() => handleRemind(debt.debtor, debt.amount)}
+                                  className="text-primary hover:bg-primary/10 border border-primary/30 rounded-lg px-4 py-1.5 text-xs font-bold transition-all whitespace-nowrap shrink-0"
+                                >
+                                  Remind
+                                </button>
+                              )}
+                              <button 
+                                onClick={() => handleSettleUp(direction === 'i_owe' ? debt.creditor : debt.debtor, debt.amount, direction)}
+                                className="bg-primary hover:bg-primary/90 text-white rounded-lg px-4 py-1.5 text-xs font-bold transition-all whitespace-nowrap shrink-0"
+                              >
+                                {direction === 'i_owe' ? 'Settle Up' : 'Mark Paid'}
+                              </button>
+                            </div>
+                          )}
                         </div>
-                        <button 
-                          onClick={() => handleSettleUp(m.name, MathAbsB, isOwingMe ? 'they_owe' : 'i_owe')}
-                          className="text-primary hover:bg-primary/10 border border-primary/30 rounded-lg px-4 py-1.5 text-xs font-bold transition-all whitespace-nowrap shrink-0"
-                        >
-                          {isOwingMe ? 'Remind' : 'Settle Up'}
-                        </button>
-                      </div>
-                    )
-                  })}
+                      );
+                    })
+                  )}
                 </div>
               </div>
             </>
@@ -454,32 +516,72 @@ function ExpenseModal({ group, expenseToEdit, onClose, onSave, onSaveTransaction
     
     if (splitType === 'equal') {
       if (selectedEqualOwers.length === 0) return setError("Select at least one person to split with");
-      const splitAmount = totalAmount / selectedEqualOwers.length;
-      owers = selectedEqualOwers.map(m => ({ memberName: m, amountOwed: splitAmount }));
+      const totalCents = Math.round(totalAmount * 100);
+      const numOwers = selectedEqualOwers.length;
+      const baseCents = Math.floor(totalCents / numOwers);
+      const remainderCents = totalCents % numOwers;
+      owers = selectedEqualOwers.map((m, idx) => {
+        const extra = idx < remainderCents ? 1 : 0;
+        return { memberName: m, amountOwed: (baseCents + extra) / 100 };
+      });
     } else if (splitType === 'exact') {
-      let sum = 0;
+      const totalCents = Math.round(totalAmount * 100);
+      let sumCents = 0;
       owers = allMembers.map(m => {
         const val = parseFloat(exactAmounts[m]) || 0;
-        sum += val;
-        return { memberName: m, amountOwed: val };
+        const cents = Math.round(val * 100);
+        sumCents += cents;
+        return { memberName: m, amountOwed: cents / 100 };
       }).filter(o => o.amountOwed > 0);
-      if (Math.abs(sum - totalAmount) > 0.01) return setError(`Exact amounts must sum to ${totalAmount}. Currently: ${sum}`);
+      
+      if (sumCents !== totalCents) {
+        const diff = (totalCents - sumCents) / 100;
+        return setError(`Exact amounts must sum to ${totalAmount}. Currently: ${sumCents / 100} (Diff: ${diff.toFixed(2)})`);
+      }
     } else if (splitType === 'percentage') {
+      const totalCents = Math.round(totalAmount * 100);
       let sumPct = 0;
-      owers = allMembers.map(m => {
+      allMembers.forEach(m => { sumPct += parseFloat(percentages[m]) || 0; });
+      if (Math.abs(sumPct - 100) > 0.01) return setError(`Percentages must sum to 100%. Currently: ${sumPct.toFixed(2)}%`);
+      
+      const splitDetails = allMembers.map((m, idx) => {
         const pct = parseFloat(percentages[m]) || 0;
-        sumPct += pct;
-        return { memberName: m, amountOwed: (totalAmount * pct) / 100, percentage: pct };
-      }).filter(o => o.percentage && o.percentage > 0);
-      if (Math.abs(sumPct - 100) > 0.01) return setError(`Percentages must sum to 100%. Currently: ${sumPct}%`);
+        const exactCents = (totalCents * pct) / 100;
+        const floorCents = Math.floor(exactCents);
+        return { memberName: m, percentage: pct, floorCents, fraction: exactCents - floorCents, originalIndex: idx };
+      }).filter(item => item.percentage > 0);
+      
+      const sumFloorCents = splitDetails.reduce((sum, item) => sum + item.floorCents, 0);
+      const remainderCents = totalCents - sumFloorCents;
+      
+      const sortedDetails = [...splitDetails].sort((a, b) => Math.abs(a.fraction - b.fraction) > 1e-9 ? b.fraction - a.fraction : a.originalIndex - b.originalIndex);
+      const allocatedCentsMap: Record<string, number> = {};
+      splitDetails.forEach(item => { allocatedCentsMap[item.memberName] = item.floorCents; });
+      for (let i = 0; i < remainderCents; i++) { if (sortedDetails[i]) allocatedCentsMap[sortedDetails[i].memberName] += 1; }
+      
+      owers = splitDetails.map(item => ({ memberName: item.memberName, amountOwed: allocatedCentsMap[item.memberName] / 100, percentage: item.percentage }));
     } else if (splitType === 'shares') {
+      const totalCents = Math.round(totalAmount * 100);
       let totalShares = 0;
-      allMembers.forEach(m => totalShares += (parseFloat(shares[m]) || 0));
+      allMembers.forEach(m => { totalShares += parseFloat(shares[m]) || 0; });
       if (totalShares <= 0) return setError("Total shares must be > 0");
-      owers = allMembers.map(m => {
+      
+      const splitDetails = allMembers.map((m, idx) => {
         const sh = parseFloat(shares[m]) || 0;
-        return { memberName: m, amountOwed: (totalAmount * sh) / totalShares, shares: sh };
-      }).filter(o => o.shares && o.shares > 0);
+        const exactCents = (totalCents * sh) / totalShares;
+        const floorCents = Math.floor(exactCents);
+        return { memberName: m, shares: sh, floorCents, fraction: exactCents - floorCents, originalIndex: idx };
+      }).filter(item => item.shares > 0);
+      
+      const sumFloorCents = splitDetails.reduce((sum, item) => sum + item.floorCents, 0);
+      const remainderCents = totalCents - sumFloorCents;
+      
+      const sortedDetails = [...splitDetails].sort((a, b) => Math.abs(a.fraction - b.fraction) > 1e-9 ? b.fraction - a.fraction : a.originalIndex - b.originalIndex);
+      const allocatedCentsMap: Record<string, number> = {};
+      splitDetails.forEach(item => { allocatedCentsMap[item.memberName] = item.floorCents; });
+      for (let i = 0; i < remainderCents; i++) { if (sortedDetails[i]) allocatedCentsMap[sortedDetails[i].memberName] += 1; }
+      
+      owers = splitDetails.map(item => ({ memberName: item.memberName, amountOwed: allocatedCentsMap[item.memberName] / 100, shares: item.shares }));
     } else if (splitType === 'itemized') {
        return setError("Itemized receipt scanning requires Gemini API Premium.");
     }
@@ -581,7 +683,7 @@ function ExpenseModal({ group, expenseToEdit, onClose, onSave, onSaveTransaction
             <div className="bg-slate-900/50 rounded-xl border border-slate-800 p-4 space-y-3">
               {splitType === 'equal' && (
                 <>
-                  <p className="text-xs text-slate-400 mb-2">Select who is splitting {totalAmount > 0 ? formatINR(totalAmount) : ''} equally:</p>
+                  <p className="text-xs text-slate-400 mb-2">Select who is splitting {totalAmount > 0 ? formatINRSplit(totalAmount) : ''} equally:</p>
                   {allMembers.map(m => (
                     <label key={m} className="flex items-center gap-3 cursor-pointer group">
                       <input 
@@ -598,7 +700,7 @@ function ExpenseModal({ group, expenseToEdit, onClose, onSave, onSaveTransaction
                   ))}
                   {selectedEqualOwers.length > 0 && totalAmount > 0 && (
                     <div className="pt-2 border-t border-slate-800/50 text-xs text-emerald-400 font-medium">
-                      {formatINR(totalAmount / selectedEqualOwers.length)} / person
+                      {formatINRSplit(totalAmount / selectedEqualOwers.length)} / person
                     </div>
                   )}
                 </>

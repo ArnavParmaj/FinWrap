@@ -3,8 +3,10 @@ import { create } from 'zustand';
 interface AppState {
   isSidebarOpen: boolean;
   activeMonth: string; // YYYY-MM
+  searchQuery: string;
   toggleSidebar: () => void;
   setActiveMonth: (month: string) => void;
+  setSearchQuery: (query: string) => void;
 }
 
 const getCurrentMonth = () => {
@@ -15,6 +17,8 @@ const getCurrentMonth = () => {
 export const useAppStore = create<AppState>()((set) => ({
   isSidebarOpen: false,
   activeMonth: getCurrentMonth(),
+  searchQuery: '',
   toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
   setActiveMonth: (month) => set({ activeMonth: month }),
+  setSearchQuery: (query) => set({ searchQuery: query }),
 }));

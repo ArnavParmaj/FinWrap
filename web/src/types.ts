@@ -156,3 +156,9 @@ export type SplitSettlement = {
   userId: string;
   createdAt: string;
 };
+
+export type SimplifiedDebt = {
+  debtor: string;
+  creditor: string;
+  amount: number;
+};
