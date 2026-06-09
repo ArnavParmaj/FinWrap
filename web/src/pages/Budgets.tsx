@@ -33,7 +33,15 @@ function AddBudgetModal({ onClose, onSave, month }: AddBudgetModalProps) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  const selectedCategory = DEFAULT_CATEGORIES.find((c) => c.id === categoryId);
+  const globalCats = useUserStore.getState().fullSettings?.categories || DEFAULT_CATEGORIES;
+  const selectedCatRaw = globalCats.find((c) => c.id === categoryId);
+  const defaultMatch = selectedCatRaw ? DEFAULT_CATEGORIES.find(c => c.name.toLowerCase() === selectedCatRaw.name.toLowerCase()) : null;
+  const selectedCategory = selectedCatRaw ? {
+    id: selectedCatRaw.id,
+    name: selectedCatRaw.name,
+    color: selectedCatRaw.color,
+    icon: defaultMatch ? defaultMatch.icon : "label"
+  } : null;
 
   const handleSave = async () => {
     if (!categoryId) return setError("Please select a category");
@@ -78,23 +86,27 @@ function AddBudgetModal({ onClose, onSave, month }: AddBudgetModalProps) {
         <div className="space-y-4">
           <div>
             <label className="text-xs font-semibold text-slate-500 uppercase">Category</label>
-            <div className="grid grid-cols-2 gap-2 mt-1">
-              {DEFAULT_CATEGORIES.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setCategoryId(cat.id)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
-                    categoryId === cat.id
-                      ? "bg-primary text-white"
-                      : "bg-white/5 text-slate-300 hover:bg-white/10"
-                  }`}
-                >
-                  <span className="material-icons-outlined text-sm" style={{ color: categoryId === cat.id ? "white" : cat.color }}>
-                    {cat.icon}
-                  </span>
-                  {cat.name}
-                </button>
-              ))}
+            <div className="grid grid-cols-2 gap-2 mt-1 max-h-64 overflow-y-auto pr-2">
+              {(useUserStore.getState().fullSettings?.categories || DEFAULT_CATEGORIES).map((cat) => {
+                const defaultCat = DEFAULT_CATEGORIES.find(c => c.name.toLowerCase() === cat.name.toLowerCase());
+                const icon = defaultCat ? defaultCat.icon : "label";
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setCategoryId(cat.id)}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
+                      categoryId === cat.id
+                        ? "bg-primary text-white"
+                        : "bg-white/5 text-slate-300 hover:bg-white/10"
+                    }`}
+                  >
+                    <span className="material-icons-outlined text-sm" style={{ color: categoryId === cat.id ? "white" : cat.color }}>
+                      {icon}
+                    </span>
+                    {cat.name}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -276,7 +288,7 @@ export default function BudgetsPage() {
         </div>
 
         {/* Month Selector */}
-        <div className="flex border-b border-slate-200 gap-8 overflow-x-auto relative">
+        <div className="flex border-b border-slate-200 gap-8 relative">
           <button
             onClick={() => setShowMonthPicker(!showMonthPicker)}
             className="px-2 py-4 text-sm font-bold text-primary border-b-2 border-primary whitespace-nowrap flex items-center gap-1"

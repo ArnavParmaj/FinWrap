@@ -1,4 +1,4 @@
-import type { Transaction, Budget, Goal, Subscription, DashboardStats, DailySpend, CategorySpend } from '../types';
+import type { Transaction, Budget, Goal, Subscription, DashboardStats, MonthlySpend, CategorySpend } from '../types';
 
 const INVESTMENT_CATEGORIES = ['investment', 'mutual fund', 'stocks', 'sip', 'fd', 'rd'];
 
@@ -69,16 +69,20 @@ function calcStats(
   const netSavings = totalCredited - totalDebited;
   const closingBalance = openingBalance + netSavings;
 
-  const dailySpend: DailySpend[] = Object.entries(dailyMap)
-    .map(([date, amount]) => ({ date, amount }))
-    .sort((a, b) => a.date.localeCompare(b.date));
+  const monthlySpendMap: Record<string, number> = {};
+  for (const tx of transactions) {
+    if (tx.type === 'debit') {
+      const month = tx.date.slice(0, 7);
+      monthlySpendMap[month] = (monthlySpendMap[month] || 0) + tx.amount;
+    }
+  }
 
   const categoryBreakdown: CategorySpend[] = Object.entries(catMap)
     .map(([name, { value, color }]) => ({ name, value, color }))
     .sort((a, b) => b.value - a.value)
     .slice(0, 7); // top 7 categories
 
-  return { totalCredited, totalDebited, investments, netSavings, closingBalance, dailySpend, categoryBreakdown };
+  return { totalCredited, totalDebited, investments, netSavings, closingBalance, categoryBreakdown };
 }
 
 export function computeDashboardStats(
@@ -89,7 +93,8 @@ export function computeDashboardStats(
   openingBalance: number,
   prevOpeningBalance: number,
   budgets: Budget[],
-  categoryMap: Record<string, { name: string; color: string }>
+  categoryMap: Record<string, { name: string; color: string }>,
+  allTransactions: Transaction[]
 ): DashboardStats {
   const current = calcStats(currentTransactions, currentSubscriptions, currentGoals, openingBalance, categoryMap);
   // For previous month, we pass empty arrays for subs and goals since we don't have historical snapshots of them in this basic model
@@ -106,6 +111,18 @@ export function computeDashboardStats(
     }
   }
 
+  // Compute monthly spend across all transactions
+  const monthlyMap: Record<string, number> = {};
+  for (const tx of allTransactions) {
+    if (tx.type === 'debit') {
+      const m = tx.date.slice(0, 7); // YYYY-MM
+      monthlyMap[m] = (monthlyMap[m] || 0) + tx.amount;
+    }
+  }
+  const monthlySpend: MonthlySpend[] = Object.entries(monthlyMap)
+    .map(([month, amount]) => ({ month, amount }))
+    .sort((a, b) => a.month.localeCompare(b.month));
+
   return {
     openingBalance,
     totalCredited: current.totalCredited,
@@ -119,7 +136,7 @@ export function computeDashboardStats(
     prevNetSavings: prev.netSavings,
     prevInvestments: prev.investments,
     prevClosingBalance: prev.closingBalance,
-    dailySpend: current.dailySpend,
+    monthlySpend,
     categoryBreakdown: current.categoryBreakdown,
     topBudgetAlert,
   };

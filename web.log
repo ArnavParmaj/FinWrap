@@ -3,12 +3,19 @@
 > vite
 
 
-  VITE v8.0.0  ready in 470 ms
+  VITE v8.0.0  ready in 373 ms
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: use --host to expose
-11:50:37 AM [vite] (client) hmr update /src/pages/Auth.tsx, /src/index.css
-1:00:49 PM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
-1:54:52 PM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
-2:01:49 PM [vite] (client) hmr update /src/pages/Splits.tsx, /src/index.css
-2:04:32 PM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
+1:50:59 PM [vite] (client) hmr update /src/index.css, /src/pages/Dashboard.tsx, /src/pages/Goals.tsx, /src/pages/Transactions.tsx, /src/pages/Recurring.tsx, /src/pages/Budgets.tsx
+1:51:12 PM [vite] (client) hmr update /src/index.css, /src/pages/Dashboard.tsx, /src/pages/Goals.tsx, /src/pages/Transactions.tsx, /src/pages/Recurring.tsx, /src/pages/Budgets.tsx
+1:51:25 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+1:51:42 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+1:51:54 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+1:52:14 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+1:52:35 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+1:52:41 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+1:52:58 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+1:53:21 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+1:59:15 PM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+2:01:27 PM [vite] (client) hmr update /src/pages/Budgets.tsx, /src/index.css

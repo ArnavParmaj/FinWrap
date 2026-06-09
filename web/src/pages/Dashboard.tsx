@@ -17,6 +17,7 @@ import { useBudgets } from "../hooks/useBudgets";
 import { useGoals } from "../hooks/useGoals";
 import { useSubscriptions } from "../hooks/useSubscriptions";
 import { useAppStore } from "../store/useAppStore";
+import { useUserStore } from "../store/useUserStore";
 import {
   computeDashboardStats,
   pctChange,
@@ -105,9 +106,10 @@ export default function DashboardPage() {
 
   const [showMonthPicker, setShowMonthPicker] = useState(false);
 
-  const { transactions: currentTx, loading: loadingCurrent } =
-    useTransactions(activeMonth);
-  const { transactions: prevTx } = useTransactions(prevMonth);
+  const { transactions: allTx, loading: loadingCurrent } = useTransactions();
+
+  const currentTx = useMemo(() => allTx.filter(tx => tx.date.startsWith(activeMonth)), [allTx, activeMonth]);
+  const prevTx = useMemo(() => allTx.filter(tx => tx.date.startsWith(prevMonth)), [allTx, prevMonth]);
   const { budgets } = useBudgets(activeMonth);
   const { goals } = useGoals();
   const { subscriptions } = useSubscriptions();
@@ -117,26 +119,56 @@ export default function DashboardPage() {
     const map: Record<string, { name: string; color: string }> = {};
     const usedColors = new Set<string>();
     
-    currentTx.forEach(tx => {
+    const globalCats = useUserStore.getState().fullSettings?.categories || [];
+    
+    allTx.forEach(tx => {
       if (!tx.categoryId) return;
       if (!map[tx.categoryId]) {
-        // Pick the next available color from DONUT_COLORS
-        const color = DONUT_COLORS.find(c => !usedColors.has(c)) || DONUT_COLORS[Math.floor(Math.random() * DONUT_COLORS.length)];
-        usedColors.add(color);
-        map[tx.categoryId] = {
-           name: tx.categoryId.charAt(0).toUpperCase() + tx.categoryId.slice(1).replace(/_/g, " "),
-           color
-        };
+        const customCat = globalCats.find(c => c.id === tx.categoryId || c.name.toLowerCase().replace(/\s+/g, '_') === tx.categoryId);
+        if (customCat) {
+          map[tx.categoryId] = { name: customCat.name, color: customCat.color };
+        } else {
+          // Fallback
+          const color = DONUT_COLORS.find(c => !usedColors.has(c)) || DONUT_COLORS[Math.floor(Math.random() * DONUT_COLORS.length)];
+          usedColors.add(color);
+          map[tx.categoryId] = {
+             name: tx.categoryId.charAt(0).toUpperCase() + tx.categoryId.slice(1).replace(/_/g, " "),
+             color
+          };
+        }
       }
     });
     return map;
-  }, [currentTx]);
+  }, [allTx]);
 
-  // Opening balance computation (Basic heuristic for now: current transactions total delta)
-  // To truly compute opening balance, we would need all past transactions before the activeMonth.
-  // For UI representation, we'll keep it at 0 until we implement a running ledger.
-  const openingBalance = 0;
-  const prevOpeningBalance = 0;
+  // Base opening balance from user's configured accounts
+  const baseOpeningBalance = useMemo(() => {
+    const accounts = useUserStore.getState().fullSettings?.accounts || [];
+    return accounts.reduce((sum, acc) => sum + (acc.openingBalance || 0), 0);
+  }, []);
+
+  // Opening balance computation
+  const openingBalance = useMemo(() => {
+    let pastNet = 0;
+    allTx.forEach(tx => {
+      if (tx.date < `${activeMonth}-01`) {
+        if (tx.type === 'credit') pastNet += tx.amount;
+        else pastNet -= tx.amount;
+      }
+    });
+    return baseOpeningBalance + pastNet;
+  }, [allTx, activeMonth, baseOpeningBalance]);
+
+  const prevOpeningBalance = useMemo(() => {
+    let pastNet = 0;
+    allTx.forEach(tx => {
+      if (tx.date < `${prevMonth}-01`) {
+        if (tx.type === 'credit') pastNet += tx.amount;
+        else pastNet -= tx.amount;
+      }
+    });
+    return baseOpeningBalance + pastNet;
+  }, [allTx, prevMonth, baseOpeningBalance]);
 
   const stats = useMemo(
     () =>
@@ -149,8 +181,9 @@ export default function DashboardPage() {
         prevOpeningBalance,
         budgets,
         dynamicCatMap,
+        allTx,
       ),
-    [currentTx, prevTx, subscriptions, goals, budgets, openingBalance, prevOpeningBalance, dynamicCatMap],
+    [currentTx, prevTx, subscriptions, goals, budgets, openingBalance, prevOpeningBalance, dynamicCatMap, allTx],
   );
 
   // Build category breakdown with fallback colors
@@ -166,17 +199,19 @@ export default function DashboardPage() {
     [stats.categoryBreakdown],
   );
 
-  // Recharts daily bar data formatted with short-date labels
+  // Recharts monthly bar data formatted with short-month labels
   const barData = useMemo(
     () =>
-      stats.dailySpend.map((d) => ({
-        name: d.date.slice(5), // "MM-DD"
-        amount: d.amount,
-      })),
-    [stats.dailySpend],
+      stats.monthlySpend.map((d) => {
+        const [y, m] = d.month.split('-');
+        const dateObj = new Date(parseInt(y), parseInt(m) - 1);
+        const name = dateObj.toLocaleString('en-US', { month: 'short' });
+        return { name, amount: d.amount };
+      }),
+    [stats.monthlySpend],
   );
 
-  const isEmpty = !loadingCurrent && currentTx.length === 0;
+  const isEmpty = !loadingCurrent && allTx.length === 0;
 
   return (
     <main className="flex-1 flex flex-col overflow-y-auto">
@@ -326,11 +361,11 @@ export default function DashboardPage() {
             {/* Daily Spend Bar Chart */}
             <div className="col-span-12 lg:col-span-8 glass-card p-6 rounded-2xl">
               <h4 className="text-sm font-semibold text-slate-300 mb-4">
-                Daily Spending — {formatMonthLabel(activeMonth)}
+                Monthly Spending Trend
               </h4>
               {barData.length === 0 ? (
                 <div className="h-52 flex items-center justify-center text-slate-600 text-sm">
-                  No debit data this month
+                  No debit data available
                 </div>
               ) : (
                 <ResponsiveContainer width="100%" height={220}>

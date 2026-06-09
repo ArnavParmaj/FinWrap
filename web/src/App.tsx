@@ -37,8 +37,23 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 }
 
 import Layout from "./components/Layout";
+import { useEffect } from "react";
+import { useUserStore } from "./store/useUserStore";
 
 function App() {
+  const { user, fullSettings } = useUserStore();
+
+  useEffect(() => {
+    const theme = fullSettings?.theme || user?.settings?.theme || "dark";
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
+    } else {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.classList.add("light");
+    }
+  }, [user?.settings?.theme, fullSettings?.theme]);
+
   return (
     <Router>
       <Routes>

@@ -1,15 +1,58 @@
 {
   "communities": {
     "0": [
+      "lib_dashboardstats_calcstats",
+      "lib_dashboardstats_computedashboardstats",
+      "lib_dashboardstats_investment_categories",
+      "lib_dashboardstats_isinvestment",
+      "lib_firebase_db",
+      "lib_splits_formatinrsplit",
+      "lib_splits_simplifydebts",
+      "lib_splits_ts",
+      "pages_recurring_addsubscriptionmodal",
+      "pages_recurring_recurringpage",
+      "pages_splits_addgroupmodal",
+      "pages_splits_expensemodal",
+      "pages_splits_splitspage",
+      "pages_splits_tsx",
+      "src_hooks_usesplits_ts",
+      "src_hooks_usesubscriptions_ts",
+      "src_pages_recurring_tsx",
+      "src_pages_splits_tsx",
+      "src_types_account",
+      "src_types_category",
+      "src_types_categoryspend",
+      "src_types_dailyspend",
+      "src_types_dashboardstats",
+      "src_types_goalcontribution",
+      "src_types_simplifieddebt",
+      "src_types_splitexpense",
+      "src_types_splitgroup",
+      "src_types_splitower",
+      "src_types_splitpayer",
+      "src_types_splitsettlement",
+      "src_types_subscription",
+      "src_types_ts",
+      "src_types_user",
+      "src_types_usersettings",
+      "types_ts"
+    ],
+    "1": [
+      "app_tsx",
       "components_layout_layout",
       "components_topnav_topnav",
+      "components_topnav_tsx",
+      "hooks_useauth_ts",
       "hooks_useauth_useauth",
       "lib_firebase_auth",
       "lib_firebase_firebaseconfig",
       "lib_firebase_storage",
       "pages_auth_authpage",
-      "pages_recurring_addsubscriptionmodal",
-      "pages_recurring_recurringpage",
+      "pages_auth_tsx",
+      "pages_dashboard_donut_colors",
+      "pages_dashboard_months",
+      "pages_dashboard_statcard",
+      "pages_dashboard_tsx",
       "pages_settings_settingspage",
       "src_app_app",
       "src_app_privateroute",
@@ -17,46 +60,79 @@
       "src_components_layout_tsx",
       "src_components_topnav_tsx",
       "src_hooks_useauth_ts",
-      "src_hooks_usesubscriptions_ts",
       "src_lib_firebase_ts",
       "src_main_tsx",
       "src_pages_auth_tsx",
-      "src_pages_recurring_tsx",
       "src_pages_settings_tsx",
       "src_store_useuserstore_ts",
-      "src_types_subscription",
+      "store_useappstore_appstate",
+      "store_useappstore_getcurrentmonth",
+      "store_useappstore_ts",
+      "store_useappstore_useappstore",
+      "store_useuserstore_ts",
       "store_useuserstore_userstate",
       "store_useuserstore_useuserstore"
     ],
-    "1": [
-      "lib_dashboardstats_calcstats",
-      "lib_dashboardstats_computedashboardstats",
+    "2": [
       "lib_dashboardstats_formatmonthlabel",
       "lib_dashboardstats_getprevmonth",
-      "lib_dashboardstats_investment_categories",
-      "lib_dashboardstats_isinvestment",
       "lib_dashboardstats_pctchange",
+      "lib_gemini_generatedeepinsights",
+      "lib_gemini_generatewrappednarrative",
       "pages_budgets_addbudgetmodal",
+      "pages_budgets_addbudgetmodalprops",
       "pages_budgets_budgetcard",
       "pages_budgets_budgetdetailsmodal",
       "pages_budgets_budgetspage",
+      "pages_budgets_default_categories",
       "pages_budgets_months",
+      "pages_budgets_tsx",
       "pages_dashboard_dashboardpage",
-      "pages_dashboard_donut_colors",
       "pages_dashboard_pctbadge",
-      "pages_dashboard_statcard",
+      "pages_insights_insightspage",
+      "pages_wrapped_formatinr",
+      "pages_wrapped_tsx",
+      "pages_wrapped_wrappedpage",
       "src_hooks_usebudgets_ts",
+      "src_hooks_usetransactions_ts",
+      "src_lib_gemini_ts",
       "src_pages_budgets_tsx",
       "src_pages_dashboard_tsx",
+      "src_pages_insights_tsx",
+      "src_pages_wrapped_tsx",
       "src_store_useappstore_ts",
-      "src_types_budget",
-      "src_types_categoryspend",
-      "src_types_dailyspend",
-      "src_types_dashboardstats",
-      "store_useappstore_appstate",
-      "store_useappstore_getcurrentmonth"
+      "src_types_budget"
     ],
-    "2": [
+    "3": [
+      "lib_settingshelpers_addaccount",
+      "lib_settingshelpers_addcategory",
+      "lib_settingshelpers_default_categories",
+      "lib_settingshelpers_deleteaccount",
+      "lib_settingshelpers_deletecategory",
+      "lib_settingshelpers_fetchusersettings",
+      "lib_settingshelpers_ts",
+      "lib_settingshelpers_updateaccount",
+      "lib_settingshelpers_updatecategory",
+      "lib_settingshelpers_updateusersetting",
+      "lib_settingshelpers_uploadavatar",
+      "pages_settings_accountssection",
+      "pages_settings_categoriessection",
+      "pages_settings_confirmmodal",
+      "pages_settings_datasection",
+      "pages_settings_input",
+      "pages_settings_label",
+      "pages_settings_preset_colors",
+      "pages_settings_profilesection",
+      "pages_settings_section",
+      "pages_settings_spinner",
+      "pages_settings_themesection",
+      "pages_settings_toast",
+      "pages_settings_toasttype",
+      "pages_settings_tsx",
+      "src_types_settingsaccount",
+      "src_types_settingscategory"
+    ],
+    "4": [
       "finwrap_finwrap_prd_final_codeblock_1",
       "finwrap_finwrap_prd_final_finwrap_product_requirements_document_final",
       "finwrap_finwrap_prd_final_firestore_data_architecture",
@@ -80,7 +156,7 @@
       "finwrap_finwrap_prd_final_tech_stack",
       "finwrap_prd_final_md"
     ],
-    "3": [
+    "5": [
       "claude_md",
       "finwrap_claude_architecture",
       "finwrap_claude_backend_services",
@@ -100,7 +176,25 @@
       "finwrap_claude_styling_system",
       "finwrap_claude_testing"
     ],
-    "4": [
+    "6": [
+      "pages_transactions_addmodalprops",
+      "pages_transactions_addtransactionmodal",
+      "pages_transactions_csvimportmodal",
+      "pages_transactions_csvmodalprops",
+      "pages_transactions_default_categories",
+      "pages_transactions_deleteconfirmmodal",
+      "pages_transactions_deleteconfirmmodalprops",
+      "pages_transactions_emptyform",
+      "pages_transactions_getcategoryinfo",
+      "pages_transactions_months",
+      "pages_transactions_rowmenu",
+      "pages_transactions_transactionformdata",
+      "pages_transactions_transactionspage",
+      "pages_transactions_tsx",
+      "pages_transactions_typefilter",
+      "src_types_transaction"
+    ],
+    "7": [
       "finwrap_finwrap_prd_final_10_monthly_wrapped_wrapped",
       "finwrap_finwrap_prd_final_11_settings_settings",
       "finwrap_finwrap_prd_final_1_authentication",
@@ -117,24 +211,7 @@
       "finwrap_finwrap_ui_requirements_9_auth_screens_login_signup",
       "finwrap_finwrap_ui_requirements_screens_to_design"
     ],
-    "5": [
-      "pages_splits_addgroupmodal",
-      "pages_splits_expensemodal",
-      "pages_splits_splitspage",
-      "src_hooks_usesplits_ts",
-      "src_pages_splits_tsx",
-      "src_types_account",
-      "src_types_category",
-      "src_types_goalcontribution",
-      "src_types_splitexpense",
-      "src_types_splitgroup",
-      "src_types_splitower",
-      "src_types_splitpayer",
-      "src_types_splitsettlement",
-      "src_types_ts",
-      "src_types_user"
-    ],
-    "6": [
+    "8": [
       "finwrap_finwrap_ui_requirements_codeblock_1",
       "finwrap_finwrap_ui_requirements_codeblock_2",
       "finwrap_finwrap_ui_requirements_codeblock_3",
@@ -150,23 +227,8 @@
       "finwrap_finwrap_ui_requirements_visual_direction",
       "finwrap_ui_requirements_md"
     ],
-    "7": [
-      "pages_budgets_default_categories",
-      "pages_transactions_addmodalprops",
-      "pages_transactions_addtransactionmodal",
-      "pages_transactions_csvimportmodal",
-      "pages_transactions_csvmodalprops",
-      "pages_transactions_deleteconfirmmodal",
-      "pages_transactions_emptyform",
-      "pages_transactions_getcategoryinfo",
-      "pages_transactions_rowmenu",
-      "pages_transactions_transactionformdata",
-      "pages_transactions_typefilter",
-      "src_types_transaction"
-    ],
-    "8": [
+    "9": [
       "hooks_usegoals_usegoals",
-      "lib_firebase_db",
       "pages_goals_addcontributionmodal",
       "pages_goals_addgoalmodal",
       "pages_goals_goal_templates",
@@ -176,17 +238,6 @@
       "src_hooks_usegoals_ts",
       "src_pages_goals_tsx",
       "src_types_goal"
-    ],
-    "9": [
-      "lib_gemini_generatedeepinsights",
-      "lib_gemini_generatewrappednarrative",
-      "pages_insights_insightspage",
-      "pages_wrapped_formatinr",
-      "pages_wrapped_wrappedpage",
-      "src_hooks_usetransactions_ts",
-      "src_lib_gemini_ts",
-      "src_pages_insights_tsx",
-      "src_pages_wrapped_tsx"
     ],
     "10": [
       "web_readme_codeblock_1",
@@ -234,16 +285,16 @@
     ]
   },
   "cohesion": {
-    "0": 0.15,
-    "1": 0.14,
-    "2": 0.09,
+    "0": 0.13,
+    "1": 0.13,
+    "2": 0.17,
     "3": 0.11,
-    "4": 0.19,
-    "5": 0.22,
-    "6": 0.14,
-    "7": 0.2,
-    "8": 0.24,
-    "9": 0.44,
+    "4": 0.09,
+    "5": 0.11,
+    "6": 0.23,
+    "7": 0.19,
+    "8": 0.14,
+    "9": 0.27,
     "10": 0.33,
     "11": 1.0,
     "12": 1.0,
@@ -260,18 +311,23 @@
   },
   "gods": [
     {
+      "id": "store_useuserstore_useuserstore",
+      "label": "useUserStore",
+      "degree": 27
+    },
+    {
       "id": "src_types_transaction",
       "label": "Transaction",
-      "degree": 22
+      "degree": 25
     },
     {
       "id": "src_types_dashboardstats",
       "label": "DashboardStats",
-      "degree": 20
+      "degree": 21
     },
     {
-      "id": "store_useuserstore_useuserstore",
-      "label": "useUserStore",
+      "id": "pages_wrapped_formatinr",
+      "label": "formatINR()",
       "degree": 17
     },
     {
@@ -280,8 +336,8 @@
       "degree": 12
     },
     {
-      "id": "pages_wrapped_formatinr",
-      "label": "formatINR()",
+      "id": "pages_dashboard_dashboardpage",
+      "label": "DashboardPage()",
       "degree": 11
     },
     {
@@ -295,80 +351,108 @@
       "degree": 10
     },
     {
+      "id": "pages_budgets_budgetspage",
+      "label": "BudgetsPage()",
+      "degree": 9
+    },
+    {
       "id": "finwrap_finwrap_prd_final_sprint_roadmap",
       "label": "Sprint Roadmap",
       "degree": 9
-    },
-    {
-      "id": "finwrap_claude_common_development_tasks",
-      "label": "Common Development Tasks",
-      "degree": 9
-    },
-    {
-      "id": "pages_dashboard_dashboardpage",
-      "label": "DashboardPage()",
-      "degree": 8
     }
   ],
   "surprises": [
     {
-      "source": "TopNav()",
-      "target": "useUserStore",
-      "source_files": [
-        "web/src/components/TopNav.tsx",
-        "web/src/store/useUserStore.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "peripheral node `TopNav()` unexpectedly reaches hub `useUserStore`"
-    },
-    {
       "source": "useGoals()",
       "target": "useUserStore",
       "source_files": [
         "web/src/hooks/useGoals.ts",
-        "web/src/store/useUserStore.ts"
+        "store/useUserStore.ts"
       ],
       "confidence": "EXTRACTED",
       "relation": "calls",
-      "why": "bridges separate communities"
-    },
-    {
-      "source": "useGoals()",
-      "target": "GoalsPage()",
-      "source_files": [
-        "web/src/hooks/useGoals.ts",
-        "web/src/pages/Goals.tsx"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "peripheral node `GoalsPage()` unexpectedly reaches hub `useGoals()`"
+      "why": "connects across different repos/directories; bridges separate communities"
     },
     {
       "source": "useGoals()",
       "target": "DashboardPage()",
       "source_files": [
         "web/src/hooks/useGoals.ts",
-        "web/src/pages/Dashboard.tsx"
+        "pages/Dashboard.tsx"
       ],
       "confidence": "EXTRACTED",
       "relation": "calls",
-      "why": "bridges separate communities"
+      "why": "connects across different repos/directories; bridges separate communities"
     },
     {
-      "source": "formatMonthLabel()",
-      "target": "BudgetDetailsModal()",
+      "source": "DashboardPage()",
+      "target": "useAppStore",
       "source_files": [
-        "web/src/lib/dashboardStats.ts",
-        "web/src/pages/Budgets.tsx"
+        "pages/Dashboard.tsx",
+        "store/useAppStore.ts"
       ],
       "confidence": "EXTRACTED",
       "relation": "calls",
-      "why": "peripheral node `BudgetDetailsModal()` unexpectedly reaches hub `formatMonthLabel()`"
+      "why": "connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "BudgetsPage()",
+      "target": "useUserStore",
+      "source_files": [
+        "pages/Budgets.tsx",
+        "store/useUserStore.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "BudgetsPage()",
+      "target": "useAppStore",
+      "source_files": [
+        "pages/Budgets.tsx",
+        "store/useAppStore.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities"
     }
   ],
-  "tokens": {
-    "input": 0,
-    "output": 0
-  }
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `useUserStore` connect `Community 1` to `Community 0`, `Community 2`, `Community 3`, `Community 6`, `Community 9`?",
+      "why": "High betweenness centrality (0.079) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `Transaction` connect `Community 6` to `Community 0`, `Community 1`, `Community 2`?",
+      "why": "High betweenness centrality (0.049) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `DashboardStats` connect `Community 0` to `Community 9`, `Community 2`, `Community 6`?",
+      "why": "High betweenness centrality (0.039) - this node is a cross-community bridge."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 5 inferred relationships involving `formatINR()` (e.g. with `DashboardPage()` and `DeleteConfirmModal()`) actually correct?",
+      "why": "`formatINR()` has 5 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `INVESTMENT_CATEGORIES`, `firebaseConfig`, `storage` to the rest of the system?",
+      "why": "60 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 0` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.13 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 1` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.13 - nodes in this community are weakly interconnected."
+    }
+  ]
 }

@@ -9,6 +9,8 @@ import {
 } from "../lib/dashboardStats";
 import type { Transaction } from "../types";
 
+import { useUserStore } from "../store/useUserStore";
+
 // ── DEFAULT CATEGORIES ────────────────────────────────────────────────────────
 const DEFAULT_CATEGORIES = [
   { id: "food", name: "Food & Drink", icon: "local_cafe", color: "#f59e0b" },
@@ -42,9 +44,24 @@ const DEFAULT_CATEGORIES = [
   { id: "other", name: "Other", icon: "more_horiz", color: "#64748b" },
 ];
 
-const getCategoryInfo = (catId: string) =>
-  DEFAULT_CATEGORIES.find((c) => c.id === catId) ??
-  DEFAULT_CATEGORIES[DEFAULT_CATEGORIES.length - 1];
+const getCategoryInfo = (catId: string) => {
+  const globalCats = useUserStore.getState().fullSettings?.categories || [];
+  const customCat = globalCats.find((c) => c.id === catId || c.name.toLowerCase().replace(/\s+/g, '_') === catId);
+  
+  if (customCat) {
+    // Try to match icon from default if it has same name, else use 'label'
+    const defaultMatch = DEFAULT_CATEGORIES.find(c => c.name.toLowerCase() === customCat.name.toLowerCase());
+    return {
+      id: customCat.id,
+      name: customCat.name,
+      color: customCat.color,
+      icon: defaultMatch ? defaultMatch.icon : "label"
+    };
+  }
+
+  return DEFAULT_CATEGORIES.find((c) => c.id === catId) ??
+    DEFAULT_CATEGORIES[DEFAULT_CATEGORIES.length - 1];
+};
 
 const MONTHS = Array.from({ length: 12 }, (_, i) => {
   const date = new Date();
@@ -68,6 +85,7 @@ interface TransactionFormData {
   type: "debit" | "credit";
   amount: string;
   note: string;
+  accountId: string;
 }
 
 const emptyForm = (): TransactionFormData => ({
@@ -77,6 +95,7 @@ const emptyForm = (): TransactionFormData => ({
   type: "debit",
   amount: "",
   note: "",
+  accountId: useUserStore.getState().fullSettings?.accounts?.[0]?.id || "",
 });
 
 interface AddModalProps {
@@ -84,7 +103,7 @@ interface AddModalProps {
   onSave: (
     data: Omit<
       Transaction,
-      "id" | "createdAt" | "isRecurring" | "accountId" | "source"
+      "id" | "createdAt" | "isRecurring" | "source"
     >,
   ) => Promise<void>;
   initial?: TransactionFormData;
@@ -111,6 +130,7 @@ function AddTransactionModal({ onClose, onSave, initial }: AddModalProps) {
         type: form.type,
         amount: amt,
         note: form.note.trim(),
+        accountId: form.accountId,
       });
       onClose();
     } catch (e: unknown) {
@@ -170,6 +190,24 @@ function AddTransactionModal({ onClose, onSave, initial }: AddModalProps) {
           </div>
           <div>
             <label className="text-xs font-semibold text-slate-500 uppercase">
+              Account
+            </label>
+            <select
+              value={form.accountId}
+              onChange={(e) => set("accountId", e.target.value)}
+              className="mt-1 w-full bg-white/5 rounded-lg px-3 py-2 text-sm text-slate-200 border border-white/10 focus:ring-1 focus:ring-primary outline-none"
+              style={{ colorScheme: "dark" }}
+            >
+              <option value="" disabled style={{ background: "#1e293b" }}>Select account</option>
+              {useUserStore.getState().fullSettings?.accounts?.map((a) => (
+                <option key={a.id} value={a.id} style={{ background: "#1e293b" }}>
+                  {a.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-slate-500 uppercase">
               Merchant / Description
             </label>
             <input
@@ -190,7 +228,15 @@ function AddTransactionModal({ onClose, onSave, initial }: AddModalProps) {
               className="mt-1 w-full bg-white/5 rounded-lg px-3 py-2 text-sm text-slate-200 border border-white/10 focus:ring-1 focus:ring-primary outline-none"
               style={{ colorScheme: "dark" }}
             >
-              {DEFAULT_CATEGORIES.map((c) => (
+              {useUserStore.getState().fullSettings?.categories?.map((c) => (
+                <option
+                  key={c.id}
+                  value={c.id}
+                  style={{ background: "#1e293b" }}
+                >
+                  {c.name}
+                </option>
+              )) || DEFAULT_CATEGORIES.map((c) => (
                 <option
                   key={c.id}
                   value={c.id}
@@ -260,8 +306,15 @@ function CsvImportModal({ onClose, onImport }: CsvModalProps) {
   const [rows, setRows] = useState<Omit<Transaction, "id" | "createdAt">[]>([]);
   const [importing, setImporting] = useState(false);
   const [status, setStatus] = useState("");
+  const [targetAccount, setTargetAccount] = useState<string>(
+    useUserStore.getState().fullSettings?.accounts?.[0]?.id || ""
+  );
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!targetAccount) {
+      setStatus("Error: Please select an account first");
+      return;
+    }
     const file = e.target.files?.[0];
     if (!file) return;
     setStatus("Parsing…");
@@ -303,7 +356,7 @@ function CsvImportModal({ onClose, onImport }: CsvModalProps) {
                 .replace(/\s+/g, "_"),
               note: row.note ?? row.Note ?? "",
               isRecurring: false,
-              accountId: "",
+              accountId: targetAccount,
               source: "csv",
             };
           },
@@ -351,8 +404,33 @@ function CsvImportModal({ onClose, onImport }: CsvModalProps) {
             date, merchant, amount, type, category
           </code>
         </p>
+
+        <div className="mb-4">
+          <label className="text-xs font-semibold text-slate-500 uppercase">Target Account</label>
+          <select
+            value={targetAccount}
+            onChange={(e) => {
+              setTargetAccount(e.target.value);
+              setRows([]);
+              setStatus("");
+            }}
+            className="mt-1 w-full bg-white/5 rounded-lg px-3 py-2 text-sm text-slate-200 border border-white/10 focus:ring-1 focus:ring-primary outline-none"
+            style={{ colorScheme: "dark" }}
+          >
+            <option value="" disabled style={{ background: "#1e293b" }}>Select account</option>
+            {useUserStore.getState().fullSettings?.accounts?.map((a) => (
+              <option key={a.id} value={a.id} style={{ background: "#1e293b" }}>
+                {a.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div
-          onClick={() => fileRef.current?.click()}
+          onClick={() => {
+            if (!targetAccount) return setStatus("Error: Select an account first");
+            fileRef.current?.click();
+          }}
           className="border-2 border-dashed border-white/10 rounded-xl p-8 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-primary/40 transition-colors"
         >
           <span className="material-icons-outlined text-4xl text-slate-500">
@@ -627,13 +705,12 @@ export default function TransactionsPage() {
   const handleAdd = async (
     data: Omit<
       Transaction,
-      "id" | "createdAt" | "isRecurring" | "accountId" | "source"
+      "id" | "createdAt" | "isRecurring" | "source"
     >,
   ) => {
     await addTransaction({
       ...data,
       isRecurring: false,
-      accountId: "",
       source: "manual",
     });
   };
@@ -641,14 +718,13 @@ export default function TransactionsPage() {
   const handleEdit = async (
     data: Omit<
       Transaction,
-      "id" | "createdAt" | "isRecurring" | "accountId" | "source"
+      "id" | "createdAt" | "isRecurring" | "source"
     >,
   ) => {
     if (!editTx) return;
     await updateTransaction(editTx.id, {
       ...data,
       isRecurring: editTx.isRecurring,
-      accountId: editTx.accountId,
       source: editTx.source,
     });
   };
@@ -687,6 +763,7 @@ export default function TransactionsPage() {
             type: editTx.type,
             amount: String(editTx.amount),
             note: editTx.note ?? "",
+            accountId: editTx.accountId,
           }}
         />
       )}
@@ -798,8 +875,7 @@ export default function TransactionsPage() {
                 </span>
                 {catFilter === "all"
                   ? "All Categories"
-                  : (DEFAULT_CATEGORIES.find((c) => c.id === catFilter)?.name ??
-                    catFilter)}
+                  : getCategoryInfo(catFilter).name}
                 <span className="material-icons-outlined text-[18px]">
                   expand_more
                 </span>
@@ -821,25 +897,28 @@ export default function TransactionsPage() {
                     >
                       All Categories
                     </button>
-                    {DEFAULT_CATEGORIES.map((c) => (
-                      <button
-                        key={c.id}
-                        onClick={() => {
-                          setCatFilter(c.id);
-                          setShowCatPicker(false);
-                          resetPage();
-                        }}
-                        className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 flex items-center gap-2 ${catFilter === c.id ? "text-primary font-semibold" : "text-slate-300"}`}
-                      >
-                        <span
-                          className="material-icons-outlined text-sm"
-                          style={{ color: c.color }}
+                    {(useUserStore.getState().fullSettings?.categories || DEFAULT_CATEGORIES).map((c) => {
+                      const info = getCategoryInfo(c.id);
+                      return (
+                        <button
+                          key={c.id}
+                          onClick={() => {
+                            setCatFilter(c.id);
+                            setShowCatPicker(false);
+                            resetPage();
+                          }}
+                          className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 flex items-center gap-2 ${catFilter === c.id ? "text-primary font-semibold" : "text-slate-300"}`}
                         >
-                          {c.icon}
-                        </span>
-                        {c.name}
-                      </button>
-                    ))}
+                          <span
+                            className="material-icons-outlined text-sm"
+                            style={{ color: info.color }}
+                          >
+                            {info.icon}
+                          </span>
+                          {info.name}
+                        </button>
+                      );
+                    })}
                   </div>
                 </>
               )}

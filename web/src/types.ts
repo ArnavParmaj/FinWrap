@@ -19,6 +19,14 @@ export type Account = {
   createdAt: string;
 };
 
+// Settings-scoped account (stored under users/{uid}/accounts)
+export type SettingsAccount = {
+  id: string;
+  name: string;
+  type: 'bank' | 'wallet' | 'cash';
+  openingBalance: number;
+};
+
 export type Transaction = {
   id: string;
   amount: number;
@@ -39,6 +47,14 @@ export type Category = {
   icon: string;
   color: string;
   isDefault: boolean;
+};
+
+// Settings-scoped category (stored under users/{uid}/categories)
+export type SettingsCategory = {
+  id: string;
+  name: string;
+  color: string;
+  isCustom: boolean;
 };
 
 export type Budget = {
@@ -89,8 +105,8 @@ export type Subscription = {
   createdAt: string;
 };
 
-export type DailySpend = {
-  date: string; // YYYY-MM-DD
+export type MonthlySpend = {
+  month: string; // YYYY-MM
   amount: number;
 };
 
@@ -113,7 +129,7 @@ export type DashboardStats = {
   prevNetSavings: number;
   prevInvestments: number;
   prevClosingBalance: number;
-  dailySpend: DailySpend[];
+  monthlySpend: MonthlySpend[];
   categoryBreakdown: CategorySpend[];
   topBudgetAlert: { categoryName: string; percent: number } | null;
 };
@@ -161,4 +177,14 @@ export type SimplifiedDebt = {
   debtor: string;
   creditor: string;
   amount: number;
+};
+
+// ─── Settings aggregate type ────────────────────────────────────────────────
+export type UserSettings = {
+  displayName: string;
+  avatarURL: string;
+  theme: 'dark' | 'light';
+  currency: string;
+  accounts: SettingsAccount[];
+  categories: SettingsCategory[];
 };
